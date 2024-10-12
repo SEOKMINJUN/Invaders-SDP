@@ -16,6 +16,8 @@ public class GameState {
 	public int score; // TEAM CLOVER : Changed score from private to public for usage in achievement
 	/** Lives currently remaining. */
 	public int livesRemaining; // TEAM CLOVER : Changed livesRemaining from private to public for usage in achievement
+	/** Lives currently remaining for Player 2. */
+	public int livestwoRemaining; // New variable for Player 2's lives
 	/** Bullets shot until now. */
 	private int bulletsShot;
 	/** Ships destroyed until now. */
@@ -45,6 +47,8 @@ public class GameState {
 	 *            Current score.
 	 * @param livesRemaining
 	 *            Lives currently remaining.
+	 * @param livestwoRemaining
+	 * 	 *            Lives currently remaining for Player 2.
 	 * @param bulletsShot
 	 *            Bullets shot until now.
 	 * @param shipsDestroyed
@@ -61,11 +65,12 @@ public class GameState {
 	 * 		   Current hitCount. // Team-Ctrl-S(Currency)
 	 */
 	public GameState(final int level, final int score,
-					 final int livesRemaining, final int bulletsShot,
+					 final int livesRemaining,final int livestwoRemaining, final int bulletsShot,
 					 final int shipsDestroyed, final int playTime, final int coin, final int gem, final int hitCount, final int coinItemsCollected) {
 		this.level = level;
 		this.score = score;
 		this.livesRemaining = livesRemaining;
+		this.livestwoRemaining = livestwoRemaining;
 		this.bulletsShot = bulletsShot;
 		this.shipsDestroyed = shipsDestroyed;
 		this.playTime = playTime;
@@ -122,6 +127,13 @@ public class GameState {
 	 */
 	public final int getLivesRemaining() {
 		return livesRemaining;
+	}
+
+	/**
+	 * @return the livestwoRemaining for Player 2
+	 */
+	public final int getLivesTwoRemaining() {
+		return livestwoRemaining;
 	}
 
 	/**

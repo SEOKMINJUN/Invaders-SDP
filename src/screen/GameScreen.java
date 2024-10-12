@@ -76,6 +76,8 @@ public class GameScreen extends Screen {
 	private int score;
 	/** Player lives left. */
 	private int lives;
+	/** player2 lives left.*/
+	private int livestwo;
 	/** Total bullets shot by the player. */
 	private int bulletsShot;
 	/** Total ships destroyed by the player. */
@@ -171,6 +173,9 @@ public class GameScreen extends Screen {
 		this.lives = gameState.getLivesRemaining();
 		if (this.bonusLife)
 			this.lives++;
+		this.livestwo = gameState.getLivesTwoRemaining();
+		if (this.bonusLife)
+			this.livestwo++;
 		this.bulletsShot = gameState.getBulletsShot();
 		this.shipsDestroyed = gameState.getShipsDestroyed();
 		this.item = new ItemBarrierAndHeart();	// team Inventory
@@ -495,7 +500,7 @@ public class GameScreen extends Screen {
 	/**
 	 * Manages collisions between bullets and ships. -original code
 	 */
-	private void manageCollisions() {
+	public void manageCollisions() {
 		Set<Bullet> recyclable = new HashSet<Bullet>();
 		for (Bullet bullet : this.bullets)
 			if (bullet.getSpeed() > 0) {
@@ -541,7 +546,7 @@ public class GameScreen extends Screen {
 	 * Manages collisions between bullets and ships. -Edited code for Piercing Bullet
 	 */
 	//by Enemy team
-	private void manageCollisions_add_item() {
+	public void manageCollisions_add_item() {
 		Set<PiercingBullet> recyclable = new HashSet<PiercingBullet>();
 		for (PiercingBullet bullet : this.bullets)
 			if (bullet.getSpeed() > 0) {
@@ -689,7 +694,7 @@ public class GameScreen extends Screen {
 	 *            Second entity, the ship.
 	 * @return Result of the collision test.
 	 */
-	private boolean checkCollision(final Entity a, final Entity b) {
+	public boolean checkCollision(final Entity a, final Entity b) {
 		// Calculate center point of the entities in both axis.
 		int centerAX = a.getPositionX() + a.getWidth() / 2;
 		int centerAY = a.getPositionY() + a.getHeight() / 2;
@@ -716,7 +721,7 @@ public class GameScreen extends Screen {
 	 * @return Current game state.
 	 */
 	public final GameState getGameState() {
-		return new GameState(this.level, this.scoreManager.getAccumulatedScore(), this.lives,
+		return new GameState(this.level, this.scoreManager.getAccumulatedScore(), this.lives, this.livestwo
 				this.bulletsShot, this.shipsDestroyed, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
 	}
 	public int getLives() {
@@ -724,6 +729,12 @@ public class GameScreen extends Screen {
 	}
 	public void setLives(int lives) {
 		this.lives = lives;
+	}
+	public int getLivestwo() {
+		return livestwo;
+	}
+	public void setLivestwo(int livestwo) {
+		this.livestwo = livestwo;
 	}
 	public Ship getShip() {
 		return ship;
