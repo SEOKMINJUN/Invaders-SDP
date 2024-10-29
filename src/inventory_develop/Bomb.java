@@ -12,10 +12,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 import clove.ScoreManager; //CLOVE
+import static engine.Globals.soundManager;
 
 public class Bomb{
-    // Sound Operator
-    private static SoundManager sm;
     private int BombSpeed;
 
     private static boolean IsBomb = false;
@@ -52,9 +51,7 @@ public class Bomb{
                     count++;
 
                     int columnIndex = enemyShips.indexOf(column);
-                    //Sound_Operator
-                    sm = SoundManager.getInstance();
-                    sm.playES("enemy_explosion");
+                    soundManager.playES("enemy_explosion");
 
                     // Operate according to IndexRange
                     for (int dx = -IndexRange; dx <= IndexRange; dx++) {

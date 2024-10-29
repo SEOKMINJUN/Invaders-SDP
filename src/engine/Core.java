@@ -16,13 +16,12 @@ import CtrlS.UpgradeManager;
 import Sound_Operator.SoundManager;
 import clove.Statistics;
 import level_design.Background;
-import CtrlS.RoundState;
-import CtrlS.ReceiptScreen;
-import Sound_Operator.SoundManager;
 import clove.AchievementManager;
 import screen.*;
 import twoplayermode.TwoPlayerMode;
 
+import static engine.Globals.*;
+import static screen.Setting.*;
 
 /**
  * Implements core game logic.
@@ -31,43 +30,6 @@ import twoplayermode.TwoPlayerMode;
  * 
  */
 public final class Core {
-
-	/** Width of current screen. */
-	private static final int WIDTH = 630;
-	/** Height of current screen. */
-	private static final int HEIGHT = 720;
-	/** Max fps of current screen. */
-	private static final int FPS = 60;
-
-	/** Max lives. */
-	public static final int MAX_LIVES = 3; // TEAM CLOVER: Fixed MAX_LIVES from private to public for usage in achievement
-	/** Levels between extra life. */
-	private static final int EXTRA_LIFE_FRECUENCY = 3;
-	/** Total number of levels. */
-	public static final int NUM_LEVELS = 7; // TEAM CLOVER : Fixed NUM_LEVELS from privated to public for usage in achievement
-	
-	/** Difficulty settings for level 1. */
-	private static final GameSettings SETTINGS_LEVEL_1 =
-			new GameSettings(5, 4, 60, 2000, 1);
-	/** Difficulty settings for level 2. */
-	private static final GameSettings SETTINGS_LEVEL_2 =
-			new GameSettings(5, 5, 50, 2500, 1);
-	/** Difficulty settings for level 3. */
-	private static final GameSettings SETTINGS_LEVEL_3 =
-			new GameSettings(1, 1, -8, 500, 1);
-	/** Difficulty settings for level 4. */
-	private static final GameSettings SETTINGS_LEVEL_4 =
-			new GameSettings(6, 6, 30, 1500, 2);
-	/** Difficulty settings for level 5. */
-	private static final GameSettings SETTINGS_LEVEL_5 =
-			new GameSettings(7, 6, 20, 1000, 2);
-	/** Difficulty settings for level 6. */
-	private static final GameSettings SETTINGS_LEVEL_6 =
-			new GameSettings(7, 7, 10, 1000, 3);
-	/** Difficulty settings for level 7. */
-	private static final GameSettings SETTINGS_LEVEL_7 =
-			new GameSettings(8, 7, 2, 500, 1);
-	
 	/** Frame to draw the screen on. */
 	private static Frame frame;
 	/** Screen currently shown. */
@@ -81,8 +43,6 @@ public final class Core {
 	private static Handler fileHandler;
 	/** Logger handler for printing to console. */
 	private static ConsoleHandler consoleHandler;
-	// Sound Operator
-	private static SoundManager sm;
     private static AchievementManager achievementManager; // Team CLOVER
 
 	/**
@@ -100,8 +60,6 @@ public final class Core {
 
 			consoleHandler = new ConsoleHandler();
 			consoleHandler.setFormatter(new MinimalFormatter());
-			// Sound Operator
-			sm = SoundManager.getInstance();
 
 			LOGGER.addHandler(fileHandler);
 			LOGGER.addHandler(consoleHandler);
@@ -166,8 +124,8 @@ public final class Core {
 				// Game & score.
 				LOGGER.info("Starting inGameBGM");
 				// Sound Operator
-				sm.playES("start_button_ES");
-				sm.playBGM("inGame_bgm");
+				soundManager.playES("start_button_ES");
+				soundManager.playBGM("inGame_bgm");
 
 				do {
 					// One extra live every few levels.
@@ -238,7 +196,7 @@ public final class Core {
 
 				LOGGER.info("Stop InGameBGM");
 				// Sound Operator
-				sm.stopAllBGM();
+				soundManager.stopAllBGM();
 
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 						+ " score screen at " + FPS + " fps, with a score of "
@@ -261,8 +219,8 @@ public final class Core {
 			case 4:
 				LOGGER.info("Starting inGameBGM");
 				// Sound Operator
-				sm.playES("start_button_ES");
-				sm.playBGM("inGame_bgm");
+				soundManager.playES("start_button_ES");
+				soundManager.playBGM("inGame_bgm");
 
 				do {
 					if (gameSettings == null || gameSettings.isEmpty()) {
@@ -346,7 +304,7 @@ public final class Core {
 
 				LOGGER.info("Stop InGameBGM");
 				// Sound Operator
-				sm.stopAllBGM();
+				soundManager.stopAllBGM();
 
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 						+ " score screen at " + FPS + " fps, with a score of "

@@ -15,6 +15,8 @@ import engine.Score;
 import Enemy.PlayerGrowth;
 import inventory_develop.NumberOfBullet;
 
+import static engine.Globals.currencyManager;
+
 /**
  * Implements the score screen.
  * 
@@ -255,7 +257,7 @@ public class ScoreScreen extends Screen {
 	// Team-Ctrl-S(Currency)
 	private void saveCoin() {
 		try {
-			Core.getCurrencyManager().addCoin(coin);
+			currencyManager.addCoin(coin);
 			logger.info("You earned $" + coin);
 		} catch (IOException e) {
 			logger.warning("Couldn't load coin!");
@@ -268,7 +270,7 @@ public class ScoreScreen extends Screen {
 	// CtrlS
 	private void saveGem() {
 		try {
-			Core.getCurrencyManager().addGem(1);
+			currencyManager.addGem(1);
 			logger.info("You earned 1 Gem for Game Clear");
 		} catch (IOException e) {
 			logger.warning("Couldn't load gem!");
