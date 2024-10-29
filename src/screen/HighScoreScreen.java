@@ -11,6 +11,8 @@ import engine.Score;
 // Sound Operator
 import Sound_Operator.SoundManager;
 
+import static engine.Globals.soundManager;
+
 /**
  * Implements the high scores screen, it shows player records.
  * 
@@ -38,7 +40,7 @@ public class HighScoreScreen extends Screen {
 		this.returnCode = 1;
 
 		// Sound Operator
-		SoundManager.getInstance().playBGM("highScore_bgm");
+		soundManager.playBGM("highScore_bgm");
 
 		try {
 			this.highScores = Core.getFileManager().loadHighScores();

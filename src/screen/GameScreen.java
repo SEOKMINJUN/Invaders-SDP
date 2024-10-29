@@ -27,6 +27,8 @@ import Sound_Operator.SoundManager;
 import clove.ScoreManager;    // CLOVE
 import twoplayermode.TwoPlayerMode;
 
+import static engine.Globals.soundManager;
+
 
 /**
  * Implements the game screen, where the action happens.
@@ -120,9 +122,6 @@ public class GameScreen extends Screen {
 	private int playTime = 0;
 	/** Play time on previous levels */
 	private int playTimePre = 0;
-
-	// Sound Operator
-	private static SoundManager sm;
 
 	// Team-Ctrl-S(Currency)
 	/** Total coin **/
@@ -340,8 +339,8 @@ public class GameScreen extends Screen {
 				this.enemyShipSpecial = new EnemyShip();
 				this.enemyShipSpecialCooldown.reset();
 				//Sound Operator
-				sm = SoundManager.getInstance();
-				sm.playES("UFO_come_up");
+				
+				soundManager.playES("UFO_come_up");
 				this.logger.info("A special ship appears");
 			}
 			if (this.enemyShipSpecial != null
@@ -634,8 +633,7 @@ public class GameScreen extends Screen {
 
 						// Sound Operator
 						if (this.lives == 0){
-							sm = SoundManager.getInstance();
-							sm.playShipDieSounds();
+							soundManager.playShipDieSounds();
 						}
 					}
 				}
@@ -731,9 +729,7 @@ public class GameScreen extends Screen {
 						obstacle.destroy();  // Destroy obstacle
 						recyclable.add(bullet);  // Remove bullet
 
-						// Sound Operator
-						sm = SoundManager.getInstance();
-						sm.playES("obstacle_explosion");
+						soundManager.playES("obstacle_explosion");
 					}
 				}
 			}

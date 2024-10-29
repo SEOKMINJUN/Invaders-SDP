@@ -2,10 +2,9 @@ package HUDTeam;
 
 // Sound Operator
 import Sound_Operator.SoundManager;
+import static engine.Globals.soundManager;
 
 public class DrawAchievementHud {
-    // Sound Operator
-    private static SoundManager sm;
     static int timer = 100;
     static String achievementText = null;
 
@@ -26,8 +25,6 @@ public class DrawAchievementHud {
     public static void achieve(String Text){
         timer = 0;
         achievementText = Text;
-        // Sound Operator
-        sm = SoundManager.getInstance();
-        sm.playES("achievement");
+        soundManager.playES("achievement");
     }
 }

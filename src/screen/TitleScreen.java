@@ -11,6 +11,9 @@ import Sound_Operator.SoundManager;
 import engine.Score;
 import inventory_develop.ShipStatus;
 
+import static engine.Globals.currencyManager;
+import static engine.Globals.soundManager;
+
 /**
  * Implements the title screen.
  *
@@ -59,14 +62,14 @@ public class TitleScreen extends Screen {
 
 		// CtrlS: Set user's coin, gem
         try {
-            this.coin = Core.getCurrencyManager().getCoin();
-			this.gem = Core.getCurrencyManager().getGem();
+            this.coin = currencyManager.getCoin();
+			this.gem = currencyManager.getGem();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         // Sound Operator
-		SoundManager.getInstance().playBGM("mainMenu_bgm");
+		soundManager.playBGM("mainMenu_bgm");
 
 		// inventory load upgrade price
 		shipStatus = new ShipStatus();
@@ -103,14 +106,14 @@ public class TitleScreen extends Screen {
 				previousMenuItem();
 				this.selectionCooldown.reset();
 				// Sound Operator
-				SoundManager.getInstance().playES("menuSelect_es");
+				soundManager.playES("menuSelect_es");
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
 					|| inputManager.isKeyDown(KeyEvent.VK_S)) {
 				nextMenuItem();
 				this.selectionCooldown.reset();
 				// Sound Operator
-				SoundManager.getInstance().playES("menuSelect_es");
+				soundManager.playES("menuSelect_es");
 			}
 
 			// produced by Starter
@@ -120,14 +123,14 @@ public class TitleScreen extends Screen {
 					moveMenuLeft();
 					this.selectionCooldown.reset();
 					// Sound Operator
-					SoundManager.getInstance().playES("menuSelect_es");
+					soundManager.playES("menuSelect_es");
 				}
 				if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
 						|| inputManager.isKeyDown(KeyEvent.VK_D)) {
 					moveMenuRight();
 					this.selectionCooldown.reset();
 					// Sound Operator
-					SoundManager.getInstance().playES("menuSelect_es");
+					soundManager.playES("menuSelect_es");
 				}
 			}
 
@@ -137,14 +140,14 @@ public class TitleScreen extends Screen {
 					nextMerchantState();
 					this.selectionCooldown.reset();
 					// Sound Operator
-					SoundManager.getInstance().playES("menuSelect_es");
+					soundManager.playES("menuSelect_es");
 				}
 				if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
 						|| inputManager.isKeyDown(KeyEvent.VK_D)) {
 					previousMerchantState();
 					this.selectionCooldown.reset();
 					// Sound Operator
-					SoundManager.getInstance().playES("menuSelect_es");
+					soundManager.playES("menuSelect_es");
 				}
 
 			}
@@ -189,7 +192,7 @@ public class TitleScreen extends Screen {
 				}
 
 				else if (!(Core.getUpgradeManager().getBulletCount() % 2 == 0)
-						&& Core.getCurrencyManager().spendCoin(Core.getUpgradeManager().Price(1))) {
+						&& currencyManager.spendCoin(Core.getUpgradeManager().Price(1))) {
 
 					Core.getUpgradeManager().addBulletNum();
 					Core.getLogger().info("Bullet Number: " + Core.getUpgradeManager().getBulletNum());
@@ -197,7 +200,7 @@ public class TitleScreen extends Screen {
 					Core.getUpgradeManager().addBulletCount();
 
 				} else if ((Core.getUpgradeManager().getBulletCount() % 2 == 0)
-						&& Core.getCurrencyManager().spendGem((Core.getUpgradeManager().getBulletCount() + 1) * 10)) {
+						&& currencyManager.spendGem((Core.getUpgradeManager().getBulletCount() + 1) * 10)) {
 
 					Core.getUpgradeManager().addBulletCount();
 					Core.getLogger().info("Upgrade has been unlocked");
@@ -216,7 +219,7 @@ public class TitleScreen extends Screen {
 				}
 
 				else if (!(Core.getUpgradeManager().getSpeedCount() % 4 == 0)
-						&& Core.getCurrencyManager().spendCoin(Core.getUpgradeManager().Price(2))) {
+						&& currencyManager.spendCoin(Core.getUpgradeManager().Price(2))) {
 
 					Core.getUpgradeManager().addMovementSpeed();
 					Core.getLogger().info("Movement Speed: " + Core.getUpgradeManager().getMovementSpeed());
@@ -224,7 +227,7 @@ public class TitleScreen extends Screen {
 					Core.getUpgradeManager().addSpeedCount();
 
 				} else if ((Core.getUpgradeManager().getSpeedCount() % 4 == 0)
-						&& Core.getCurrencyManager().spendGem(Core.getUpgradeManager().getSpeedCount() / 4 * 5)) {
+						&& currencyManager.spendGem(Core.getUpgradeManager().getSpeedCount() / 4 * 5)) {
 
 					Core.getUpgradeManager().addSpeedCount();
 					Core.getLogger().info("Upgrade has been unlocked");
@@ -243,7 +246,7 @@ public class TitleScreen extends Screen {
 				}
 
 				else if (!(Core.getUpgradeManager().getAttackCount() % 4 == 0)
-						&& Core.getCurrencyManager().spendCoin(Core.getUpgradeManager().Price(3))) {
+						&& currencyManager.spendCoin(Core.getUpgradeManager().Price(3))) {
 
 					Core.getUpgradeManager().addAttackSpeed();
 					Core.getLogger().info("Attack Speed: " + Core.getUpgradeManager().getAttackSpeed());
@@ -251,7 +254,7 @@ public class TitleScreen extends Screen {
 					Core.getUpgradeManager().addAttackCount();
 
 				} else if ((Core.getUpgradeManager().getAttackCount() % 4 == 0)
-						&& Core.getCurrencyManager().spendGem(Core.getUpgradeManager().getAttackCount() / 4 * 5)) {
+						&& currencyManager.spendGem(Core.getUpgradeManager().getAttackCount() / 4 * 5)) {
 
 					Core.getUpgradeManager().addAttackCount();
 					Core.getLogger().info("Upgrade has been unlocked");
@@ -270,7 +273,7 @@ public class TitleScreen extends Screen {
 				}
 
 				else if (!(Core.getUpgradeManager().getCoinCount() % 4 == 0)
-						&& Core.getCurrencyManager().spendCoin(Core.getUpgradeManager().Price(4))) {
+						&& currencyManager.spendCoin(Core.getUpgradeManager().Price(4))) {
 
 					Core.getUpgradeManager().addCoinAcquisitionMultiplier();
 					Core.getLogger().info("CoinBonus: " + Core.getUpgradeManager().getCoinAcquisitionMultiplier());
@@ -278,7 +281,7 @@ public class TitleScreen extends Screen {
 					Core.getUpgradeManager().addCoinCount();
 
 				} else if ((Core.getUpgradeManager().getCoinCount() % 4 == 0)
-						&& Core.getCurrencyManager().spendGem(Core.getUpgradeManager().getCoinCount() / 4 * 5)) {
+						&& currencyManager.spendGem(Core.getUpgradeManager().getCoinCount() / 4 * 5)) {
 
 					Core.getUpgradeManager().addCoinCount();
 					Core.getLogger().info("Upgrade has been unlocked");
@@ -292,8 +295,8 @@ public class TitleScreen extends Screen {
 
 		}
 		try{
-			this.coin = Core.getCurrencyManager().getCoin();
-			this.gem = Core.getCurrencyManager().getGem();
+			this.coin = currencyManager.getCoin();
+			this.gem = currencyManager.getGem();
 
 		} catch (IOException e){
 			throw new RuntimeException(e);

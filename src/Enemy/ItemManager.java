@@ -23,7 +23,7 @@ import CtrlS.CurrencyManager;
 
 // Sound Operator
 import Sound_Operator.SoundManager;
-
+import static engine.Globals.soundManager;
 
 public class ItemManager {
 
@@ -41,8 +41,6 @@ public class ItemManager {
     private PlayerGrowth growth;
     private FeverTimeItem feverTimeItem;
     private CurrencyManager currencyManager;
-    // Sound Operator
-    private static SoundManager sm;
 
     public ItemManager(int screenHeight, DrawManager drawManager, GameScreen gameScreen) {
         this.items = new HashSet<>();
@@ -101,21 +99,15 @@ public class ItemManager {
                 case ItemBomb:
                     Bomb.setIsbomb(true);
                     Bomb.setCanShoot(true);
-                    //Sound_Operator
-                    sm = SoundManager.getInstance();
-                    sm.playES("get_item");
+                    soundManager.playES("get_item");
                     break;
                 case ItemBarrier:
                     Item2.activatebarrier();
-                    //Sound_Operator
-                    sm = SoundManager.getInstance();
-                    sm.playES("get_item");
+                    soundManager.playES("get_item");
                     break;
                 case ItemHeart:
                     Item2.activeheart(gameScreen);
-                    //Sound_Operator
-                    sm = SoundManager.getInstance();
-                    sm.playES("get_item");
+                    soundManager.playES("get_item");
                     break;
                 case ItemFeverTime:
                     feverTimeItem.activate();
@@ -123,9 +115,7 @@ public class ItemManager {
                 case ItemPierce:
                     numberOfBullet.pierceup();
                     ship.increaseBulletSpeed();
-                    //Sound_Operator
-                    sm = SoundManager.getInstance();
-                    sm.playES("get_item");
+                    soundManager.playES("get_item");
                     break;
                 case ItemCoin:
                     this.logger.info("You get coin!");
@@ -147,8 +137,7 @@ public class ItemManager {
         String itemLog = item.getSpriteType().toString().toLowerCase().substring(4);
         // Sound Operator
         if (itemLog.equals("coin")){
-            sm = SoundManager.getInstance();
-            sm.playES("item_coin");
+            soundManager.playES("item_coin");
         }
 
         if (!itemLog.equals("coin")) {

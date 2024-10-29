@@ -19,6 +19,9 @@ import inventory_develop.NumberOfBullet;
 // Import ShipStatus class
 import inventory_develop.ItemBarrierAndHeart;
 import inventory_develop.ShipStatus;
+
+import static engine.Globals.soundManager;
+
 /**
  * Implements a ship, to be controlled by the player.
  *
@@ -36,8 +39,6 @@ public class Ship extends Entity {
 	private ShipStatus shipStatus;
 	/** Item */
 	private ItemBarrierAndHeart item;
-	// Sound Operator
-	private static SoundManager sm;
 	/** NumberOfBullet instance*/
 	private NumberOfBullet numberOfBullet;
 
@@ -102,9 +103,7 @@ public class Ship extends Entity {
 
 			this.shootingCooldown.reset(); // Reset cooldown after shooting
 
-			// Sound Operator, Apply a Shooting sound
-			sm = SoundManager.getInstance();
-			sm.playES("My_Gun_Shot");
+			soundManager.playES("My_Gun_Shot");
 
 			// Use NumberOfBullet to generate bullets
 			Set<PiercingBullet> newBullets = numberOfBullet.addBullet(
@@ -144,9 +143,7 @@ public class Ship extends Entity {
 	 */
 	public final void destroy() {
 		this.destructionCooldown.reset();
-		// Sound Operator
-		sm = SoundManager.getInstance();
-		sm.playES("ally_airship_damage");
+		soundManager.playES("ally_airship_damage");
 	}
 
 	/**

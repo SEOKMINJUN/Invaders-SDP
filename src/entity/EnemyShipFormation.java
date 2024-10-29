@@ -21,12 +21,14 @@ import engine.Core;
 import engine.DrawManager;
 import engine.DrawManager.SpriteType;
 import engine.GameSettings;
+
+import static engine.Globals.soundManager;
 import static java.lang.Math.*;
 import Enemy.PiercingBulletPool;
 //Sound_Operator
 import Sound_Operator.SoundManager;
 
-/**
+/**`
  * Groups enemy ships into a formation that moves together.
  *
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
@@ -34,8 +36,6 @@ import Sound_Operator.SoundManager;
  */
 public class EnemyShipFormation implements Iterable<EnemyShip> {
 	private boolean isCircle = false;
-	// Sound Operator
-	private static SoundManager sm;
 	/** Number of iteration of movement */
 	private int iteration = 0;
 
@@ -427,8 +427,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 			EnemyShip shooter = this.shooters.get(index);
 			if (this.shootingCooldown.checkFinished()) {
 				this.shootingCooldown.reset();
-				sm = SoundManager.getInstance();
-				sm.playES("Enemy_Gun_Shot_1_ES");
+				soundManager.playES("Enemy_Gun_Shot_1_ES");
 				bullets.add(PiercingBulletPool.getPiercingBullet( // Edited by Enemy
 						shooter.getPositionX() + shooter.width / 2,
 						shooter.getPositionY(),
@@ -567,8 +566,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 								//Sound_Operator
 								if (destroyedShip.isDestroyed()) {
 
-									sm = SoundManager.getInstance();
-									sm.playES("enemy_explosion");
+									soundManager.playES("enemy_explosion");
 								}
 								point += destroyedShip.getPointValue();
 								int point_mob[]  =  explosive(destroyedShip.getX(), destroyedShip.getY(),

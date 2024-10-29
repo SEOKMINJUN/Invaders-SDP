@@ -14,6 +14,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import static engine.Globals.currencyManager;
+import static screen.Setting.*;
+
 
 public class AchievementConditions {
 
@@ -112,7 +115,7 @@ public class AchievementConditions {
         scoreAchievements.add(new Achievement("Score Hunter", "Reach 5,000 points", 15000, Achievement.AchievementType.SCORE,3));
         scoreAchievements.add(new Achievement("Score Master", "Reach 10,000 points", 30000, Achievement.AchievementType.SCORE,5));
 
-        stageAchievements.add(new Achievement("Home Sweet Home","Cleared Final Stage", Core.NUM_LEVELS, Achievement.AchievementType.STAGE, 5));
+        stageAchievements.add(new Achievement("Home Sweet Home","Cleared Final Stage", NUM_LEVELS, Achievement.AchievementType.STAGE, 5));
 
         allAchievements.addAll(killAchievements);
         allAchievements.addAll(trialAchievements);
@@ -203,7 +206,7 @@ public class AchievementConditions {
 
     public void checkNoDeathAchievements(int lives) {
         System.out.println("Checking No Death achievements. Current lives: " + lives);
-        if (lives == Core.MAX_LIVES) {
+        if (lives == MAX_LIVES) {
             for (Achievement achievement : noDeathAchievements) {
                 if (highestLevel==7 && !achievement.isCompleted()) {
                     completeAchievement(achievement);
@@ -258,7 +261,7 @@ public class AchievementConditions {
             DrawAchievementHud.achieve(achievement.getAchievementName());
             if(achievement.getGem() > 0) {
                 try {
-                    Core.getCurrencyManager().addGem(achievement.getGem());
+                    currencyManager.addGem(achievement.getGem());
                 } catch (IOException e) {
                     logger.warning("Couldn't load gem!");
                 }
