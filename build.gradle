@@ -1,0 +1,34 @@
+plugins {
+    id "java"
+    id "edu.sc.seis.launch4j" version "3.0.6"
+}
+
+group 'org.invaders-sdp'
+version '0.0'
+
+repositories {
+    mavenCentral()
+}
+
+launch4j{
+    mainClassName = 'engine.Core'
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+        resources {
+            srcDirs = ['res']
+        }
+    }
+}
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+}
+
+test {
+    useJUnitPlatform()
+}
