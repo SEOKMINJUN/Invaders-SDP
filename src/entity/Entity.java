@@ -135,5 +135,5 @@ public abstract class Entity {
 		return this.height;
 	}
 
-
+	public final void draw() { }
 }
