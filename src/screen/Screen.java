@@ -1,15 +1,14 @@
 package screen;
 
 import java.awt.Insets;
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import HUDTeam.DrawAchievementHud;
 import HUDTeam.DrawManagerImpl;
-import engine.Cooldown;
-import engine.Core;
-import engine.DrawManager;
-import engine.InputManager;
+import engine.*;
+import entity.Entity;
 
 /**
  * Implements a generic screen.
@@ -47,6 +46,8 @@ public class Screen {
 	/** Checks if the game is in 2 player mode **/
 	private boolean isTwoPlayerMode;
 
+	private ArrayList<Entity> entities;
+
 	/**
 	 * Constructor, establishes the properties of the screen.
 	 * 
@@ -62,8 +63,8 @@ public class Screen {
 		this.height = height;
 		this.fps = fps;
 
-		this.drawManager = Core.getDrawManager();
-		this.inputManager = Core.getInputManager();
+		this.drawManager = Globals.getDrawManager();
+		this.inputManager = Globals.getInputManager();
 		this.logger = Core.getLogger();
 		this.inputDelay = Core.getCooldown(INPUT_DELAY);
 		this.inputDelay.reset();
@@ -112,8 +113,7 @@ public class Screen {
 	/**
 	 * Update the elements on screen after update all child screen
 	 */
-	protected void drawPost() {
-		// Jo minseo / HUD team
+    protected void draw() {
 		if(DrawAchievementHud.getTimer() < 100) {
 			DrawManagerImpl.drawAchievement(this, DrawAchievementHud.getAchievementText());
 			DrawAchievementHud.addTimer();

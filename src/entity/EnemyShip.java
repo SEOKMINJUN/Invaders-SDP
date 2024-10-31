@@ -6,6 +6,7 @@ import Enemy.HpEnemyShip;
 import engine.Cooldown;
 import engine.Core;
 import engine.DrawManager.SpriteType;
+import engine.Globals;
 
 /**
  * Implements a enemy ship, to be destroyed by the player.
@@ -174,9 +175,9 @@ public class EnemyShip extends Entity {
 	public final void destroy() {
 		this.isDestroyed = true;
 		if(this.spriteType == SpriteType.EnemyShipSpecial){
-			soundManager.playES("special_enemy_die");
+			Globals.getSoundManager().playES("special_enemy_die");
 		}else{
-			soundManager.playES("basic_enemy_die");
+			Globals.getSoundManager().playES("basic_enemy_die");
 		}
 		this.spriteType = SpriteType.Explosion;
 

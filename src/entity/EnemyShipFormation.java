@@ -10,15 +10,12 @@ import java.util.logging.Logger;
 import javax.swing.Timer;
 
 import Enemy.*;
-import clove.ScoreManager;
+import engine.*;
 import inventory_develop.Bomb;
 import inventory_develop.SpeedItem;
 import screen.Screen;
-import engine.Cooldown;
-import engine.Core;
-import engine.DrawManager;
 import engine.DrawManager.SpriteType;
-import engine.GameSettings;
+
 import static java.lang.Math.*;
 import Enemy.PiercingBulletPool;
 
@@ -142,7 +139,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 	 *            Current game settings.
 	 */
 	public EnemyShipFormation(final GameSettings gameSettings) {
-		this.drawManager = Core.getDrawManager();
+		this.drawManager = Globals.getDrawManager();
 		this.logger = Core.getLogger();
 		this.enemyShips = new ArrayList<List<EnemyShip>>();
 		this.activeSpeedItems = new ArrayList<>();
@@ -422,7 +419,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 			EnemyShip shooter = this.shooters.get(index);
 			if (this.shootingCooldown.checkFinished()) {
 				this.shootingCooldown.reset();
-				soundManager.playES("Enemy_Gun_Shot_1_ES");
+				Globals.getSoundManager().playES("Enemy_Gun_Shot_1_ES");
 				bullets.add(PiercingBulletPool.getPiercingBullet( // Edited by Enemy
 						shooter.getPositionX() + shooter.width / 2,
 						shooter.getPositionY(),
@@ -561,7 +558,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 								//Sound_Operator
 								if (destroyedShip.isDestroyed()) {
 
-									soundManager.playES("enemy_explosion");
+									Globals.getSoundManager().playES("enemy_explosion");
 								}
 								point += destroyedShip.getPointValue();
 								int point_mob[]  =  explosive(destroyedShip.getX(), destroyedShip.getY(),

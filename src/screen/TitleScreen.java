@@ -6,6 +6,7 @@ import java.io.IOException;
 import engine.Cooldown;
 import engine.Core;
 // Sound Operator
+import engine.Globals;
 import inventory_develop.ShipStatus;
 
 /**
@@ -56,14 +57,14 @@ public class TitleScreen extends Screen {
 
 		// CtrlS: Set user's coin, gem
         try {
-            this.coin = currencyManager.getCoin();
-			this.gem = currencyManager.getGem();
+            this.coin = Globals.getCurrencyManager().getCoin();
+			this.gem = Globals.getCurrencyManager().getGem();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         // Sound Operator
-		soundManager.playBGM("mainMenu_bgm");
+		Globals.getSoundManager().playBGM("mainMenu_bgm");
 
 		// inventory load upgrade price
 		shipStatus = new ShipStatus();
@@ -100,14 +101,14 @@ public class TitleScreen extends Screen {
 				previousMenuItem();
 				this.selectionCooldown.reset();
 				// Sound Operator
-				soundManager.playES("menuSelect_es");
+				Globals.getSoundManager().playES("menuSelect_es");
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
 					|| inputManager.isKeyDown(KeyEvent.VK_S)) {
 				nextMenuItem();
 				this.selectionCooldown.reset();
 				// Sound Operator
-				soundManager.playES("menuSelect_es");
+				Globals.getSoundManager().playES("menuSelect_es");
 			}
 
 			// produced by Starter
@@ -117,14 +118,14 @@ public class TitleScreen extends Screen {
 					moveMenuLeft();
 					this.selectionCooldown.reset();
 					// Sound Operator
-					soundManager.playES("menuSelect_es");
+					Globals.getSoundManager().playES("menuSelect_es");
 				}
 				if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
 						|| inputManager.isKeyDown(KeyEvent.VK_D)) {
 					moveMenuRight();
 					this.selectionCooldown.reset();
 					// Sound Operator
-					soundManager.playES("menuSelect_es");
+					Globals.getSoundManager().playES("menuSelect_es");
 				}
 			}
 
@@ -134,14 +135,14 @@ public class TitleScreen extends Screen {
 					nextMerchantState();
 					this.selectionCooldown.reset();
 					// Sound Operator
-					soundManager.playES("menuSelect_es");
+					Globals.getSoundManager().playES("menuSelect_es");
 				}
 				if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
 						|| inputManager.isKeyDown(KeyEvent.VK_D)) {
 					previousMerchantState();
 					this.selectionCooldown.reset();
 					// Sound Operator
-					soundManager.playES("menuSelect_es");
+					Globals.getSoundManager().playES("menuSelect_es");
 				}
 
 			}
@@ -181,22 +182,22 @@ public class TitleScreen extends Screen {
 		// CtrlS: testStatUpgrade should only be called after coins are spent
 		if (this.merchantState == 1) { // bulletCount
 			try {
-				if (Core.getUpgradeManager().LevelCalculation(Core.getUpgradeManager().getBulletCount()) > 3){
+				if (Globals.getUpgradeManager().LevelCalculation(Globals.getUpgradeManager().getBulletCount()) > 3){
 					Core.getLogger().info("The level is already Max!");
 				}
 
-				else if (!(Core.getUpgradeManager().getBulletCount() % 2 == 0)
-						&& currencyManager.spendCoin(Core.getUpgradeManager().Price(1))) {
+				else if (!(Globals.getUpgradeManager().getBulletCount() % 2 == 0)
+						&& Globals.getCurrencyManager().spendCoin(Globals.getUpgradeManager().Price(1))) {
 
-					Core.getUpgradeManager().addBulletNum();
-					Core.getLogger().info("Bullet Number: " + Core.getUpgradeManager().getBulletNum());
+					Globals.getUpgradeManager().addBulletNum();
+					Core.getLogger().info("Bullet Number: " + Globals.getUpgradeManager().getBulletNum());
 
-					Core.getUpgradeManager().addBulletCount();
+					Globals.getUpgradeManager().addBulletCount();
 
-				} else if ((Core.getUpgradeManager().getBulletCount() % 2 == 0)
-						&& currencyManager.spendGem((Core.getUpgradeManager().getBulletCount() + 1) * 10)) {
+				} else if ((Globals.getUpgradeManager().getBulletCount() % 2 == 0)
+						&& Globals.getCurrencyManager().spendGem((Globals.getUpgradeManager().getBulletCount() + 1) * 10)) {
 
-					Core.getUpgradeManager().addBulletCount();
+					Globals.getUpgradeManager().addBulletCount();
 					Core.getLogger().info("Upgrade has been unlocked");
 
 				} else {
@@ -208,22 +209,22 @@ public class TitleScreen extends Screen {
 
 		} else if (this.merchantState == 2) { // shipSpeed
 			try {
-				if (Core.getUpgradeManager().LevelCalculation(Core.getUpgradeManager().getSpeedCount()) > 10){
+				if (Globals.getUpgradeManager().LevelCalculation(Globals.getUpgradeManager().getSpeedCount()) > 10){
 					Core.getLogger().info("The level is already Max!");
 				}
 
-				else if (!(Core.getUpgradeManager().getSpeedCount() % 4 == 0)
-						&& currencyManager.spendCoin(Core.getUpgradeManager().Price(2))) {
+				else if (!(Globals.getUpgradeManager().getSpeedCount() % 4 == 0)
+						&& Globals.getCurrencyManager().spendCoin(Globals.getUpgradeManager().Price(2))) {
 
-					Core.getUpgradeManager().addMovementSpeed();
-					Core.getLogger().info("Movement Speed: " + Core.getUpgradeManager().getMovementSpeed());
+					Globals.getUpgradeManager().addMovementSpeed();
+					Core.getLogger().info("Movement Speed: " + Globals.getUpgradeManager().getMovementSpeed());
 
-					Core.getUpgradeManager().addSpeedCount();
+					Globals.getUpgradeManager().addSpeedCount();
 
-				} else if ((Core.getUpgradeManager().getSpeedCount() % 4 == 0)
-						&& currencyManager.spendGem(Core.getUpgradeManager().getSpeedCount() / 4 * 5)) {
+				} else if ((Globals.getUpgradeManager().getSpeedCount() % 4 == 0)
+						&& Globals.getCurrencyManager().spendGem(Globals.getUpgradeManager().getSpeedCount() / 4 * 5)) {
 
-					Core.getUpgradeManager().addSpeedCount();
+					Globals.getUpgradeManager().addSpeedCount();
 					Core.getLogger().info("Upgrade has been unlocked");
 
 				} else {
@@ -235,22 +236,22 @@ public class TitleScreen extends Screen {
 
 		} else if (this.merchantState == 3) { // attackSpeed
 			try {
-				if (Core.getUpgradeManager().LevelCalculation(Core.getUpgradeManager().getAttackCount()) > 10){
+				if (Globals.getUpgradeManager().LevelCalculation(Globals.getUpgradeManager().getAttackCount()) > 10){
 					Core.getLogger().info("The level is already Max!");
 				}
 
-				else if (!(Core.getUpgradeManager().getAttackCount() % 4 == 0)
-						&& currencyManager.spendCoin(Core.getUpgradeManager().Price(3))) {
+				else if (!(Globals.getUpgradeManager().getAttackCount() % 4 == 0)
+						&& Globals.getCurrencyManager().spendCoin(Globals.getUpgradeManager().Price(3))) {
 
-					Core.getUpgradeManager().addAttackSpeed();
-					Core.getLogger().info("Attack Speed: " + Core.getUpgradeManager().getAttackSpeed());
+					Globals.getUpgradeManager().addAttackSpeed();
+					Core.getLogger().info("Attack Speed: " + Globals.getUpgradeManager().getAttackSpeed());
 
-					Core.getUpgradeManager().addAttackCount();
+					Globals.getUpgradeManager().addAttackCount();
 
-				} else if ((Core.getUpgradeManager().getAttackCount() % 4 == 0)
-						&& currencyManager.spendGem(Core.getUpgradeManager().getAttackCount() / 4 * 5)) {
+				} else if ((Globals.getUpgradeManager().getAttackCount() % 4 == 0)
+						&& Globals.getCurrencyManager().spendGem(Globals.getUpgradeManager().getAttackCount() / 4 * 5)) {
 
-					Core.getUpgradeManager().addAttackCount();
+					Globals.getUpgradeManager().addAttackCount();
 					Core.getLogger().info("Upgrade has been unlocked");
 
 				} else {
@@ -262,22 +263,22 @@ public class TitleScreen extends Screen {
 
 		} else if (this.merchantState == 4) { // coinGain
 			try {
-				if (Core.getUpgradeManager().LevelCalculation(Core.getUpgradeManager().getCoinCount()) > 10){
+				if (Globals.getUpgradeManager().LevelCalculation(Globals.getUpgradeManager().getCoinCount()) > 10){
 					Core.getLogger().info("The level is already Max!");
 				}
 
-				else if (!(Core.getUpgradeManager().getCoinCount() % 4 == 0)
-						&& currencyManager.spendCoin(Core.getUpgradeManager().Price(4))) {
+				else if (!(Globals.getUpgradeManager().getCoinCount() % 4 == 0)
+						&& Globals.getCurrencyManager().spendCoin(Globals.getUpgradeManager().Price(4))) {
 
-					Core.getUpgradeManager().addCoinAcquisitionMultiplier();
-					Core.getLogger().info("CoinBonus: " + Core.getUpgradeManager().getCoinAcquisitionMultiplier());
+					Globals.getUpgradeManager().addCoinAcquisitionMultiplier();
+					Core.getLogger().info("CoinBonus: " + Globals.getUpgradeManager().getCoinAcquisitionMultiplier());
 
-					Core.getUpgradeManager().addCoinCount();
+					Globals.getUpgradeManager().addCoinCount();
 
-				} else if ((Core.getUpgradeManager().getCoinCount() % 4 == 0)
-						&& currencyManager.spendGem(Core.getUpgradeManager().getCoinCount() / 4 * 5)) {
+				} else if ((Globals.getUpgradeManager().getCoinCount() % 4 == 0)
+						&& Globals.getCurrencyManager().spendGem(Globals.getUpgradeManager().getCoinCount() / 4 * 5)) {
 
-					Core.getUpgradeManager().addCoinCount();
+					Globals.getUpgradeManager().addCoinCount();
 					Core.getLogger().info("Upgrade has been unlocked");
 
 				} else {
@@ -289,8 +290,8 @@ public class TitleScreen extends Screen {
 
 		}
 		try{
-			this.coin = currencyManager.getCoin();
-			this.gem = currencyManager.getGem();
+			this.coin = Globals.getCurrencyManager().getCoin();
+			this.gem = Globals.getCurrencyManager().getGem();
 
 		} catch (IOException e){
 			throw new RuntimeException(e);
@@ -359,7 +360,7 @@ public class TitleScreen extends Screen {
 	/**
 	 * Draws the elements associated with the screen.
 	 */
-	private void draw() {
+	protected void draw() {
 		drawManager.initDrawing(this);
 
 		drawManager.drawTitle(this);
@@ -368,7 +369,7 @@ public class TitleScreen extends Screen {
 		drawManager.drawCurrentCoin(this, coin);
 		drawManager.drawCurrentGem(this, gem);
 
-		super.drawPost();
+		super.draw();
 		drawManager.completeDrawing(this);
 	}
 

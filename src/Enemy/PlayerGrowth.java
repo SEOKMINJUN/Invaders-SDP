@@ -1,6 +1,8 @@
 package Enemy;
 
 import engine.Core;
+import engine.Globals;
+
 import java.io.IOException;
 
 public class PlayerGrowth {
@@ -16,8 +18,8 @@ public class PlayerGrowth {
 
         // CtrlS: set player growth based on upgrade_status.properties
         try {
-            moveSpeed = Core.getUpgradeManager().getMovementSpeed();
-            shootingDelay = Core.getUpgradeManager().getAttackSpeed();
+            moveSpeed = Globals.getUpgradeManager().getMovementSpeed();
+            shootingDelay = Globals.getUpgradeManager().getAttackSpeed();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

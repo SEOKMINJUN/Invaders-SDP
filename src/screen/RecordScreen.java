@@ -64,13 +64,13 @@ public class RecordScreen extends Screen {
     /**
      * Draws the elements associated with the screen.
      */
-    private void draw() {
+    protected void draw() {
         drawManager.initDrawing(this);
 
         drawManager.drawRecordMenu(this);
         drawManager.drawRecentScores(this, this.recentScores);
 
-        super.drawPost();
+        super.draw();
         drawManager.completeDrawing(this);
     }
 }

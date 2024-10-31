@@ -60,12 +60,12 @@ public class ReceiptScreen extends Screen {
 	/**
 	 * Draws the elements associated with the screen.
 	 */
-	private void draw() {
+	protected void draw() {
 		drawManager.initDrawing(this);
 
 		drawManager.drawReceipt(this, this.roundState, this.gameState);
 
-		super.drawPost();
+		super.draw();
 		drawManager.completeDrawing(this);
 	}
 }

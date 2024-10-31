@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.List;
 
 import engine.Core;
+import engine.Globals;
 import engine.Score;
 
 /**
@@ -34,7 +35,7 @@ public class HighScoreScreen extends Screen {
 		this.returnCode = 1;
 
 		// Sound Operator
-		soundManager.playBGM("highScore_bgm");
+		Globals.getSoundManager().playBGM("highScore_bgm");
 
 		try {
 			this.highScores = Globals.getFileManager().loadHighScores();
@@ -69,14 +70,14 @@ public class HighScoreScreen extends Screen {
 	/**
 	 * Draws the elements associated with the screen.
 	 */
-	private void draw() {
+	protected void draw() {
 		drawManager.initDrawing(this);
 
 
 		drawManager.drawHighScoreMenu(this);
 		drawManager.drawHighScores(this, this.highScores);
 
-		super.drawPost();
+		super.draw();
 		drawManager.completeDrawing(this);
 	}
 }

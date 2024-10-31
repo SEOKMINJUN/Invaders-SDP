@@ -50,6 +50,8 @@ public final class UpgradeManager {
         shipStatus = new ShipStatus();
         shipStatus.loadStatus();
         shipStatus.loadPrice();
+        fileManager = Globals.getFileManager();
+        logger = Globals.getLogger();
     }
 
     /**

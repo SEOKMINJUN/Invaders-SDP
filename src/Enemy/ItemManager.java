@@ -1,6 +1,7 @@
 package Enemy;
 
 import engine.Core;
+import engine.Globals;
 import entity.EnemyShip;
 import entity.Ship;
 import inventory_develop.Bomb;
@@ -34,7 +35,6 @@ public class ItemManager {
     private Ship ship;
     private PlayerGrowth growth;
     private FeverTimeItem feverTimeItem;
-    private CurrencyManager currencyManager;
 
     public ItemManager(int screenHeight, DrawManager drawManager, GameScreen gameScreen) {
         this.items = new HashSet<>();
@@ -93,15 +93,15 @@ public class ItemManager {
                 case ItemBomb:
                     Bomb.setIsbomb(true);
                     Bomb.setCanShoot(true);
-                    soundManager.playES("get_item");
+                    Globals.getSoundManager().playES("get_item");
                     break;
                 case ItemBarrier:
                     Item2.activatebarrier();
-                    soundManager.playES("get_item");
+                    Globals.getSoundManager().playES("get_item");
                     break;
                 case ItemHeart:
                     Item2.activeheart(gameScreen);
-                    soundManager.playES("get_item");
+                    Globals.getSoundManager().playES("get_item");
                     break;
                 case ItemFeverTime:
                     feverTimeItem.activate();
@@ -109,7 +109,7 @@ public class ItemManager {
                 case ItemPierce:
                     numberOfBullet.pierceup();
                     ship.increaseBulletSpeed();
-                    soundManager.playES("get_item");
+                    Globals.getSoundManager().playES("get_item");
                     break;
                 case ItemCoin:
                     this.logger.info("You get coin!");
@@ -131,7 +131,7 @@ public class ItemManager {
         String itemLog = item.getSpriteType().toString().toLowerCase().substring(4);
         // Sound Operator
         if (itemLog.equals("coin")){
-            soundManager.playES("item_coin");
+            Globals.getSoundManager().playES("item_coin");
         }
 
         if (!itemLog.equals("coin")) {

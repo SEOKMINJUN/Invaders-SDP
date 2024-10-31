@@ -5,14 +5,10 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import clove.Statistics; //Team Clove
-import HUDTeam.DrawAchievementHud;
-import HUDTeam.DrawManagerImpl;
+import engine.Statistics; //Team Clove
 import engine.*;
 import Enemy.PlayerGrowth;
 import inventory_develop.NumberOfBullet;
-
-import static engine.Globals.currencyManager;
 
 /**
  * Implements the score screen.
@@ -254,7 +250,7 @@ public class ScoreScreen extends Screen {
 	// Team-Ctrl-S(Currency)
 	private void saveCoin() {
 		try {
-			currencyManager.addCoin(coin);
+			Globals.getCurrencyManager().addCoin(coin);
 			logger.info("You earned $" + coin);
 		} catch (IOException e) {
 			logger.warning("Couldn't load coin!");
@@ -267,7 +263,7 @@ public class ScoreScreen extends Screen {
 	// CtrlS
 	private void saveGem() {
 		try {
-			currencyManager.addGem(1);
+			Globals.getCurrencyManager().addGem(1);
 			logger.info("You earned 1 Gem for Game Clear");
 		} catch (IOException e) {
 			logger.warning("Couldn't load gem!");
@@ -277,7 +273,7 @@ public class ScoreScreen extends Screen {
 	/**
 	 * Draws the elements associated with the screen.
 	 */
-	private void draw() {
+	protected void draw() {
 		drawManager.initDrawing(this);
 
 		drawManager.drawGameEnd(this, this.inputDelay.checkFinished(), this.isGameClear); // CtrlS
@@ -288,7 +284,7 @@ public class ScoreScreen extends Screen {
 		if (this.isNewRecord)
 			drawManager.drawNameInput(this, this.name, this.nameCharSelected);
 
-		super.drawPost();
+		super.draw();
 		drawManager.completeDrawing(this);
 	}
 }

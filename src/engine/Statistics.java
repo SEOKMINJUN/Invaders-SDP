@@ -1,23 +1,18 @@
-package clove;
+package engine;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 
-import CtrlS.CurrencyManager;
-import engine.Core;
-import engine.FileManager;
-import engine.Globals;
+import engine.Achievement.AchievementManager;
+import engine.Achievement.AchievementType;
 import lombok.Getter;
 
 public class Statistics {
 
-    private AchievementConditions achievementConditions;
     private ScheduledExecutorService scheduler;
     /** Number of Player's Highest Reached Level */
     @Getter
@@ -99,6 +94,8 @@ public class Statistics {
                     stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
             Globals.getFileManager().saveUserData(playerStatistics);
         }
+
+        AchievementManager.getInstance().checkAchievement(AchievementType.STAGE, Level);
     }
 
     /**
@@ -135,14 +132,12 @@ public class Statistics {
         int CurrentShipsDestroyed = stat.getTotalShipsDestroyed();
         CurrentShipsDestroyed += PlusShipsDestroyed;
 
-        if (achievementConditions != null) {
-            achievementConditions.onKill();
-        }
-
         playerStatistics.clear();
         playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, CurrentShipsDestroyed, stat.shipsDestructionStreak,
                 stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
         Globals.getFileManager().saveUserData(playerStatistics);
+
+        AchievementManager.getInstance().checkAchievement(AchievementType.KILLS, CurrentShipsDestroyed);
     }
 
     /**
@@ -164,6 +159,8 @@ public class Statistics {
         playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, stat.totalShipsDestroyed, stat.shipsDestructionStreak,
                 CurrentPlayedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
         Globals.getFileManager().saveUserData(playerStatistics);
+
+        AchievementManager.getInstance().checkAchievement(AchievementType.TRIALS, CurrentPlayedGameNumber);
     }
 
     /**
@@ -185,6 +182,8 @@ public class Statistics {
                     stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
             Globals.getFileManager().saveUserData(playerStatistics);
         }
+
+        AchievementManager.getInstance().checkAchievement(AchievementType.KILLSTREAKS, DestroyedShipNumber);
     }
 
     /**

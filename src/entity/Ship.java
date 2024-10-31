@@ -7,6 +7,7 @@ import Enemy.PiercingBullet;
 import engine.Cooldown;
 import engine.Core;
 import engine.DrawManager.SpriteType;
+import engine.Globals;
 import inventory_develop.Bomb;
 // Sound Operator
 // Import PlayerGrowth class
@@ -98,7 +99,7 @@ public class Ship extends Entity {
 
 			this.shootingCooldown.reset(); // Reset cooldown after shooting
 
-			soundManager.playES("My_Gun_Shot");
+			Globals.getSoundManager().playES("My_Gun_Shot");
 
 			// Use NumberOfBullet to generate bullets
 			Set<PiercingBullet> newBullets = numberOfBullet.addBullet(
@@ -138,7 +139,7 @@ public class Ship extends Entity {
 	 */
 	public final void destroy() {
 		this.destructionCooldown.reset();
-		soundManager.playES("ally_airship_damage");
+		Globals.getSoundManager().playES("ally_airship_damage");
 	}
 
 	/**

@@ -20,8 +20,6 @@ import java.util.logging.Logger;
 import CtrlS.EncryptionSupport;
 import engine.DrawManager.SpriteType;
 
-import clove.Statistics; //Team Clove
-
 /**
  * Manages files used in the application.
  * 

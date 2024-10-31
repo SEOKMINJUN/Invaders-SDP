@@ -1,6 +1,8 @@
 package inventory_develop;
 
 import engine.Core;
+import engine.Globals;
+
 import java.util.logging.Logger;
 
 
@@ -21,7 +23,7 @@ public class FeverTimeItem {
         this.isActive = true;
         this.startTime = System.currentTimeMillis();
         //Sound Operator
-        soundManager.playES("fever_time");
+        Globals.getSoundManager().playES("fever_time");
         logger.info("Fever Time activated!");
 
 

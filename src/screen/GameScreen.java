@@ -6,11 +6,11 @@ import java.util.*;
 
 import java.io.IOException;
 
-import clove.AchievementConditions;
-import clove.Statistics;
 import Enemy.*;
 import HUDTeam.DrawManagerImpl;
 import engine.*;
+import engine.Achievement.AchievementManager;
+import engine.Achievement.AchievementType;
 import entity.Bullet;
 import entity.BulletPool;
 import entity.EnemyShip;
@@ -21,8 +21,9 @@ import entity.Ship;
 // shield and heart recovery
 import inventory_develop.*;
 // Sound Operator
-import clove.ScoreManager;    // CLOVE
 import twoplayermode.TwoPlayerMode;
+
+import static engine.Globals.NUM_LEVELS;
 
 
 /**
@@ -138,7 +139,6 @@ public class GameScreen extends Screen {
 	private long endTime;    //clove
 
 	private Statistics statistics; //Team Clove
-	private AchievementConditions achievementConditions;
 	private int fastKill;
 
 	/** CtrlS: Count the number of coin collected in game */
@@ -197,7 +197,6 @@ public class GameScreen extends Screen {
 		this.playTime = gameState.getTime();
 		this.scoreManager = gameState.scoreManager; //Team Clove
 		this.statistics = new Statistics(); //Team Clove
-		this.achievementConditions = new AchievementConditions();
 		this.coinItemsCollected = gameState.getCoinItemsCollected(); // CtrlS
 	}
 
@@ -335,7 +334,7 @@ public class GameScreen extends Screen {
 				this.enemyShipSpecialCooldown.reset();
 				//Sound Operator
 				
-				soundManager.playES("UFO_come_up");
+				Globals.getSoundManager().playES("UFO_come_up");
 				this.logger.info("A special ship appears");
 			}
 			if (this.enemyShipSpecial != null
@@ -409,19 +408,14 @@ public class GameScreen extends Screen {
 
 		if (this.levelFinished && this.screenFinishedCooldown.checkFinished()) {
 			//this.logger.info("Final Playtime: " + playTime + " seconds");    //clove
-			achievementConditions.checkNoDeathAchievements(lives);
-			achievementConditions.score(score);
+			if(level == NUM_LEVELS){
+				AchievementManager.getInstance().checkAchievement(AchievementType.LIVES, lives);}
+			AchievementManager.getInstance().checkAchievement(AchievementType.SCORE, score);
             try { //Team Clove
 				statistics.comHighestLevel(level);
 				statistics.addBulletShot(bulletsShot);
 				statistics.addShipsDestroyed(shipsDestroyed);
-
-				achievementConditions.onKill();
-				achievementConditions.onStage();
-				achievementConditions.trials();
-				achievementConditions.killStreak();
-				achievementConditions.fastKill(fastKill);
-				achievementConditions.score(score);
+				AchievementManager.getInstance().checkAchievement(AchievementType.FASTKILL, fastKill);
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -628,7 +622,7 @@ public class GameScreen extends Screen {
 
 						// Sound Operator
 						if (this.lives == 0){
-							soundManager.playShipDieSounds();
+							Globals.getSoundManager().playShipDieSounds();
 						}
 					}
 				}
@@ -724,7 +718,7 @@ public class GameScreen extends Screen {
 						obstacle.destroy();  // Destroy obstacle
 						recyclable.add(bullet);  // Remove bullet
 
-						soundManager.playES("obstacle_explosion");
+						Globals.getSoundManager().playES("obstacle_explosion");
 					}
 				}
 			}

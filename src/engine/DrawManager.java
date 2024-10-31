@@ -419,16 +419,16 @@ public class DrawManager {
 		if (option3 == 0) {merchantState = merchant;}
 		try {
 			if (option3 == 1) {
-				merchantState = bulletCountString + MerchantTxt(Core.getUpgradeManager().getBulletCount(),1);
+				merchantState = bulletCountString + MerchantTxt(Globals.getUpgradeManager().getBulletCount(),1);
 			}
 			if (option3 == 2) {
-				merchantState = shipSpeedString + MerchantTxt(Core.getUpgradeManager().getSpeedCount(),2);
+				merchantState = shipSpeedString + MerchantTxt(Globals.getUpgradeManager().getSpeedCount(),2);
 			}
 			if (option3 == 3) {
-				merchantState = attackSpeedString + MerchantTxt(Core.getUpgradeManager().getAttackCount(),3);
+				merchantState = attackSpeedString + MerchantTxt(Globals.getUpgradeManager().getAttackCount(),3);
 			}
 			if (option3 == 4) {
-				merchantState = coinGainString + MerchantTxt(Core.getUpgradeManager().getCoinCount(),4);
+				merchantState = coinGainString + MerchantTxt(Globals.getUpgradeManager().getCoinCount(),4);
 			}
 			if (option == 4) {
 				merchantState = "<- " + merchantState + " ->";
@@ -959,13 +959,13 @@ public class DrawManager {
 
 	public String MerchantTxt(int count, int number){
 		if ((number == 1 && count > 3) ||
-				(count != 0 && Core.getUpgradeManager().LevelCalculation(count) > 9)){
+				(count != 0 && Globals.getUpgradeManager().LevelCalculation(count) > 9)){
 			return " max";
 		}
 		else {
-			return " +" + Core.getUpgradeManager().LevelCalculation
-					(count) + "   " + Core.getUpgradeManager().Price(number) + " "
-					+ Core.getUpgradeManager().whatMoney(count,number);
+			return " +" + Globals.getUpgradeManager().LevelCalculation
+					(count) + "   " + Globals.getUpgradeManager().Price(number) + " "
+					+ Globals.getUpgradeManager().whatMoney(count,number);
 		}
 	}
 }

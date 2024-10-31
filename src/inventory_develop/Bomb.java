@@ -2,6 +2,7 @@ package inventory_develop;
 
 import Enemy.ItemManager;
 //Sound_Operator
+import engine.Globals;
 import entity.EnemyShip;
 import entity.EnemyShipFormation;
 
@@ -48,7 +49,7 @@ public class Bomb{
                     count++;
 
                     int columnIndex = enemyShips.indexOf(column);
-                    soundManager.playES("enemy_explosion");
+                    Globals.getSoundManager().playES("enemy_explosion");
 
                     // Operate according to IndexRange
                     for (int dx = -IndexRange; dx <= IndexRange; dx++) {

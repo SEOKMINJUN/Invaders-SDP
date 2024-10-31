@@ -1,5 +1,7 @@
 package HUDTeam;
 
+import engine.Globals;
+
 public class DrawAchievementHud {
     static int timer = 100;
     static String achievementText = null;
@@ -21,6 +23,6 @@ public class DrawAchievementHud {
     public static void achieve(String Text){
         timer = 0;
         achievementText = Text;
-        soundManager.playES("achievement");
+        Globals.getSoundManager().playES("achievement");
     }
 }
