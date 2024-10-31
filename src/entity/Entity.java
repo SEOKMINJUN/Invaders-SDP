@@ -3,6 +3,7 @@ package entity;
 import java.awt.Color;
 
 import engine.DrawManager.SpriteType;
+import lombok.Setter;
 
 /**
  * Implements a generic game entity.
@@ -22,29 +23,26 @@ public abstract class Entity {
 	protected int height;
 	/** Color of the entity. */
 	private Color color;
-	/** Sprite type assigned to the entity. */
+
+	@Setter
 	protected SpriteType spriteType;
 
 	/**
-	 * Constructor, establishes the entity's generic properties.
-	 * 
-	 * @param positionX
-	 *            Initial position of the entity in the X axis.
-	 * @param positionY
-	 *            Initial position of the entity in the Y axis.
-	 * @param width
-	 *            Width of the entity.
-	 * @param height
-	 *            Height of the entity.
-	 * @param color
-	 *            Color of the entity.
-	 */
-
-	public void setSpriteType(SpriteType spriteType) {
-		this.spriteType = spriteType;
-	}
-
-	public Entity(final int positionX, final int positionY, final int width,
+     * -- SETTER --
+     *  Constructor, establishes the entity's generic properties.
+     *
+     * @param positionX
+     *            Initial position of the entity in the X axis.
+     * @param positionY
+     *            Initial position of the entity in the Y axis.
+     * @param width
+     *            Width of the entity.
+     * @param height
+     *            Height of the entity.
+     * @param color
+     *            Color of the entity.
+     */
+    public Entity(final int positionX, final int positionY, final int width,
 			final int height, final Color color) {
 		this.positionX = positionX;
 		this.positionY = positionY;
