@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Properties;
 import java.util.logging.Logger;
+
+import engine.Globals;
 import inventory_develop.ShipStatus;
 
 public final class UpgradeManager {
@@ -39,10 +41,8 @@ public final class UpgradeManager {
      * private constructor.
      */
     private UpgradeManager() {
-        fileManager = Core.getFileManager();
-        logger = Core.getLogger();
         try{
-            Core.getFileManager().saveUpgradeStatus(Core.getFileManager().loadUpgradeStatus());
+            Globals.getFileManager().saveUpgradeStatus(Globals.getFileManager().loadUpgradeStatus());
         } catch (IOException e){
             throw new RuntimeException(e);
         }

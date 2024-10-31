@@ -8,10 +8,7 @@ import java.util.List;
 import clove.Statistics; //Team Clove
 import HUDTeam.DrawAchievementHud;
 import HUDTeam.DrawManagerImpl;
-import engine.Cooldown;
-import engine.Core;
-import engine.GameState;
-import engine.Score;
+import engine.*;
 import Enemy.PlayerGrowth;
 import inventory_develop.NumberOfBullet;
 
@@ -108,7 +105,7 @@ public class ScoreScreen extends Screen {
 		this.isGameClear = this.livesRemaining > 0 && this.level > 7; // CtrlS
 
 		try {
-			this.highScores = Core.getFileManager().loadHighScores();
+			this.highScores = Globals.getFileManager().loadHighScores();
 			if (highScores.size() < MAX_HIGH_SCORE_NUM
 					|| highScores.get(highScores.size() - 1).getScore()
 					< this.score)
@@ -118,7 +115,7 @@ public class ScoreScreen extends Screen {
 			logger.warning("Couldn't load high scores!");
 		}
 		try {																			// Team Clove added Exception
-			this.recentScore = Core.getFileManager().loadRecentScores();
+			this.recentScore = Globals.getFileManager().loadRecentScores();
 		} catch (IOException e) {
 			logger.warning("Couldn't load recent scores!");
 		}
@@ -217,7 +214,7 @@ public class ScoreScreen extends Screen {
 			highScores.remove(highScores.size() - 1);
 
 		try {
-			Core.getFileManager().saveHighScores(highScores);
+			Globals.getFileManager().saveHighScores(highScores);
 		} catch (IOException e) {
 			logger.warning("Couldn't load high scores!");
 		}
@@ -231,7 +228,7 @@ public class ScoreScreen extends Screen {
 		if (recentScore.size() > MAX_RECENT_SCORE_NUM)
 			recentScore.remove(0);
 		try {
-			Core.getFileManager().saveRecentScores(recentScore);
+			Globals.getFileManager().saveRecentScores(recentScore);
 		} catch (IOException e) {
 			logger.warning("Couldn't load recent scores!");
 		}

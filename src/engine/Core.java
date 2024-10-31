@@ -37,14 +37,12 @@ public final class Core {
 	/** Difficulty settings list. */
 	private static List<GameSettings> gameSettings;
 	/** Application logger. */
-	private static final Logger LOGGER = Logger.getLogger(Core.class
-			.getSimpleName());
+	private static final Logger LOGGER = Logger.getLogger(Core.class.getSimpleName());
 	/** Logger handler for printing to disk. */
 	private static Handler fileHandler;
 	/** Logger handler for printing to console. */
 	private static ConsoleHandler consoleHandler;
-    private static AchievementManager achievementManager; // Team CLOVER
-
+    private AchievementManager achievementManager; // Team CLOVER
 	/**
 	 * Test implementation.
 	 * 
@@ -67,11 +65,11 @@ public final class Core {
 
 			// TEAM CLOVER : Added log to check if function is working
 			System.out.println("Initializing AchievementManager...");
-			achievementManager = new AchievementManager(DrawManager.getInstance());
+			Globals.getAchievementManager();
 			System.out.println("AchievementManager initialized!");
 
 			// CtrlS: Make instance of Upgrade Manager
-			Core.getUpgradeManager();
+			Globals.getUpgradeManager();
 
 			//Clove. Reset Player Statistics After the Game Starts
 			Statistics statistics = new Statistics();
@@ -124,8 +122,8 @@ public final class Core {
 				// Game & score.
 				LOGGER.info("Starting inGameBGM");
 				// Sound Operator
-				soundManager.playES("start_button_ES");
-				soundManager.playBGM("inGame_bgm");
+				Globals.getSoundManager().playES("start_button_ES");
+				Globals.getSoundManager().playBGM("inGame_bgm");
 
 				do {
 					// One extra live every few levels.
@@ -143,7 +141,7 @@ public final class Core {
 					LOGGER.info("Closing game screen.");
 
 
-					achievementManager.updateAchievements(currentScreen); // TEAM CLOVER : Achievement
+					Globals.getAchievementManager().updateAchievements(currentScreen); // TEAM CLOVER : Achievement
 
 					Statistics statistics = new Statistics(); //Clove
 
@@ -187,16 +185,15 @@ public final class Core {
 						LOGGER.info("Closing receiptScreen.");
 					}
 
-                    if (achievementManager != null) { // TEAM CLOVER : Added code
-                        achievementManager.updateAchievements(currentScreen);
-                    }
+                    Globals.getAchievementManager().updateAchievements(currentScreen);
+
 
 				} while (gameState.getLivesRemaining() > 0
 						&& gameState.getLevel() <= NUM_LEVELS);
 
 				LOGGER.info("Stop InGameBGM");
 				// Sound Operator
-				soundManager.stopAllBGM();
+				Globals.getSoundManager().stopAllBGM();
 
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 						+ " score screen at " + FPS + " fps, with a score of "
@@ -219,8 +216,8 @@ public final class Core {
 			case 4:
 				LOGGER.info("Starting inGameBGM");
 				// Sound Operator
-				soundManager.playES("start_button_ES");
-				soundManager.playBGM("inGame_bgm");
+				Globals.getSoundManager().playES("start_button_ES");
+				Globals.getSoundManager().playBGM("inGame_bgm");
 
 				do {
 					if (gameSettings == null || gameSettings.isEmpty()) {
@@ -253,8 +250,7 @@ public final class Core {
 					frame.setScreen(currentScreen);
 					LOGGER.info("Closing game screen.");
 
-
-					achievementManager.updateAchievements(currentScreen); // TEAM CLOVER : Achievement
+					Globals.getAchievementManager().updateAchievements(currentScreen); // TEAM CLOVER : Achievement
 
 					gameState = ((TwoPlayerMode) currentScreen).getGameState();
 
@@ -296,15 +292,13 @@ public final class Core {
 						LOGGER.info("Closing receiptScreen.");
 					}
 
-					if (achievementManager != null) { // TEAM CLOVER : Added code
-						achievementManager.updateAchievements(currentScreen);
-					}
+					Globals.getAchievementManager().updateAchievements(currentScreen);
 
 				} while ((gameState.getLivesRemaining() > 0 || gameState.getLivesTwoRemaining() > 0) && gameState.getLevel() <= NUM_LEVELS);
 
 				LOGGER.info("Stop InGameBGM");
 				// Sound Operator
-				soundManager.stopAllBGM();
+				Globals.getSoundManager().stopAllBGM();
 
 				LOGGER.info("Starting " + WIDTH + "x" + HEIGHT
 						+ " score screen at " + FPS + " fps, with a score of "
@@ -352,33 +346,6 @@ public final class Core {
 	}
 
 	/**
-	 * Controls access to the drawing manager.
-	 * 
-	 * @return Application draw manager.
-	 */
-	public static DrawManager getDrawManager() {
-		return DrawManager.getInstance();
-	}
-
-	/**
-	 * Controls access to the input manager.
-	 * 
-	 * @return Application input manager.
-	 */
-	public static InputManager getInputManager() {
-		return InputManager.getInstance();
-	}
-
-	/**
-	 * Controls access to the file manager.
-	 * 
-	 * @return Application file manager.
-	 */
-	public static FileManager getFileManager() {
-		return FileManager.getInstance();
-	}
-
-	/**
 	 * Controls creation of new cooldowns.
 	 * 
 	 * @param milliseconds
@@ -401,25 +368,5 @@ public final class Core {
 	public static Cooldown getVariableCooldown(final int milliseconds,
 			final int variance) {
 		return new Cooldown(milliseconds, variance);
-	}
-
-	/**
-	 * Controls access to the currency manager.
-	 *
-	 * @return Application currency manager.
-	 */
-	// Team-Ctrl-S(Currency)
-	public static CurrencyManager getCurrencyManager() {
-		return CurrencyManager.getInstance();
-	}
-
-	/**
-	 * Controls access to the currency manager.
-	 *
-	 * @return Application currency manager.
-	 */
-	// Team-Ctrl-S(Currency)
-	public static UpgradeManager getUpgradeManager() {
-		return UpgradeManager.getInstance();
 	}
 }

@@ -1,7 +1,6 @@
 package entity;
 
 import java.awt.Color;
-import java.io.File;
 import java.util.Set;
 
 import Enemy.PiercingBullet;
@@ -9,9 +8,7 @@ import engine.Cooldown;
 import engine.Core;
 import engine.DrawManager.SpriteType;
 import inventory_develop.Bomb;
-import Enemy.PiercingBulletPool;
 // Sound Operator
-import Sound_Operator.SoundManager;
 // Import PlayerGrowth class
 import Enemy.PlayerGrowth;
 // Import NumberOfBullet class
@@ -19,8 +16,6 @@ import inventory_develop.NumberOfBullet;
 // Import ShipStatus class
 import inventory_develop.ItemBarrierAndHeart;
 import inventory_develop.ShipStatus;
-
-import static engine.Globals.soundManager;
 
 /**
  * Implements a ship, to be controlled by the player.

@@ -4,14 +4,8 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.List;
 
-import HUDTeam.DrawAchievementHud;
-import HUDTeam.DrawManagerImpl;
 import engine.Core;
 import engine.Score;
-// Sound Operator
-import Sound_Operator.SoundManager;
-
-import static engine.Globals.soundManager;
 
 /**
  * Implements the high scores screen, it shows player records.
@@ -43,7 +37,7 @@ public class HighScoreScreen extends Screen {
 		soundManager.playBGM("highScore_bgm");
 
 		try {
-			this.highScores = Core.getFileManager().loadHighScores();
+			this.highScores = Globals.getFileManager().loadHighScores();
 		} catch (NumberFormatException | IOException e) {
 			logger.warning("Couldn't load high scores!");
 		}

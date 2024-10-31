@@ -1,18 +1,15 @@
 package inventory_develop;
 
 import Enemy.ItemManager;
-import Sound_Operator.SoundManager; //Sound_Operator
-import engine.DrawManager;
+//Sound_Operator
 import entity.EnemyShip;
 import entity.EnemyShipFormation;
-import entity.Entity;
+
 import java.awt.Color;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import clove.ScoreManager; //CLOVE
-import static engine.Globals.soundManager;
 
 public class Bomb{
     private int BombSpeed;

@@ -1,9 +1,5 @@
 package HUDTeam;
 
-// Sound Operator
-import Sound_Operator.SoundManager;
-import static engine.Globals.soundManager;
-
 public class DrawAchievementHud {
     static int timer = 100;
     static String achievementText = null;

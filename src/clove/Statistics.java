@@ -12,33 +12,39 @@ import java.util.logging.Logger;
 import CtrlS.CurrencyManager;
 import engine.Core;
 import engine.FileManager;
+import engine.Globals;
+import lombok.Getter;
 
 public class Statistics {
 
     private AchievementConditions achievementConditions;
     private ScheduledExecutorService scheduler;
     /** Number of Player's Highest Reached Level */
+    @Getter
     private int highestLevel;
     /** Number of Totally Fired Bullet */
+    @Getter
     private int totalBulletsShot;
     /** Number of Totally Destroyed Ships*/
+    @Getter
     private int totalShipsDestroyed;
     /** Number of ships destroyed consecutively */
+    @Getter
     private int shipsDestructionStreak;
     /** Number of games played */
+    @Getter
     private int playedGameNumber;
     /** Number of achievements cleared */
+    @Getter
     private int clearAchievementNumber;
     /** Total playtime */
+    @Getter
     private long totalPlaytime;
     /** Additional playtime */
     private long playTime;
 
-    private static FileManager fileManager;
-    private static Logger logger;
-
     /** Using for save statistics */
-    private List<Statistics> playerStatistics;
+    private List<Statistics> playerStatistics = new ArrayList<>();
     private Statistics stat;
 
     /**
@@ -74,9 +80,6 @@ public class Statistics {
      */
 
     public Statistics() {
-        fileManager = Core.getFileManager();
-        logger = Core.getLogger();
-        this.playerStatistics = new ArrayList<Statistics>();
     }
 
     /**
@@ -94,7 +97,7 @@ public class Statistics {
             playerStatistics.clear();
             playerStatistics.add(new Statistics(Level, stat.totalBulletsShot, stat.totalShipsDestroyed, stat.shipsDestructionStreak,
                     stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
-            fileManager.saveUserData(playerStatistics);
+            Globals.getFileManager().saveUserData(playerStatistics);
         }
     }
 
@@ -114,7 +117,7 @@ public class Statistics {
         playerStatistics.clear();
         playerStatistics.add(new Statistics(stat.highestLevel, CurrentBulletShot, stat.totalShipsDestroyed, stat.shipsDestructionStreak,
                 stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
-        fileManager.saveUserData(playerStatistics);
+        Globals.getFileManager().saveUserData(playerStatistics);
     }
 
     /**
@@ -139,7 +142,7 @@ public class Statistics {
         playerStatistics.clear();
         playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, CurrentShipsDestroyed, stat.shipsDestructionStreak,
                 stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
-        fileManager.saveUserData(playerStatistics);
+        Globals.getFileManager().saveUserData(playerStatistics);
     }
 
     /**
@@ -160,7 +163,7 @@ public class Statistics {
         playerStatistics.clear();
         playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, stat.totalShipsDestroyed, stat.shipsDestructionStreak,
                 CurrentPlayedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
-        fileManager.saveUserData(playerStatistics);
+        Globals.getFileManager().saveUserData(playerStatistics);
     }
 
     /**
@@ -180,7 +183,7 @@ public class Statistics {
             playerStatistics.clear();
             playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, stat.totalShipsDestroyed, DestroyedShipNumber,
                     stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
-            fileManager.saveUserData(playerStatistics);
+            Globals.getFileManager().saveUserData(playerStatistics);
         }
     }
 
@@ -201,7 +204,7 @@ public class Statistics {
             playerStatistics.clear();
             playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, stat.totalShipsDestroyed,stat.shipsDestructionStreak,
                     stat.playedGameNumber, ClearedAchievement, stat.totalPlaytime));
-            fileManager.saveUserData(playerStatistics);
+            Globals.getFileManager().saveUserData(playerStatistics);
         }
     }
 
@@ -222,7 +225,7 @@ public class Statistics {
         playerStatistics.clear();
         playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, stat.totalShipsDestroyed, stat.shipsDestructionStreak,
                 stat.playedGameNumber, stat.clearAchievementNumber, CurrentPlaytime));
-        fileManager.saveUserData(playerStatistics);
+        Globals.getFileManager().saveUserData(playerStatistics);
     }
 
     /**
@@ -232,20 +235,19 @@ public class Statistics {
      *              In case of loading problems.
      */
     public Statistics loadUserData(Statistics stat) throws IOException {
-        stat = fileManager.loadUserData();
+        stat = Globals.getFileManager().loadUserData();
         return stat;
     }
 
     public Statistics getStatisticsData() throws IOException {
-        Statistics StatisticsData = fileManager.loadUserData();
-        return StatisticsData;
+        return Globals.getFileManager().loadUserData();
     }
 
     public void resetStatistics() throws IOException {
         this.playerStatistics = new ArrayList<Statistics>();
         playerStatistics.add(new Statistics(0, 0, 0, 0,
                 0, 0, 0));
-        fileManager.saveUserData(playerStatistics);
+        Globals.getFileManager().saveUserData(playerStatistics);
     }
 
     public void startAddingShipsDestroyed() {
@@ -257,19 +259,4 @@ public class Statistics {
             }
         }, 0, 1, TimeUnit.SECONDS);
     }
-
-    public int getHighestLevel() { return highestLevel; }
-
-    public int getTotalBulletsShot() { return totalBulletsShot; }
-
-    public int getTotalShipsDestroyed() { return totalShipsDestroyed; }
-
-    public int getShipsDestructionStreak() { return shipsDestructionStreak; }
-
-    public int getPlayedGameNumber() { return playedGameNumber; }
-
-    public int getClearAchievementNumber() { return clearAchievementNumber; }
-
-    public long getTotalPlaytime() { return totalPlaytime; }
-
 }

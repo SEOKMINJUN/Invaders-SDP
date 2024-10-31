@@ -13,10 +13,23 @@ public class AchievementManager {
     /*
         Variables
      */
+    private static AchievementManager instance;
     private HashMap<Achievement, Boolean> achievementMap; // Object -> Achievement
     private ArrayList<AchievementChangedCallback> achievementChangedCallbacks;
 
     private AchievementConditions achievementConditions;
+
+    private AchievementManager(){// HashMap<Achievement, Boolean>으로 초기화
+        achievementMap = new HashMap<>();
+        achievementChangedCallbacks = new ArrayList<>();
+        achievementConditions = new AchievementConditions();
+    }
+
+    public static AchievementManager getInstance(){
+        if (instance == null)
+            instance = new AchievementManager();
+        return instance;
+    }
 
     public AchievementManager(DrawManager drawManager) {
         this.achievementConditions = new AchievementConditions(drawManager);
@@ -41,14 +54,6 @@ public class AchievementManager {
 
     public void removeAchievementChangedCallback(AchievementChangedCallback callback){
         achievementChangedCallbacks.remove(callback);
-    }
-
-    /*
-        Declare
-     */
-    public AchievementManager() { // HashMap<Achievement, Boolean>으로 초기화
-        achievementMap = new HashMap<>();
-        achievementChangedCallbacks = new ArrayList<>();
     }
 
     /*

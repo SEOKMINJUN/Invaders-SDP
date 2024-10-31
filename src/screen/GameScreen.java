@@ -6,11 +6,9 @@ import java.util.*;
 
 import java.io.IOException;
 
-import CtrlS.RoundState;
 import clove.AchievementConditions;
 import clove.Statistics;
 import Enemy.*;
-import HUDTeam.DrawAchievementHud;
 import HUDTeam.DrawManagerImpl;
 import engine.*;
 import entity.Bullet;
@@ -23,11 +21,8 @@ import entity.Ship;
 // shield and heart recovery
 import inventory_develop.*;
 // Sound Operator
-import Sound_Operator.SoundManager;
 import clove.ScoreManager;    // CLOVE
 import twoplayermode.TwoPlayerMode;
-
-import static engine.Globals.soundManager;
 
 
 /**

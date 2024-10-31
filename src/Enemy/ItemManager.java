@@ -8,9 +8,7 @@ import inventory_develop.FeverTimeItem;
 import screen.GameScreen;
 import engine.DrawManager;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -20,10 +18,6 @@ import inventory_develop.NumberOfBullet;
 import inventory_develop.SpeedItem;
 
 import CtrlS.CurrencyManager;
-
-// Sound Operator
-import Sound_Operator.SoundManager;
-import static engine.Globals.soundManager;
 
 public class ItemManager {
 

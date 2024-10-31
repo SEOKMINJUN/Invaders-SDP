@@ -128,8 +128,8 @@ public class DrawManager {
 	* - HUDTeam - LeeHyunWoo
 	*/
 	public DrawManager() {
-		fileManager = Core.getFileManager();
-		logger = Core.getLogger();
+		fileManager = Globals.getFileManager();
+		logger = Globals.getLogger();
 		logger.info("Started loading resources.");
 
 		try {
