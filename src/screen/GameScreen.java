@@ -521,7 +521,7 @@ public class GameScreen extends Screen {
 			playTime = (int) ((System.currentTimeMillis() - playStartTime) / 1000) + playTimePre;
 		}
 
-		super.drawPost();
+		super.draw();
 		drawManager.completeDrawing(this);
 	}
 
