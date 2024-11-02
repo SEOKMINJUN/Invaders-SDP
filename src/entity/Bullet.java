@@ -69,7 +69,8 @@ public class Bullet extends Entity {
 	/**
 	 * Updates the bullet's position.
 	 */
-	public final void update() {
+	@Override
+	public void update() {
 		this.positionY += this.speed;
 	}
 

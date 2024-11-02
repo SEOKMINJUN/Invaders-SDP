@@ -11,7 +11,7 @@ import lombok.Setter;
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
  * 
  */
-public abstract class Entity {
+public abstract class Entity extends EntityBase{
 
 	/** Position in the x-axis of the upper left corner of the entity. */
 	protected int positionX;
@@ -135,5 +135,26 @@ public abstract class Entity {
 		return this.height;
 	}
 
-	public final void draw() { }
+	/**
+	 * Checks if two entities are colliding.
+	 *
+	 * @param target
+	 *            Target entity, the ship.
+	 * @return Result of the collision test.
+	 */
+	public boolean checkCollision(final Entity target) {
+		// Calculate center point of the entities in both axis.
+		int centerAX = getPositionX() + getWidth() / 2;
+		int centerAY = getPositionY() + getHeight() / 2;
+		int centerBX = target.getPositionX() + target.getWidth() / 2;
+		int centerBY = target.getPositionY() + target.getHeight() / 2;
+		// Calculate maximum distance without collision.
+		int maxDistanceX = getWidth() / 2 + target.getWidth() / 2;
+		int maxDistanceY = getHeight() / 2 + target.getHeight() / 2;
+		// Calculates distance.
+		int distanceX = Math.abs(centerAX - centerBX);
+		int distanceY = Math.abs(centerAY - centerBY);
+
+		return distanceX < maxDistanceX && distanceY < maxDistanceY;
+	}
 }
