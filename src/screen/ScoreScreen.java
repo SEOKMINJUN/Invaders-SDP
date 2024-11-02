@@ -65,7 +65,6 @@ public class ScoreScreen extends Screen {
 
 	private boolean isGameClear; // CtrlS
 
-	private PlayerGrowth growth = new PlayerGrowth();
 	private NumberOfBullet numberOfBullet = new NumberOfBullet();
 
 
@@ -196,7 +195,6 @@ public class ScoreScreen extends Screen {
 				}
 			}
 			numberOfBullet.ResetPierceLevel();
-			growth.ResetBulletSpeed();
 		}
 	}
 

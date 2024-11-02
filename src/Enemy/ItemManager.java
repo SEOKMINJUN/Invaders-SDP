@@ -3,6 +3,7 @@ package Enemy;
 import engine.Core;
 import engine.Globals;
 import entity.EnemyShip;
+import entity.PlayerGrowth;
 import entity.Ship;
 import inventory_develop.Bomb;
 import inventory_develop.FeverTimeItem;
@@ -33,7 +34,6 @@ public class ItemManager {
     private NumberOfBullet numberOfBullet;
     private SpeedItem speedItem;
     private Ship ship;
-    private PlayerGrowth growth;
     private FeverTimeItem feverTimeItem;
 
     public ItemManager(int screenHeight, DrawManager drawManager, GameScreen gameScreen) {
@@ -42,7 +42,6 @@ public class ItemManager {
         this.drawManager = drawManager;
         this.gameScreen = gameScreen;
         this.ship = gameScreen.getShip();       // Team Inventory
-        this.growth = ship.getPlayerGrowth();
         this.Item2 = gameScreen.getItem();
         this.feverTimeItem = gameScreen.getFeverTimeItem();
         this.numberOfBullet = new NumberOfBullet();
