@@ -1,5 +1,7 @@
 package engine;
 
+import entity.ScoreManager;
+
 /**
  * Implements an object that stores the state of the game between levels.
  * 

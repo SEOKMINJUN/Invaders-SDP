@@ -3,6 +3,9 @@ package engine;
 import CtrlS.UpgradeManager;
 import engine.Achievement.AchievementManager;
 import CtrlS.CurrencyManager;
+import entity.ScoreManager;
+import lombok.Getter;
+import lombok.Setter;
 import screen.Screen;
 
 import java.util.logging.Logger;
@@ -43,13 +46,11 @@ public class Globals {
     public static final GameSettings SETTINGS_LEVEL_7 =
             new GameSettings(8, 7, 2, 500, 1);
 
-    //Managers
-    private AchievementManager achievementManager; // Team CLOVER
-    public CurrencyManager currencyManager;
-    public UpgradeManager upgradeManager;
-    public SoundManager soundManager;
-    public void Initialize(){
+    @Getter @Setter
+    public static ScoreManager scoreManager;
 
+    public void Initialize(){
+        scoreManager = null;
     }
 
     /**
