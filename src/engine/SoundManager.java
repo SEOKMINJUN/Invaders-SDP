@@ -1,6 +1,4 @@
-package Sound_Operator;
-
-import engine.Core;
+package engine;
 
 import javax.sound.sampled.*;
 import java.io.*;

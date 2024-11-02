@@ -21,7 +21,7 @@ import entity.EnemyShip;
 import entity.Obstacle;
 import inventory_develop.ItemBarrierAndHeart;
 import inventory_develop.FeverTimeItem;
-import Sound_Operator.SoundManager;
+import engine.SoundManager;
 
 
 public class TwoPlayerMode extends GameScreen {

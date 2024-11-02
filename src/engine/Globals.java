@@ -1,7 +1,6 @@
 package engine;
 
 import CtrlS.UpgradeManager;
-import Sound_Operator.SoundManager;
 import engine.Achievement.AchievementManager;
 import CtrlS.CurrencyManager;
 import screen.Screen;
