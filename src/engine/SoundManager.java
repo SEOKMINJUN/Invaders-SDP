@@ -185,24 +185,22 @@ public class SoundManager {
         }
     }
 
-    public int playBGM(String name){
+    public static void playBGM(String name){
+        SoundManager soundManager = Globals.getSoundManager();
         try {
-            stopAllBGM();
-            new Thread(() -> playPreloadedBGM(name)).start();
-            return 1;
+            soundManager.stopAllBGM();
+            new Thread(() -> soundManager.playPreloadedBGM(name)).start();
         }catch (Exception e){
             logger.info(String.valueOf(e));
-            return 0;
         }
     }
 
-    public int playES(String name){
+    public static void playES(String name){
+        SoundManager soundManager = Globals.getSoundManager();
         try {
-            new Thread(() -> playEffectSound(name)).start();
-            return 1;
+            new Thread(() -> soundManager.playEffectSound(name)).start();
         }catch (Exception e){
             logger.info(String.valueOf(e));
-            return 0;
         }
     }
 
