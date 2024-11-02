@@ -3,7 +3,6 @@ package Enemy;
 import engine.Core;
 import engine.Globals;
 import entity.EnemyShip;
-import entity.PlayerGrowth;
 import entity.Ship;
 import inventory_develop.Bomb;
 import inventory_develop.FeverTimeItem;
