@@ -1,4 +1,4 @@
-package Enemy;
+package entity;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,5 +18,9 @@ public final class ItemPool {
 
     public static void recycle(final Set<Item> item) {
         pool.addAll(item);
+    }
+
+    public static void recycle(final Item item) {
+        pool.add(item);
     }
 }

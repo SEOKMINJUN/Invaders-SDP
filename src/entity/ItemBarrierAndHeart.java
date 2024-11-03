@@ -1,8 +1,7 @@
-package inventory_develop;
+package entity;
 import engine.Core;
 import engine.DrawManager;
 import screen.GameScreen;
-import entity.Ship;
 
 import java.util.logging.Logger;
 

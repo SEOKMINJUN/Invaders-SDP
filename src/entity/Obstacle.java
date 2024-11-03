@@ -4,7 +4,10 @@ import java.awt.Color;
 
 import engine.Cooldown;
 import engine.Core;
+import engine.DrawManager;
 import engine.DrawManager.SpriteType;
+import engine.Globals;
+import screen.GameScreen;
 
 /**
 * Implements an obstacle, to be destroyed by the player.
@@ -26,6 +29,7 @@ public class Obstacle extends Entity {
     */
     public Obstacle(final int positionX, final int positionY) {
         super(positionX, positionY, 14 * 2, 7 * 2, new Color(161, 142, 108)); // Use different size/color than EnemyShip
+        setClassName("Obstacle");
         this.spriteType = SpriteType.Obstacle; // Ensure it's an obstacle shape sprite type
         this.isDestroyed = false;
         this.movementCooldown = Core.getCooldown(500); // Adjust the cooldown for obstacle movement
@@ -45,17 +49,58 @@ public class Obstacle extends Entity {
     /**
     * Updates the obstacle's movement or other attributes.
     */
-    public final void update(int level) {
-        if (!this.isDestroyed) {
+    @Override
+    public final void update() {
+        /*
+        Update speed and Check remove condition
+         */
+        if (!this.isDestroyed && Globals.getCurrentGameState() != null) {
             // Set speed based on the level
-            int speed = 2 + (level / 2);  // Adjust so it increases by 1 every two levels
+            // And obstacle only create in GameScreen. it can't be null
+            int speed = 2 + (Globals.getCurrentGameState().getLevel() / 2);  // Adjust so it increases by 1 every two levels
             this.positionY += speed; // Moves the obstacle down continuously
         } else {
             // If destroyed, check if the explosion animation should finish
             if (this.explosionCooldown != null && this.explosionCooldown.checkFinished()) {
-                this.spriteType = null; // Mark this obstacle to be removed
+                Globals.getLogger().info("kill obstacle : end explosion");
+                this.remove();
+                return;
             }
         }
+
+        if (getPositionY() > Globals.getCurrentScreen().getHeight() - 70 ||
+                getPositionY() < Globals.GAME_SCREEN_SEPARATION_LINE_HEIGHT) {
+            Globals.getLogger().info("kill obstacle : end position");
+            this.remove();
+            return;
+        }
+
+        Ship entity = null;
+        GameScreen screen = (GameScreen) Globals.getCurrentScreen();
+        while((entity = (Ship)screen.findEntityByClassname(entity, "Ship")) != null){
+            if(!isDestroyed() && checkCollision(entity)){
+                //Obstacles ignored when barrier activated_team inventory
+                int lives = screen.getLives();
+                if (!screen.getItem().isbarrierActive()) {
+                    lives -= 1;
+                    screen.setLives(lives);
+                    if (!entity.isDestroyed()) {
+                        entity.destroy();  // Optionally, destroy the ship or apply other effects.
+                    }
+                    this.destroy();  // Destroy obstacle
+                    Globals.getLogger().info("Ship hit an obstacle, " + lives + " lives remaining.");
+                } else {
+                    this.destroy();  // Destroy obstacle
+                    Globals.getLogger().info("Shield blocked the hit from an obstacle, " + lives + " lives remaining.");
+                }
+            }
+            break;
+        }
+    }
+
+    @Override
+    public final void draw(){
+        DrawManager.drawEntity(this, getPositionX(), getPositionY());
     }
     
     /**

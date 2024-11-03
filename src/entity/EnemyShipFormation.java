@@ -9,15 +9,11 @@ import java.util.List;
 import java.util.logging.Logger;
 import javax.swing.Timer;
 
-import Enemy.*;
 import engine.*;
-import inventory_develop.Bomb;
-import inventory_develop.SpeedItem;
 import screen.Screen;
 import engine.DrawManager.SpriteType;
 
 import static java.lang.Math.*;
-import Enemy.PiercingBulletPool;
 
 
 /**`
@@ -110,7 +106,6 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 	/** Number of not destroyed ships. */
 	private int shipCount;
 
-	private ScoreManager scoreManager; //add by team Enemy
 	private ItemManager itemManager; //add by team Enemy
 
 	/** Directions the formation can move. */
@@ -123,11 +118,6 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 		DOWN
 	};
 
-	//add by team Enemy
-	//Setting Up Score Manager and ItemManager
-	public void setScoreManager (ScoreManager scoreManager){
-		this.scoreManager = scoreManager;
-	}
 	public void setItemManager (ItemManager itemManager){//add by team Enemy
 		this.itemManager = itemManager;
 	}
@@ -235,17 +225,17 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 	/**
 	 * Draws every individual component of the formation.
 	 */
-	public final void draw() {
+	public void draw() {
 		for (List<EnemyShip> column : this.enemyShips)
 			for (EnemyShip enemyShip : column)
-				drawManager.drawEntity(enemyShip, enemyShip.getPositionX(),
-						enemyShip.getPositionY());
+				enemyShip.draw();
 	}
 
 	/**
 	 * Updates the position of the ships.
 	 */
-	public final void update() {
+
+	public void update() {
 		if(this.shootingCooldown == null) {
 			this.shootingCooldown = Core.getVariableCooldown(shootingInterval,
 					shootingVariance);
@@ -408,23 +398,21 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 
 	/**
 	 * Shoots a bullet downwards.
-	 * 
-	 * @param bullets
-	 *            Bullets set to add the bullet being shot.
+	 *
 	 */
-	public final void shoot(final Set<PiercingBullet> bullets) { // Edited by Enemy
+	public final void shoot() { // Edited by Enemy
 		// For now, only ships in the bottom row are able to shoot.
 		if (!shooters.isEmpty()) { // Added by team Enemy
 			int index = (int) (random() * this.shooters.size());
 			EnemyShip shooter = this.shooters.get(index);
 			if (this.shootingCooldown.checkFinished()) {
 				this.shootingCooldown.reset();
-				Globals.getSoundManager().playES("Enemy_Gun_Shot_1_ES");
-				bullets.add(PiercingBulletPool.getPiercingBullet( // Edited by Enemy
+				SoundManager.playES("Enemy_Gun_Shot_1_ES");
+				PiercingBulletPool.getPiercingBullet( // Edited by Enemy
 						shooter.getPositionX() + shooter.width / 2,
 						shooter.getPositionY(),
 						BULLET_SPEED,
-						0)); // Edited by Enemy
+						0); // Edited by Enemy
 			}
 		}
 	}
@@ -558,7 +546,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 								//Sound_Operator
 								if (destroyedShip.isDestroyed()) {
 
-									Globals.getSoundManager().playES("enemy_explosion");
+									SoundManager.playES("enemy_explosion");
 								}
 								point += destroyedShip.getPointValue();
 								int point_mob[]  =  explosive(destroyedShip.getX(), destroyedShip.getY(),
@@ -566,7 +554,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 								point += point_mob[0];
 								count += point_mob[1]+1;
 								if(isChainExploded){
-									this.scoreManager.addScore(point-destroyedShip.getPointValue());
+									ScoreManager.addScore(point-destroyedShip.getPointValue());
 								}
 								this.logger.info("Destroyed ExplosiveEnemyship in ("
 										+ this.enemyShips.indexOf(column) + "," + i + ")");

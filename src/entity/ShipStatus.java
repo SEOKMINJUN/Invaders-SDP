@@ -1,10 +1,8 @@
-package inventory_develop;
+package entity;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-
-import inventory_develop.NumberOfBullet;
 
 public class ShipStatus {
 

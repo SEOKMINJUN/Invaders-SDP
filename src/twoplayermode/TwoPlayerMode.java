@@ -3,25 +3,13 @@ package twoplayermode;
 
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.Set;
 import java.util.HashSet;
 
-import Enemy.*;
-import HUDTeam.DrawManagerImpl;
+import entity.*;
 import screen.GameScreen;
 import engine.GameState;
 import engine.GameSettings;
-import entity.Ship;
-import engine.DrawManager;
-import Enemy.PiercingBullet;
-import entity.Bullet;
-import entity.BulletPool;
-import entity.EnemyShip;
-import entity.Obstacle;
-import inventory_develop.ItemBarrierAndHeart;
-import inventory_develop.FeverTimeItem;
-import engine.SoundManager;
 
 
 public class TwoPlayerMode extends GameScreen {
@@ -110,17 +98,6 @@ public class TwoPlayerMode extends GameScreen {
                     player2 = null; // Player 2가 파괴된 경우
                 }
                 break;
-            }
-        }
-    }
-
-    // Player 2의 아이템과 충돌 처리
-    public static void handleItemCollisionsForPlayer2(Ship player2) {
-        if(player2==null) return;
-        for (Item item : itemManager.items) {
-            if (checkCollision(item, player2)) {
-                itemManager.OperateItem(item); // 아이템 효과 적용
-                System.out.println("Item collected by Player 2.");
             }
         }
     }

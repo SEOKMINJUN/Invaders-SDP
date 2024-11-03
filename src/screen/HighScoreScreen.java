@@ -4,9 +4,9 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.List;
 
-import engine.Core;
 import engine.Globals;
 import engine.Score;
+import engine.SoundManager;
 
 /**
  * Implements the high scores screen, it shows player records.
@@ -35,7 +35,7 @@ public class HighScoreScreen extends Screen {
 		this.returnCode = 1;
 
 		// Sound Operator
-		Globals.getSoundManager().playBGM("highScore_bgm");
+		SoundManager.playBGM("highScore_bgm");
 
 		try {
 			this.highScores = Globals.getFileManager().loadHighScores();

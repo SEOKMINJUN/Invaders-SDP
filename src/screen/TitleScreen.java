@@ -7,7 +7,8 @@ import engine.Cooldown;
 import engine.Core;
 // Sound Operator
 import engine.Globals;
-import inventory_develop.ShipStatus;
+import engine.SoundManager;
+import entity.ShipStatus;
 
 /**
  * Implements the title screen.
@@ -64,7 +65,7 @@ public class TitleScreen extends Screen {
         }
 
         // Sound Operator
-		Globals.getSoundManager().playBGM("mainMenu_bgm");
+		SoundManager.playBGM("mainMenu_bgm");
 
 		// inventory load upgrade price
 		shipStatus = new ShipStatus();
@@ -101,14 +102,14 @@ public class TitleScreen extends Screen {
 				previousMenuItem();
 				this.selectionCooldown.reset();
 				// Sound Operator
-				Globals.getSoundManager().playES("menuSelect_es");
+				SoundManager.playES("menuSelect_es");
 			}
 			if (inputManager.isKeyDown(KeyEvent.VK_DOWN)
 					|| inputManager.isKeyDown(KeyEvent.VK_S)) {
 				nextMenuItem();
 				this.selectionCooldown.reset();
 				// Sound Operator
-				Globals.getSoundManager().playES("menuSelect_es");
+				SoundManager.playES("menuSelect_es");
 			}
 
 			// produced by Starter
@@ -118,14 +119,14 @@ public class TitleScreen extends Screen {
 					moveMenuLeft();
 					this.selectionCooldown.reset();
 					// Sound Operator
-					Globals.getSoundManager().playES("menuSelect_es");
+					SoundManager.playES("menuSelect_es");
 				}
 				if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
 						|| inputManager.isKeyDown(KeyEvent.VK_D)) {
 					moveMenuRight();
 					this.selectionCooldown.reset();
 					// Sound Operator
-					Globals.getSoundManager().playES("menuSelect_es");
+					SoundManager.playES("menuSelect_es");
 				}
 			}
 
@@ -135,14 +136,14 @@ public class TitleScreen extends Screen {
 					nextMerchantState();
 					this.selectionCooldown.reset();
 					// Sound Operator
-					Globals.getSoundManager().playES("menuSelect_es");
+					SoundManager.playES("menuSelect_es");
 				}
 				if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
 						|| inputManager.isKeyDown(KeyEvent.VK_D)) {
 					previousMerchantState();
 					this.selectionCooldown.reset();
 					// Sound Operator
-					Globals.getSoundManager().playES("menuSelect_es");
+					SoundManager.playES("menuSelect_es");
 				}
 
 			}
@@ -369,7 +370,7 @@ public class TitleScreen extends Screen {
 		drawManager.drawCurrentCoin(this, coin);
 		drawManager.drawCurrentGem(this, gem);
 
-		super.draw();
+		super.drawPost();
 		drawManager.completeDrawing(this);
 	}
 

@@ -2,9 +2,7 @@ package entity;
 
 import java.awt.Color;
 
-import engine.DrawManager;
 import engine.DrawManager.SpriteType;
-import inventory_develop.Bomb;
 
 /**
  * Implements a bullet that moves vertically up or down.
@@ -31,6 +29,9 @@ public class Bullet extends Entity {
 	 */
 	protected int fire_id;
 	/**
+	 * Decide the bullet is enabled and show
+	 */
+	/**
 	 * Constructor, establishes the bullet's properties.
 	 * 
 	 * @param positionX
@@ -43,6 +44,7 @@ public class Bullet extends Entity {
 	 */
 	public Bullet(final int positionX, final int positionY, final int speed) {
 		super(positionX, positionY, 3 * 2, 5 * 2, Color.WHITE);
+		setClassName("Bullet");
 		// CtrlS
 		this.checkCount = true;
 		// CtrlS
@@ -64,14 +66,6 @@ public class Bullet extends Entity {
 		}
 		else
 			this.spriteType = SpriteType.EnemyBullet;
-	}
-
-	/**
-	 * Updates the bullet's position.
-	 */
-	@Override
-	public void update() {
-		this.positionY += this.speed;
 	}
 
 	/**

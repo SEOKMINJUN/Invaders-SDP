@@ -6,7 +6,6 @@ import java.util.List;
 
 import engine.Globals;
 import engine.Score;
-import engine.Core;
 
 /**
  *  Implements past user recorded score

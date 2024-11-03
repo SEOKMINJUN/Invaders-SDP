@@ -2,11 +2,8 @@ package entity;
 
 import java.awt.Color;
 
-import Enemy.HpEnemyShip;
-import engine.Cooldown;
-import engine.Core;
+import engine.*;
 import engine.DrawManager.SpriteType;
-import engine.Globals;
 
 /**
  * Implements a enemy ship, to be destroyed by the player.
@@ -99,6 +96,7 @@ public class EnemyShip extends Entity {
 	 */
 	public EnemyShip() {
 		super(-32, 60, 16 * 2, 7 * 2, Color.RED);
+		setClassName("EnemyShip");
 
 		this.hp = 1; // Add by team Enemy
 		this.spriteType = SpriteType.EnemyShipSpecial;
@@ -175,9 +173,9 @@ public class EnemyShip extends Entity {
 	public final void destroy() {
 		this.isDestroyed = true;
 		if(this.spriteType == SpriteType.EnemyShipSpecial){
-			Globals.getSoundManager().playES("special_enemy_die");
+			SoundManager.playES("special_enemy_die");
 		}else{
-			Globals.getSoundManager().playES("basic_enemy_die");
+			SoundManager.playES("basic_enemy_die");
 		}
 		this.spriteType = SpriteType.Explosion;
 
@@ -271,5 +269,10 @@ public class EnemyShip extends Entity {
 	}
 	public double getSpeedMultiplier() {
 		return this.speedMultiplier;
+	}
+	
+	@Override
+	public void draw() {
+		DrawManager.drawEntity(this, getPositionX(), getPositionY());
 	}
 }

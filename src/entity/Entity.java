@@ -2,7 +2,9 @@ package entity;
 
 import java.awt.Color;
 
+import engine.DrawManager;
 import engine.DrawManager.SpriteType;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -23,6 +25,9 @@ public abstract class Entity extends EntityBase{
 	protected int height;
 	/** Color of the entity. */
 	private Color color;
+	@Getter @Setter
+	/** Set entity enabled */
+	private boolean enabled = true;
 
 	@Setter
 	protected SpriteType spriteType;
@@ -44,6 +49,7 @@ public abstract class Entity extends EntityBase{
      */
     public Entity(final int positionX, final int positionY, final int width,
 			final int height, final Color color) {
+		setClassName("Entity");
 		this.positionX = positionX;
 		this.positionY = positionY;
 		this.width = width;
@@ -157,4 +163,12 @@ public abstract class Entity extends EntityBase{
 
 		return distanceX < maxDistanceX && distanceY < maxDistanceY;
 	}
+
+	@Override
+	public void draw() {
+		if(enabled) DrawManager.drawEntity(this, getPositionX(), getPositionY());
+	}
+
+	@Override
+	public void update() {}
 }

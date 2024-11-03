@@ -5,10 +5,11 @@ import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
-import HUDTeam.DrawAchievementHud;
+import engine.Achievement.AchievementHud;
 import HUDTeam.DrawManagerImpl;
 import engine.*;
 import entity.EntityBase;
+import lombok.Getter;
 
 /**
  * Implements a generic screen.
@@ -46,7 +47,8 @@ public class Screen {
 	/** Checks if the game is in 2 player mode **/
 	private boolean isTwoPlayerMode;
 
-	private ArrayList<EntityBase> entities;
+	@Getter
+    private ArrayList<EntityBase> entityList;
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -69,6 +71,8 @@ public class Screen {
 		this.inputDelay = Core.getCooldown(INPUT_DELAY);
 		this.inputDelay.reset();
 		this.returnCode = 0;
+		this.entityList = new ArrayList<>();
+		Globals.setCurrentScreen(this);
 	}
 
 	/**
@@ -108,17 +112,36 @@ public class Screen {
 	 * Updates the elements on screen and checks for events.
 	 */
 	protected void update() {
+		EntityBase entity = null;
+		while((entity = findEntityByClassname(entity, "*")) != null){
+			entity.update();
+		}
+	}
+
+
+	protected void draw() {
+		EntityBase entity = null;
+		while((entity = findEntityByLayer(entity, 0)) != null){
+			entity.draw();
+		}
+		while((entity = findEntityByLayer(entity, 1)) != null){
+			entity.draw();
+		}
+		while((entity = findEntityByLayer(entity, 2)) != null){
+			entity.draw();
+		}
 	}
 
 	/**
 	 * Update the elements on screen after update all child screen
 	 */
-    protected void draw() {
-		if(DrawAchievementHud.getTimer() < 100) {
-			DrawManagerImpl.drawAchievement(this, DrawAchievementHud.getAchievementText());
-			DrawAchievementHud.addTimer();
+    protected void drawPost() {
+		if(AchievementHud.getTimer() < 100) {
+			DrawManagerImpl.drawAchievement(this, AchievementHud.getAchievementText());
+			AchievementHud.addTimer();
 		}
 	}
+
 	/**
 	 * Getter for screen width.
 	 * 
@@ -143,7 +166,56 @@ public class Screen {
 		this.isTwoPlayerMode = isTwoPlayerMode;
 	}
 
-	public ArrayList<EntityBase> getEntities() {
-		return entities;
+	public final void addEntity(final EntityBase entity) {
+		entity.entIndex = entityList.size();
+		this.entityList.add(entity);
+	}
+
+	public final int getEntityIndex(final EntityBase entity) {
+		return this.entityList.indexOf(entity);
+	}
+
+	public final void removeEntity(final EntityBase entity) {
+		this.entityList.set(entity.entIndex, null);
+	}
+
+	public final void removeEntity(int entindex) {
+		this.entityList.set(entindex, null);
+	}
+
+	public final EntityBase findEntityByLayer(int entindex, int layer){
+		for(int i = entindex+1; i < entityList.size(); i++) {
+			EntityBase entity = entityList.get(i);
+			if(entity == null)
+				continue;
+			if(layer == entity.layer)
+				return entity;
+		}
+		return null;
+	}
+
+	public final EntityBase findEntityByLayer(EntityBase entity, int layer){
+		int entindex = -1;
+		if(entity != null)
+			entindex = entity.entIndex;
+		return findEntityByLayer(entindex, layer);
+	}
+
+	public final EntityBase findEntityByClassname(int entindex, String classname){
+		for(int i = entindex+1; i < entityList.size(); i++) {
+			EntityBase entity = entityList.get(i);
+			if(entity == null)
+				continue;
+			if(classname.equals("*") || entity.getClassName().equals(classname))
+				return entity;
+		}
+		return null;
+	}
+
+	public final EntityBase findEntityByClassname(EntityBase entity, String classname){
+		int entindex = -1;
+		if(entity != null)
+			entindex = entity.entIndex;
+		return findEntityByClassname(entindex, classname);
 	}
 }

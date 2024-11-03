@@ -1,11 +1,10 @@
 package engine;
 
-import CtrlS.UpgradeManager;
 import engine.Achievement.AchievementManager;
-import CtrlS.CurrencyManager;
 import entity.ScoreManager;
 import lombok.Getter;
 import lombok.Setter;
+import screen.GameScreen;
 import screen.Screen;
 
 import java.util.logging.Logger;
@@ -45,9 +44,27 @@ public class Globals {
     /** Difficulty settings for level 7. */
     public static final GameSettings SETTINGS_LEVEL_7 =
             new GameSettings(8, 7, 2, 500, 1);
+    /** Milliseconds until the screen accepts user input. */
+    public static final int GAME_SCREEN_INPUT_DELAY = 6000;
+    /** Bonus score for each life remaining at the end of the level. */
+    public static final int GAME_SCREEN_LIFE_SCORE = 100;
+    /** Minimum time between bonus ship's appearances. */
+    public static final int GAME_SCREEN_BONUS_SHIP_INTERVAL = 20000;
+    /** Maximum variance in the time between bonus ship's appearances. */
+    public static final int GAME_SCREEN_BONUS_SHIP_VARIANCE = 10000;
+    /** Time until bonus ship explosion disappears. */
+    public static final int GAME_SCREEN_BONUS_SHIP_EXPLOSION = 500;
+    /** Time from finishing the level to screen change. */
+    public static final int GAME_SCREEN_SCREEN_CHANGE_INTERVAL = 1500;
+    /** Height of the interface separation line. */
+    public static final int GAME_SCREEN_SEPARATION_LINE_HEIGHT = 40;
 
+    public static int currentMaxEntityIndex;
     @Getter @Setter
     public static ScoreManager scoreManager;
+
+    @Getter @Setter
+    private static Screen currentScreen;
 
     public void Initialize(){
         scoreManager = null;
@@ -88,5 +105,30 @@ public class Globals {
 
     public static SoundManager getSoundManager() { return SoundManager.getInstance(); }
 
-    public static Screen getCurrentScreen() { getLogger().warning("TODO: Make current screen"); return new Screen(0,0,0); }
+    public static GameState getCurrentGameState() {
+        Screen currentScreen = getCurrentScreen();
+        if(currentScreen instanceof GameScreen)
+            return ((GameScreen)currentScreen).getGameState();
+        else
+            return null;
+    }
+
+    public static void severe(String msg){
+        getLogger().severe(msg);
+    }
+    public static void warn(String msg){
+        getLogger().warning(msg);
+    }
+    public static void info(String msg){
+        getLogger().info(msg);
+    }
+    public static void fine(String msg){
+        getLogger().fine(msg);
+    }
+    public static void finer(String msg){
+        getLogger().finer(msg);
+    }
+    public static void finest(String msg){
+        getLogger().finest(msg);
+    }
 }

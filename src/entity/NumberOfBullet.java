@@ -1,8 +1,5 @@
-package inventory_develop;
+package entity;
 
-import Enemy.PiercingBullet;
-import Enemy.PiercingBulletPool;
-import engine.Core;
 import engine.Globals;
 
 import java.io.IOException;

@@ -14,10 +14,10 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import CtrlS.RoundState;
-import CtrlS.Gem;
+import entity.Gem;
 import entity.AddSign;
 import entity.Coin;
-import inventory_develop.Bomb;
+import entity.Bomb;
 import screen.Screen;
 import entity.Entity;
 
@@ -61,6 +61,7 @@ public class DrawManager {
 	private BufferedImage backgroundImage;
 
 	/** Sprite types mapped to their images. */
+	//TODO : ADD NULL IMAGE
 	private static Map<SpriteType, boolean[][]> spriteMap;
 
 	/** Sprite types. */

@@ -1,6 +1,6 @@
-package CtrlS;
+package screen;
 
-import screen.Screen;
+import CtrlS.RoundState;
 import engine.GameState;
 
 import java.awt.event.KeyEvent;
@@ -65,7 +65,7 @@ public class ReceiptScreen extends Screen {
 
 		drawManager.drawReceipt(this, this.roundState, this.gameState);
 
-		super.draw();
+		super.drawPost();
 		drawManager.completeDrawing(this);
 	}
 }

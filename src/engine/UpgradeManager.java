@@ -1,15 +1,11 @@
-package CtrlS;
-
-import engine.Core;
-import engine.FileManager;
+package engine;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import engine.Globals;
-import inventory_develop.ShipStatus;
+import entity.ShipStatus;
 
 public final class UpgradeManager {
 

@@ -7,7 +7,7 @@ import java.util.List;
 
 import engine.Statistics; //Team Clove
 import engine.*;
-import inventory_develop.NumberOfBullet;
+import entity.NumberOfBullet;
 
 /**
  * Implements the score screen.

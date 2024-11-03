@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import CtrlS.RoundState;
-import CtrlS.ReceiptScreen;
+import screen.ReceiptScreen;
 import level_design.Background;
 import engine.Achievement.AchievementManager;
 import screen.*;
@@ -54,12 +54,10 @@ public final class Core {
 
 			LOGGER.addHandler(fileHandler);
 			LOGGER.addHandler(consoleHandler);
-			LOGGER.setLevel(Level.ALL);
+			LOGGER.setLevel(Level.INFO);
 
-			// TEAM CLOVER : Added log to check if function is working
-			System.out.println("Initializing AchievementManager...");
 			Globals.getAchievementManager();
-			System.out.println("AchievementManager initialized!");
+			LOGGER.info("AchievementManager initialized!");
 
 			// CtrlS: Make instance of Upgrade Manager
 			Globals.getUpgradeManager();
@@ -112,11 +110,8 @@ public final class Core {
 				LOGGER.info("Closing title screen.");
 				break;
 			case 2:
-				// Game & score.
-				LOGGER.info("Starting inGameBGM");
-				// Sound Operator
-				Globals.getSoundManager().playES("start_button_ES");
-				Globals.getSoundManager().playBGM("inGame_bgm");
+				SoundManager.playES("start_button_ES");
+				SoundManager.playBGM("inGame_bgm");
 
 				do {
 					// One extra live every few levels.
@@ -205,8 +200,8 @@ public final class Core {
 			case 4:
 				LOGGER.info("Starting inGameBGM");
 				// Sound Operator
-				Globals.getSoundManager().playES("start_button_ES");
-				Globals.getSoundManager().playBGM("inGame_bgm");
+				SoundManager.playES("start_button_ES");
+				SoundManager.playBGM("inGame_bgm");
 
 				do {
 					if (gameSettings == null || gameSettings.isEmpty()) {

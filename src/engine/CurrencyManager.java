@@ -1,9 +1,4 @@
-package CtrlS;
-
-import engine.Core;
-import engine.FileManager;
-import engine.GameState;
-import engine.Globals;
+package engine;
 
 import java.io.IOException;
 import java.util.logging.Logger;

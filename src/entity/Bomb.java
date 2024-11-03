@@ -1,12 +1,9 @@
-package inventory_develop;
+package entity;
 
-import Enemy.ItemManager;
 //Sound_Operator
-import engine.Globals;
-import entity.EnemyShip;
-import entity.EnemyShipFormation;
+import engine.SoundManager;
 
-import java.awt.Color;
+        import java.awt.Color;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,7 +46,7 @@ public class Bomb{
                     count++;
 
                     int columnIndex = enemyShips.indexOf(column);
-                    Globals.getSoundManager().playES("enemy_explosion");
+                    SoundManager.playES("enemy_explosion");
 
                     // Operate according to IndexRange
                     for (int dx = -IndexRange; dx <= IndexRange; dx++) {

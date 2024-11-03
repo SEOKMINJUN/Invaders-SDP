@@ -17,7 +17,7 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.logging.Logger;
-import CtrlS.EncryptionSupport;
+
 import engine.DrawManager.SpriteType;
 
 /**

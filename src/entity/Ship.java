@@ -4,17 +4,11 @@ import java.awt.Color;
 import java.io.IOException;
 import java.util.Set;
 
-import Enemy.PiercingBullet;
-import engine.Cooldown;
-import engine.Core;
+import engine.*;
 import engine.DrawManager.SpriteType;
-import engine.Globals;
-import inventory_develop.Bomb;
 // Import NumberOfBullet class
-import inventory_develop.NumberOfBullet;
 // Import ShipStatus class
-import inventory_develop.ItemBarrierAndHeart;
-import inventory_develop.ShipStatus;
+import lombok.Getter;
 
 class PlayerGrowth {
 
@@ -99,6 +93,7 @@ class PlayerGrowth {
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
  *
  */
+@Getter
 public class Ship extends Entity {
 	/** Minimum time between shots. */
 	private Cooldown shootingCooldown;
@@ -108,10 +103,10 @@ public class Ship extends Entity {
 	private PlayerGrowth growth;
 	/** ShipStaus instance*/
 	private ShipStatus shipStatus;
-	/** Item */
-	private ItemBarrierAndHeart item;
 	/** NumberOfBullet instance*/
 	private NumberOfBullet numberOfBullet;
+
+	//TODO : Move health to ship from GameScreen, and Add immunity time
 
 	/**
 	 * Constructor, establishes the ship's properties.
@@ -124,7 +119,7 @@ public class Ship extends Entity {
 	//Edit by Enemy
 	public Ship(final int positionX, final int positionY, final Color color) {
 		super(positionX, positionY - 50, 13 * 2, 8 * 2, color); // add by team HUD
-
+		setClassName("Ship");
 		this.spriteType = SpriteType.Ship;
 
 		// Create PlayerGrowth object and set initial stats
@@ -168,13 +163,13 @@ public class Ship extends Entity {
 	 * You can set Number of enemies the bullet can pierce at here.
 	 */
 	//Edit by Enemy and Inventory
-	public final boolean shoot(final Set<PiercingBullet> bullets) {
+	public final boolean shoot() {
 
 		if (this.shootingCooldown.checkFinished()) {
 
 			this.shootingCooldown.reset(); // Reset cooldown after shooting
 
-			Globals.getSoundManager().playES("My_Gun_Shot");
+			SoundManager.playES("My_Gun_Shot");
 
 			// Use NumberOfBullet to generate bullets
 			Set<PiercingBullet> newBullets = numberOfBullet.addBullet(
@@ -186,10 +181,6 @@ public class Ship extends Entity {
 
 			// now can't shoot bomb
 			Bomb.setCanShoot(false);
-
-			// Add new bullets to the set
-			bullets.addAll(newBullets);
-
 			return true;
 		}
 		return false;
@@ -202,6 +193,7 @@ public class Ship extends Entity {
 	/**
 	 * Updates status of the ship.
 	 */
+	@Override
 	public final void update() {
 		if (!this.destructionCooldown.checkFinished())
 			this.spriteType = SpriteType.ShipDestroyed;
@@ -209,12 +201,17 @@ public class Ship extends Entity {
 			this.spriteType = SpriteType.Ship;
 	}
 
+	@Override
+	public final void draw(){
+		DrawManager.drawEntity(this, getPositionX(), getPositionY());
+	}
+
 	/**
 	 * Switches the ship to its destroyed state.
 	 */
 	public final void destroy() {
 		this.destructionCooldown.reset();
-		Globals.getSoundManager().playES("ally_airship_damage");
+		SoundManager.playES("ally_airship_damage");
 	}
 
 	/**

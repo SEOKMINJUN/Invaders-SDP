@@ -1,6 +1,6 @@
-package Enemy;
+package entity;
 
-import entity.Bullet;
+import engine.Globals;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -47,7 +47,9 @@ public final class PiercingBulletPool {
         } else {
             bullet = new PiercingBullet(positionX, positionY, speed, piercingCount);
             bullet.setPositionX(positionX - bullet.getWidth() / 2);
+            Globals.getCurrentScreen().addEntity(bullet);
         }
+        bullet.setEnabled(true);
         return bullet;
     }
     /**
@@ -58,5 +60,8 @@ public final class PiercingBulletPool {
      */
     public static void recycle(final Set<PiercingBullet> bullets) {
         pool.addAll(bullets);
+    }
+    public static void recycle(final PiercingBullet bullet) {
+        pool.add(bullet);
     }
 }

@@ -1,10 +1,7 @@
 package entity;
 
 import engine.Globals;
-import inventory_develop.Bomb;
 import lombok.Getter;
-
-import java.awt.*;
 
 public class ScoreManager extends EntityBase {
 
@@ -16,25 +13,35 @@ public class ScoreManager extends EntityBase {
 
     // Constructor - initializes level
     public ScoreManager(int level, int score) {
+        super();
+        setClassName("ScoreManager");
         this.level = level;
         this.accumulatedScore = score;
         Globals.setScoreManager(this);
     }
 
-    public void setScore(int score){
-        this.accumulatedScore = score;
+    public static void setScore(int score){
+        ScoreManager scoreManager = Globals.getScoreManager();
+        if(scoreManager == null){
+            return;
+        }
+        scoreManager.accumulatedScore = score;
     }
 
     // Adds score based on enemy score and level
-    public void addScore(int enemyScore) {
-        int scoreToAdd = enemyScore * this.level;
+    public static void addScore(int enemyScore) {
+        ScoreManager scoreManager = Globals.getScoreManager();
+        if(scoreManager == null){
+            return;
+        }
+        int scoreToAdd = enemyScore * scoreManager.level;
         if (Bomb.isBombExploded()){
-            scoreToAdd += (250 + (Bomb.getTotalPoint() * this.level));
+            scoreToAdd += (250 + (Bomb.getTotalPoint() * scoreManager.level));
             Bomb.resetBombExploded();
         }
-        this.levelScore += scoreToAdd;
-        this.accumulatedScore += scoreToAdd;
-        //System.out.println("Enemy destroyed. Score added: " + scoreToAdd + ", Level Score: " + this.levelScore);
+        scoreManager.levelScore += scoreToAdd;
+        scoreManager.accumulatedScore += scoreToAdd;
+        //System.out.println("Enemy destroyed. Score added: " + scoreToAdd + ", Level Score: " + scoreManager.levelScore);
     }
 
 }
