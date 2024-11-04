@@ -4,7 +4,6 @@ import engine.Achievement.AchievementManager;
 import entity.ScoreManager;
 import lombok.Getter;
 import lombok.Setter;
-import screen.GameScreen;
 import screen.Screen;
 
 import java.util.logging.Logger;
@@ -104,14 +103,6 @@ public class Globals {
     public static AchievementManager getAchievementManager() { return AchievementManager.getInstance(); }
 
     public static SoundManager getSoundManager() { return SoundManager.getInstance(); }
-
-    public static GameState getCurrentGameState() {
-        Screen currentScreen = getCurrentScreen();
-        if(currentScreen instanceof GameScreen)
-            return ((GameScreen)currentScreen).getGameState();
-        else
-            return null;
-    }
 
     public static void severe(String msg){
         getLogger().severe(msg);

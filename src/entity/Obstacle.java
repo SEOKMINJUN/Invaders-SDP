@@ -54,10 +54,10 @@ public class Obstacle extends Entity {
         /*
         Update speed and Check remove condition
          */
-        if (!this.isDestroyed && Globals.getCurrentGameState() != null) {
+        if (!this.isDestroyed) {
             // Set speed based on the level
             // And obstacle only create in GameScreen. it can't be null
-            int speed = 2 + (Globals.getCurrentGameState().getLevel() / 2);  // Adjust so it increases by 1 every two levels
+            int speed = 2 + (((GameScreen)Globals.getCurrentScreen()).getLevel() / 2);  // Adjust so it increases by 1 every two levels
             this.positionY += speed; // Moves the obstacle down continuously
         } else {
             // If destroyed, check if the explosion animation should finish

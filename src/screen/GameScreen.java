@@ -29,6 +29,7 @@ public class GameScreen extends Screen {
 
 	/** Current game difficulty settings. */
 	private GameSettings gameSettings;
+	@Getter
 	/** Current difficulty level number. */
 	private int level;
 	@Getter
