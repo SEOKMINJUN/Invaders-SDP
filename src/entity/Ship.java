@@ -217,8 +217,8 @@ public class Ship extends Entity {
 		else
 			this.spriteType = SpriteType.Ship;
 
-		if(isPlayDestroyAnimation()){
-			// Do not draw when
+		if(!isPlayDestroyAnimation() && isDestroyed()){
+			// Do not draw when ship destroyed
 			this.setEnabled(false);
 		}
 
