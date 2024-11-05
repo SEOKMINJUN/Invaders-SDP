@@ -110,9 +110,10 @@ public class PiercingBullet extends Bullet {
             for (EnemyShip enemyShip : enemyShipFormation) {
                 if (!enemyShip.isDestroyed()
                         && checkCollision(enemyShip)) {
+                    ScoreManager.addScore(enemyShip.getPointValue());
                     int[] CntAndPnt = enemyShipFormation._destroy(this, enemyShip, false);
                     screen.shipsDestroyed += CntAndPnt[0];
-                    int feverScore = CntAndPnt[0];
+                    int feverScore = 0;
 
                     if(enemyShip.getHp() <= 0) {
                         //inventory_f fever time is activated, the score is doubled.
@@ -161,7 +162,10 @@ public class PiercingBullet extends Bullet {
                     && checkCollision(screen.enemyShipSpecial)) {
                 int feverSpecialScore = screen.enemyShipSpecial.getPointValue();
                 // inventory - Score bonus when acquiring fever items
-                if (screen.getFeverTimeItem().isActive()) { feverSpecialScore *= 10; } //TEAM CLOVE //Team inventory
+                if (screen.getFeverTimeItem().isActive()) {
+                    feverSpecialScore *= 10;
+                    ScoreManager.addScore(feverSpecialScore);
+                } //TEAM CLOVE //Team inventory
 
                 // CtrlS - If collision occur then check the bullet can process
                 if (!screen.processedFireBullet.contains(this.getFire_id())) {
