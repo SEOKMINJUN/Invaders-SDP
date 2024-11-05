@@ -4,8 +4,6 @@ package twoplayermode;
 
 import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.util.Set;
-import java.util.HashSet;
 
 import HUDTeam.DrawManagerImpl;
 import engine.Globals;
@@ -50,6 +48,7 @@ public class TwoPlayerMode extends GameScreen {
         ship2.setCanMove(gameProgress);
 
         super.update();
+        this.getItem().updateBarrierAndShip(ship2);
         return true;
     }
 

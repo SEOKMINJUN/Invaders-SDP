@@ -89,13 +89,13 @@ public class PiercingBullet extends Bullet {
                     remove();
                     if (!ship.isDestroyed() && !screen.getItem().isbarrierActive()) {	// team Inventory
                         ship.destroy();
-                        int lives = screen.getLives()-1;
-                        screen.setLives(lives);
-                        Globals.getLogger().info("Hit on player ship, " + lives
+                        int health = ship.getHealth()-1;
+                        ship.setHealth(health);
+                        Globals.getLogger().info("Hit on player ship, " + health
                                 + " lives remaining.");
 
                         // Sound Operator
-                        if (lives == 0){
+                        if (health == 0){
                             SoundManager.playShipDieSounds();
                         }
                     }
@@ -148,9 +148,6 @@ public class PiercingBullet extends Bullet {
                 // Added by team Enemy.
                 // Enemy killed by Explosive enemy gives points too
                 if (enemyShip.isChainExploded()) {
-                    if (enemyShip.getColor() == Color.MAGENTA) {
-                        screen.itemManager.dropItem(enemyShip, 1, 1);
-                    }
                     screen.score += enemyShip.getPointValue();
                     screen.shipsDestroyed++;
                     enemyShip.setChainExploded(false); // resets enemy's chain explosion state.
@@ -186,9 +183,6 @@ public class PiercingBullet extends Bullet {
                     this.setCheckCount(true);
                     remove();
                 }
-
-                //// Drop item to 100%
-                screen.itemManager.dropItem(screen.enemyShipSpecial,1,2);
             }
 
             Obstacle obstacle = null;

@@ -8,16 +8,11 @@ import java.io.IOException;
 
 import HUDTeam.DrawManagerImpl;
 import engine.*;
-import engine.Achievement.AchievementManager;
-import engine.Achievement.AchievementType;
+import engine.Achievement.*;
 import entity.*;
-// shield and heart recovery
-// Sound Operator
 import lombok.Getter;
-import twoplayermode.TwoPlayerMode;
 
-import static engine.Globals.NUM_LEVELS;
-import static engine.Globals.getLogger;
+import engine.Globals;
 
 
 /**
@@ -30,14 +25,16 @@ public class GameScreen extends Screen {
 
 	/** Current game difficulty settings. */
 	private GameSettings gameSettings;
-	@Getter
 	/** Current difficulty level number. */
-	private int level;
 	@Getter
+	private int level;
 	/** Formation of enemy ships. */
+	@Getter
 	private EnemyShipFormation enemyShipFormation;
-	/** Player's ship1. */
-	private Ship ship1;
+    // Team Inventory(Item)
+    /** Player's ship1. */
+	@Getter
+    private Ship ship1;
 	/** Bonus enemy ship1 that appears sometimes. */
     public EnemyShip enemyShipSpecial;
 	/** Minimum time between bonus ship1 appearances. */
@@ -46,13 +43,16 @@ public class GameScreen extends Screen {
     public Cooldown enemyShipSpecialExplosionCooldown;
 	/** Time from finishing the level to screen change. */
 	private Cooldown screenFinishedCooldown;
-	/** Add an itemManager Instance */
-	public static ItemManager itemManager; //by Enemy team
-	/** Shield item */
-	private ItemBarrierAndHeart item;	// team Inventory
-	private FeverTimeItem feverTimeItem;
+    // Team Inventory(Item)
+    /** Shield item */
+	@Getter
+    private ItemBarrierAndHeart item;	// team Inventory
+    // Team Inventory(Item)
+    @Getter
+    private FeverTimeItem feverTimeItem;
 	/** Speed item */
-	private SpeedItem speedItem;
+	@Getter
+    private SpeedItem speedItem;
 	/** Current score. */
 	public int score;
 	/** Player lives left. */
@@ -72,12 +72,10 @@ public class GameScreen extends Screen {
 	private boolean bonusLife;
 	/**
 	* Added by the Level Design team
-	*
 	* Counts the number of waves destroyed
 	* **/
 	private int waveCounter;
 
-	/** ### TEAM INTERNATIONAL ### */
 	/** Booleans for horizontal background movement */
     public boolean backgroundMoveLeft = false;
 	public boolean backgroundMoveRight = false;
@@ -86,8 +84,6 @@ public class GameScreen extends Screen {
 
 	// --- OBSTACLES
 	private Cooldown obstacleSpawnCooldown; //control obstacle spawn speed
-	/** Shield item */
-
 
 	// Soomin Lee / TeamHUD
 	/** Moment the user starts to play */
@@ -175,6 +171,14 @@ public class GameScreen extends Screen {
 		this.addEntity(ship1);
 	}
 
+	public static void dropItem(EnemyShip enemyShip, double probability, int enemyship_type) {
+		if(Math.random() < probability) {
+			Item item = new Item(enemyShip.getPositionX(), enemyShip.getPositionY(), 3, enemyship_type);
+			item.setPositionX(enemyShip.getPositionX() - item.getWidth() / 2);
+			Globals.getCurrentScreen().addEntity(item);
+		}
+	}
+
 	/**
 	 * Initializes basic screen properties, and adds necessary elements.
 	 */
@@ -185,17 +189,6 @@ public class GameScreen extends Screen {
 
 		enemyShipFormation = new EnemyShipFormation(this.gameSettings);
 		enemyShipFormation.attach(this);
-
-		/** initialize itemManager */
-		this.itemManager = new ItemManager(this.height, drawManager, this); //by Enemy team
-
-		enemyShipFormation.setItemManager(this.itemManager);//add by team Enemy
-
-		Set<EnemyShip> enemyShipSet = new HashSet<>();
-		for (EnemyShip enemyShip : this.enemyShipFormation) {
-			enemyShipSet.add(enemyShip);
-		}
-		this.itemManager.setEnemyShips(enemyShipSet);
 
 		// Appears each 10-30 seconds.
 		this.enemyShipSpecialCooldown = Core.getVariableCooldown(
@@ -240,7 +233,7 @@ public class GameScreen extends Screen {
 		boolean gameProgress = inputDelay.checkFinished() && !isLevelFinished();
 		ship1.setCanMove(gameProgress);
 
-		boolean needDraw = super.update();
+		super.update();
 
 		if (gameProgress) {
 			// --- OBSTACLES
@@ -283,9 +276,6 @@ public class GameScreen extends Screen {
 			this.enemyShipFormation.shoot();
 		}
 
-
-		needDraw = true;
-
 		/**
 		* Added by the Level Design team and edit by team Enemy
 		* Changed the conditions for the game to end  by team Enemy
@@ -315,7 +305,7 @@ public class GameScreen extends Screen {
 
 		if (this.levelFinished && this.screenFinishedCooldown.checkFinished()) {
 			//this.logger.info("Final Playtime: " + playTime + " seconds");    //clove
-			if(level == NUM_LEVELS){
+			if(level == Globals.NUM_LEVELS){
 				AchievementManager.getInstance().checkAchievement(AchievementType.LIVES, ship1.getHealth());
 			}
 			AchievementManager.getInstance().checkAchievement(AchievementType.SCORE, score);
@@ -331,7 +321,7 @@ public class GameScreen extends Screen {
 
             this.isRunning = false;
 		}
-		return needDraw;
+		return true;
 	}
 
 	/**
@@ -432,10 +422,6 @@ public class GameScreen extends Screen {
 		return distanceX < maxDistanceX && distanceY < maxDistanceY;
 	}
 
-	public int getBulletsShot(){    //clove
-		return this.bulletsShot;    //clove
-	}                               //clove
-
 	/**
 	 * Add playtime parameter - Soomin Lee / TeamHUD
 	 * Returns a GameState object representing the status of the game.
@@ -446,24 +432,8 @@ public class GameScreen extends Screen {
 		return new GameState(this.level, this.scoreManager.getAccumulatedScore(), ship1.getHealth(), 0,
 				this.bulletsShot, this.shipsDestroyed, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
 	}
-	public int getLives() {
-		return this.ship1.getHealth();
-	}
 
-	public void setLives(int lives) { this.ship1.setHealth(lives); }
-
-	public Ship getShip1() {
-		return ship1;
-	}	// Team Inventory(Item)
-
-	public ItemBarrierAndHeart getItem() {
-		return item;
-	}	// Team Inventory(Item)
-
-	public FeverTimeItem getFeverTimeItem() {
-		return feverTimeItem;
-	} // Team Inventory(Item)
-	/**
+    /**
 	 * Check remaining enemies
 	 *
 	 * @return remaining enemies count.
@@ -478,9 +448,4 @@ public class GameScreen extends Screen {
 		}
 		return remainingEnemies;
 	} // by HUD team SeungYun
-
-
-	public SpeedItem getSpeedItem() {
-		return this.speedItem;
-	}
 }
