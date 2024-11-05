@@ -76,33 +76,6 @@ public class GameState {
 		this.coinItemsCollected = coinItemsCollected; // Ctrl-S
 	}
 
-	// TEAM CLOVER : Added two static below
-	public int shipsDestroyed() {
-		return shipsDestroyed;
-	}
-
-	/**
-	 * Team Clove Create Constructor for using in "engine.Score"
-	 *
-	 * Constructor for Save file
-	 *
-	 * @param bulletsShot
-	 *            Bullets shot until now.
-	 * @param shipsDestroyed
-	 *            Ships destroyed until now.
-	 * @param level
-	 *            Current game level.
-	 */
-	public GameState(int bulletsShot, int shipsDestroyed, int level) { //Team Clove
-		this.bulletsShot = bulletsShot;
-		this.shipsDestroyed = shipsDestroyed;
-		this.level = level;
-	}
-
-	public GameState(int livesRemaining) { // TEAM CLOVER
-		this.livesRemaining = livesRemaining;
-	}
-
 	/**
 	 * @return the level
 	 */
