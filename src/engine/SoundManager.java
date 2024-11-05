@@ -1,12 +1,11 @@
-package Sound_Operator;
-
-import engine.Core;
+package engine;
 
 import javax.sound.sampled.*;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SoundManager {
@@ -112,7 +111,7 @@ public class SoundManager {
 
 //                해쉬멥에 추가
                 BGMs.put(name, clip); // 미리 로드하여 맵에 저장
-                logger.info(soundFile.getName()+" load complete");
+                logger.fine(soundFile.getName()+" load complete");
             }
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             logger.info(String.valueOf(e));
@@ -136,7 +135,7 @@ public class SoundManager {
             if (!EffectSounds.containsKey(name)) {
                 String[] tmp = {filePath, String.valueOf(volume)};
                 EffectSounds.put(name, tmp);
-                logger.info(name+ "is set");
+                logger.fine(name+ "is set");
             }
         } catch (Exception e) {
             logger.info(String.valueOf(e));
@@ -148,7 +147,7 @@ public class SoundManager {
             if (EffectSounds.containsKey(name)) {
                 String[] tmp = EffectSounds.get(name);
                 File soundFile = new File(tmp[0]);
-                logger.fine(soundFile.getName() + " is loading");
+                logger.finest(soundFile.getName() + " is loading");
                 AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
                 AudioFormat baseFormat = audioStream.getFormat();
                 AudioFormat targetFormat = new AudioFormat(
@@ -176,10 +175,10 @@ public class SoundManager {
                             }
                         }
                 );
-                logger.info(soundFile.getName() + " load complete");
+                logger.finest(soundFile.getName() + " load complete");
                 return 1;
             }
-            logger.info("there is no ES : " + name);
+            logger.warning("Failed to find Sound : " + name);
             return 0;
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             logger.info(String.valueOf(e));
@@ -187,24 +186,22 @@ public class SoundManager {
         }
     }
 
-    public int playBGM(String name){
+    public static void playBGM(String name){
+        SoundManager soundManager = Globals.getSoundManager();
         try {
-            stopAllBGM();
-            new Thread(() -> playPreloadedBGM(name)).start();
-            return 1;
+            soundManager.stopAllBGM();
+            new Thread(() -> soundManager.playPreloadedBGM(name)).start();
         }catch (Exception e){
             logger.info(String.valueOf(e));
-            return 0;
         }
     }
 
-    public int playES(String name){
+    public static void playES(String name){
+        SoundManager soundManager = Globals.getSoundManager();
         try {
-            new Thread(() -> playEffectSound(name)).start();
-            return 1;
+            new Thread(() -> soundManager.playEffectSound(name)).start();
         }catch (Exception e){
             logger.info(String.valueOf(e));
-            return 0;
         }
     }
 
@@ -238,15 +235,15 @@ public class SoundManager {
     }
 
     // ksm
-    public void playShipDieSounds() {
-        playES("ally_airship_destroy_explosion");
+    public static void playShipDieSounds() {
+        SoundManager.playES("ally_airship_destroy_explosion");
         new Thread(() -> {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 logger.info(String.valueOf(e));
             }
-            playES("ally_airship_destroy_die");
+            SoundManager.playES("ally_airship_destroy_die");
         }).start();
     }
 }

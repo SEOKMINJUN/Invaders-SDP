@@ -2,7 +2,10 @@ package entity;
 
 import java.awt.Color;
 
+import engine.DrawManager;
 import engine.DrawManager.SpriteType;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Implements a generic game entity.
@@ -10,7 +13,7 @@ import engine.DrawManager.SpriteType;
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
  * 
  */
-public abstract class Entity {
+public abstract class Entity extends EntityBase{
 
 	/** Position in the x-axis of the upper left corner of the entity. */
 	protected int positionX;
@@ -22,30 +25,31 @@ public abstract class Entity {
 	protected int height;
 	/** Color of the entity. */
 	private Color color;
-	/** Sprite type assigned to the entity. */
+	@Getter @Setter
+	/** Set entity enabled */
+	private boolean enabled = true;
+
+	@Setter
 	protected SpriteType spriteType;
 
 	/**
-	 * Constructor, establishes the entity's generic properties.
-	 * 
-	 * @param positionX
-	 *            Initial position of the entity in the X axis.
-	 * @param positionY
-	 *            Initial position of the entity in the Y axis.
-	 * @param width
-	 *            Width of the entity.
-	 * @param height
-	 *            Height of the entity.
-	 * @param color
-	 *            Color of the entity.
-	 */
-
-	public void setSpriteType(SpriteType spriteType) {
-		this.spriteType = spriteType;
-	}
-
-	public Entity(final int positionX, final int positionY, final int width,
+     * -- SETTER --
+     *  Constructor, establishes the entity's generic properties.
+     *
+     * @param positionX
+     *            Initial position of the entity in the X axis.
+     * @param positionY
+     *            Initial position of the entity in the Y axis.
+     * @param width
+     *            Width of the entity.
+     * @param height
+     *            Height of the entity.
+     * @param color
+     *            Color of the entity.
+     */
+    public Entity(final int positionX, final int positionY, final int width,
 			final int height, final Color color) {
+		setClassName("Entity");
 		this.positionX = positionX;
 		this.positionY = positionY;
 		this.width = width;
@@ -137,5 +141,34 @@ public abstract class Entity {
 		return this.height;
 	}
 
+	/**
+	 * Checks if two entities are colliding.
+	 *
+	 * @param target
+	 *            Target entity, the ship.
+	 * @return Result of the collision test.
+	 */
+	public boolean checkCollision(final Entity target) {
+		// Calculate center point of the entities in both axis.
+		int centerAX = getPositionX() + getWidth() / 2;
+		int centerAY = getPositionY() + getHeight() / 2;
+		int centerBX = target.getPositionX() + target.getWidth() / 2;
+		int centerBY = target.getPositionY() + target.getHeight() / 2;
+		// Calculate maximum distance without collision.
+		int maxDistanceX = getWidth() / 2 + target.getWidth() / 2;
+		int maxDistanceY = getHeight() / 2 + target.getHeight() / 2;
+		// Calculates distance.
+		int distanceX = Math.abs(centerAX - centerBX);
+		int distanceY = Math.abs(centerAY - centerBY);
 
+		return distanceX < maxDistanceX && distanceY < maxDistanceY;
+	}
+
+	@Override
+	public void draw() {
+		if(enabled) DrawManager.drawEntity(this, getPositionX(), getPositionY());
+	}
+
+	@Override
+	public void update() {}
 }

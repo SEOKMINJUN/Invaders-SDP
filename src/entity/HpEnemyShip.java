@@ -1,7 +1,6 @@
-package Enemy;
+package entity;
 
 import java.awt.Color;
-import entity.EnemyShip;
 
 public class HpEnemyShip {
 

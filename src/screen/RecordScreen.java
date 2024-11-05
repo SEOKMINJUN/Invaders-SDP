@@ -4,8 +4,8 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.List;
 
+import engine.Globals;
 import engine.Score;
-import engine.Core;
 
 /**
  *  Implements past user recorded score
@@ -31,7 +31,7 @@ public class RecordScreen extends Screen {
         this.returnCode = 1;
 
         try {
-            this.recentScores = Core.getFileManager().loadRecentScores();
+            this.recentScores = Globals.getFileManager().loadRecentScores();
         } catch (NumberFormatException | IOException e) {
             logger.warning("Couldn't load records!");
         }
@@ -63,13 +63,13 @@ public class RecordScreen extends Screen {
     /**
      * Draws the elements associated with the screen.
      */
-    private void draw() {
+    protected void draw() {
         drawManager.initDrawing(this);
 
         drawManager.drawRecordMenu(this);
         drawManager.drawRecentScores(this, this.recentScores);
 
-        super.drawPost();
+        super.draw();
         drawManager.completeDrawing(this);
     }
 }

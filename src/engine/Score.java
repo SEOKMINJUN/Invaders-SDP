@@ -1,12 +1,7 @@
 package engine;
 
-import clove.Statistics;
-
 import java.io.IOException;
-import java.util.logging.Level;
 import java.time.LocalDate;
-
-import screen.GameScreen;
 
 /**
  * Implements a high score record.

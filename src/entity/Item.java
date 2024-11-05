@@ -1,18 +1,22 @@
-package Enemy;
+package entity;
 
 import java.awt.Color;
 
+import engine.Core;
+import engine.DrawManager;
 import engine.DrawManager.SpriteType;
-import entity.Entity;
-import inventory_develop.ShipStatus;
+import engine.Globals;
+import screen.GameScreen;
 
 public class Item extends Entity {
     private final ShipStatus shipStatus = new ShipStatus();
     private int speed;
     public Item(final int positionX, final int positionY, final int speed, final int type) {
         super(positionX, positionY, 3 * 2, 5 * 2, Color.yellow);
+        setClassName("Item");
         this.speed = speed;
         setSprite();
+        this.setEnabled(true);
     }
 
     public final void setSprite() {
@@ -56,10 +60,40 @@ public class Item extends Entity {
             this.setColor(Color.yellow);
         }
     }
-
+    @Override
     public final void update() {
         this.positionY += this.speed;
+        GameScreen screen = (GameScreen)Globals.getCurrentScreen();
+
+        /*
+        Test remove condition
+         */
+        if (getPositionY() > screen.getHeight()) {
+            remove();
+        }
+
+
+        /*
+        Test collision
+         */
+        Ship ship = null;
+        while((ship = (Ship) screen.findEntityByClassname(ship, "Ship")) != null){
+            if (checkCollision(ship)) {
+                screen.itemManager.OperateItem(this);
+                // CtrlS: Count coin
+                if (getSpriteType() == DrawManager.SpriteType.ItemCoin) screen.coinItemsCollected++;
+                Core.getLogger().info("coin: " + screen.coinItemsCollected);
+            }
+            remove();
+        }
     }
+
+    @Override
+    public void remove(){
+        this.setEnabled(false);
+        ItemPool.recycle(this);
+    }
+
     public final void setSpeed(final int speed) {
         this.speed = speed;
     }

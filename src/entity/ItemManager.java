@@ -1,29 +1,16 @@
-package Enemy;
+package entity;
 
 import engine.Core;
-import entity.EnemyShip;
-import entity.Ship;
-import inventory_develop.Bomb;
-import inventory_develop.FeverTimeItem;
+import engine.SoundManager;
 import screen.GameScreen;
 import engine.DrawManager;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
-//import inventory_develop.Bomb;
-import inventory_develop.ItemBarrierAndHeart;
-import inventory_develop.NumberOfBullet;
-import inventory_develop.SpeedItem;
+//import entity.Bomb;
 
-import CtrlS.CurrencyManager;
-
-// Sound Operator
-import Sound_Operator.SoundManager;
-import static engine.Globals.soundManager;
 
 public class ItemManager {
 
@@ -38,17 +25,13 @@ public class ItemManager {
     private NumberOfBullet numberOfBullet;
     private SpeedItem speedItem;
     private Ship ship;
-    private PlayerGrowth growth;
     private FeverTimeItem feverTimeItem;
-    private CurrencyManager currencyManager;
 
     public ItemManager(int screenHeight, DrawManager drawManager, GameScreen gameScreen) {
-        this.items = new HashSet<>();
         this.screenHeight = screenHeight;
         this.drawManager = drawManager;
         this.gameScreen = gameScreen;
         this.ship = gameScreen.getShip();       // Team Inventory
-        this.growth = ship.getPlayerGrowth();
         this.Item2 = gameScreen.getItem();
         this.feverTimeItem = gameScreen.getFeverTimeItem();
         this.numberOfBullet = new NumberOfBullet();
@@ -58,30 +41,13 @@ public class ItemManager {
 
     public void cleanItems() {
         Set<Item> recyclable = new HashSet<>();
-        for (Item item : this.items) {
-            item.update();
-            if (item.getPositionY() > screenHeight) {
-                recyclable.add(item);
-            }
-        }
-        this.items.removeAll(recyclable);
-        ItemPool.recycle(recyclable);
-    }
 
-    public void initialize() {
-        this.items = new HashSet<>();
-    }
-
-    public void drawItems() {
-        for (Item item : this.items) {
-            drawManager.drawEntity(item, item.getPositionX(), item.getPositionY());
-        }
     }
 
     public void dropItem(EnemyShip enemyShip, double probability, int enemyship_type) {
         if(Math.random() < probability) {
             Item item = ItemPool.getItem(enemyShip.getPositionX(), enemyShip.getPositionY(), 3, enemyship_type);
-            this.items.add(item);
+            item.setEnabled(true);
         }
     }
 
@@ -99,15 +65,15 @@ public class ItemManager {
                 case ItemBomb:
                     Bomb.setIsbomb(true);
                     Bomb.setCanShoot(true);
-                    soundManager.playES("get_item");
+                    SoundManager.playES("get_item");
                     break;
                 case ItemBarrier:
                     Item2.activatebarrier();
-                    soundManager.playES("get_item");
+                    SoundManager.playES("get_item");
                     break;
                 case ItemHeart:
                     Item2.activeheart(gameScreen);
-                    soundManager.playES("get_item");
+                    SoundManager.playES("get_item");
                     break;
                 case ItemFeverTime:
                     feverTimeItem.activate();
@@ -115,7 +81,7 @@ public class ItemManager {
                 case ItemPierce:
                     numberOfBullet.pierceup();
                     ship.increaseBulletSpeed();
-                    soundManager.playES("get_item");
+                    SoundManager.playES("get_item");
                     break;
                 case ItemCoin:
                     this.logger.info("You get coin!");
@@ -128,22 +94,19 @@ public class ItemManager {
                     break;
             }
 
-            addItemRecycle(item);
+            recyclableItems.add(item);
+            String itemLog = item.getSpriteType().toString().toLowerCase().substring(4);
+            // Sound Operator
+            if (itemLog.equals("coin")){
+                SoundManager.playES("item_coin");
+            }
+
+            if (!itemLog.equals("coin")) {
+                this.logger.info("get " + itemLog + " item");   // Change log for each item
+            }
         }
     }
 
-    public void addItemRecycle(Item item) {
-        recyclableItems.add(item);
-        String itemLog = item.getSpriteType().toString().toLowerCase().substring(4);
-        // Sound Operator
-        if (itemLog.equals("coin")){
-            soundManager.playES("item_coin");
-        }
-
-        if (!itemLog.equals("coin")) {
-            this.logger.info("get " + itemLog + " item");   // Change log for each item
-        }
-    }
 
     public void removeAllReItems(){
         this.items.removeAll(recyclableItems);

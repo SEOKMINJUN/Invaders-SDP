@@ -1,18 +1,13 @@
-package inventory_develop;
+package entity;
 
-import Enemy.ItemManager;
-import Sound_Operator.SoundManager; //Sound_Operator
-import engine.DrawManager;
-import entity.EnemyShip;
-import entity.EnemyShipFormation;
-import entity.Entity;
-import java.awt.Color;
+//Sound_Operator
+import engine.SoundManager;
+
+        import java.awt.Color;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
-import clove.ScoreManager; //CLOVE
-import static engine.Globals.soundManager;
 
 public class Bomb{
     private int BombSpeed;
@@ -51,7 +46,7 @@ public class Bomb{
                     count++;
 
                     int columnIndex = enemyShips.indexOf(column);
-                    soundManager.playES("enemy_explosion");
+                    SoundManager.playES("enemy_explosion");
 
                     // Operate according to IndexRange
                     for (int dx = -IndexRange; dx <= IndexRange; dx++) {

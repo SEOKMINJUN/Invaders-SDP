@@ -5,17 +5,9 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
-import clove.Statistics; //Team Clove
-import HUDTeam.DrawAchievementHud;
-import HUDTeam.DrawManagerImpl;
-import engine.Cooldown;
-import engine.Core;
-import engine.GameState;
-import engine.Score;
-import Enemy.PlayerGrowth;
-import inventory_develop.NumberOfBullet;
-
-import static engine.Globals.currencyManager;
+import engine.Statistics; //Team Clove
+import engine.*;
+import entity.NumberOfBullet;
 
 /**
  * Implements the score screen.
@@ -72,7 +64,6 @@ public class ScoreScreen extends Screen {
 
 	private boolean isGameClear; // CtrlS
 
-	private PlayerGrowth growth = new PlayerGrowth();
 	private NumberOfBullet numberOfBullet = new NumberOfBullet();
 
 
@@ -108,7 +99,7 @@ public class ScoreScreen extends Screen {
 		this.isGameClear = this.livesRemaining > 0 && this.level > 7; // CtrlS
 
 		try {
-			this.highScores = Core.getFileManager().loadHighScores();
+			this.highScores = Globals.getFileManager().loadHighScores();
 			if (highScores.size() < MAX_HIGH_SCORE_NUM
 					|| highScores.get(highScores.size() - 1).getScore()
 					< this.score)
@@ -118,7 +109,7 @@ public class ScoreScreen extends Screen {
 			logger.warning("Couldn't load high scores!");
 		}
 		try {																			// Team Clove added Exception
-			this.recentScore = Core.getFileManager().loadRecentScores();
+			this.recentScore = Globals.getFileManager().loadRecentScores();
 		} catch (IOException e) {
 			logger.warning("Couldn't load recent scores!");
 		}
@@ -203,7 +194,6 @@ public class ScoreScreen extends Screen {
 				}
 			}
 			numberOfBullet.ResetPierceLevel();
-			growth.ResetBulletSpeed();
 		}
 	}
 
@@ -217,7 +207,7 @@ public class ScoreScreen extends Screen {
 			highScores.remove(highScores.size() - 1);
 
 		try {
-			Core.getFileManager().saveHighScores(highScores);
+			Globals.getFileManager().saveHighScores(highScores);
 		} catch (IOException e) {
 			logger.warning("Couldn't load high scores!");
 		}
@@ -231,7 +221,7 @@ public class ScoreScreen extends Screen {
 		if (recentScore.size() > MAX_RECENT_SCORE_NUM)
 			recentScore.remove(0);
 		try {
-			Core.getFileManager().saveRecentScores(recentScore);
+			Globals.getFileManager().saveRecentScores(recentScore);
 		} catch (IOException e) {
 			logger.warning("Couldn't load recent scores!");
 		}
@@ -257,7 +247,7 @@ public class ScoreScreen extends Screen {
 	// Team-Ctrl-S(Currency)
 	private void saveCoin() {
 		try {
-			currencyManager.addCoin(coin);
+			Globals.getCurrencyManager().addCoin(coin);
 			logger.info("You earned $" + coin);
 		} catch (IOException e) {
 			logger.warning("Couldn't load coin!");
@@ -270,7 +260,7 @@ public class ScoreScreen extends Screen {
 	// CtrlS
 	private void saveGem() {
 		try {
-			currencyManager.addGem(1);
+			Globals.getCurrencyManager().addGem(1);
 			logger.info("You earned 1 Gem for Game Clear");
 		} catch (IOException e) {
 			logger.warning("Couldn't load gem!");
@@ -280,7 +270,7 @@ public class ScoreScreen extends Screen {
 	/**
 	 * Draws the elements associated with the screen.
 	 */
-	private void draw() {
+	protected void draw() {
 		drawManager.initDrawing(this);
 
 		drawManager.drawGameEnd(this, this.inputDelay.checkFinished(), this.isGameClear); // CtrlS
@@ -291,7 +281,7 @@ public class ScoreScreen extends Screen {
 		if (this.isNewRecord)
 			drawManager.drawNameInput(this, this.name, this.nameCharSelected);
 
-		super.drawPost();
+		super.draw();
 		drawManager.completeDrawing(this);
 	}
 }

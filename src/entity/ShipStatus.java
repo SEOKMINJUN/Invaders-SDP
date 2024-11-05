@@ -1,10 +1,8 @@
-package inventory_develop;
+package entity;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
-import Enemy.PlayerGrowth;
-import inventory_develop.NumberOfBullet;
 
 public class ShipStatus {
 
@@ -28,7 +26,6 @@ public class ShipStatus {
     private int Coin_Bonus_price;
 
     private NumberOfBullet numberOfBullet;
-    private PlayerGrowth playerGrowth;
 
     Properties properties = new Properties();
 

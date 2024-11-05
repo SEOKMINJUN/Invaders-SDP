@@ -1,33 +1,99 @@
 package entity;
 
 import java.awt.Color;
-import java.io.File;
+import java.io.IOException;
 import java.util.Set;
 
-import Enemy.PiercingBullet;
-import engine.Cooldown;
-import engine.Core;
+import engine.*;
 import engine.DrawManager.SpriteType;
-import inventory_develop.Bomb;
-import Enemy.PiercingBulletPool;
-// Sound Operator
-import Sound_Operator.SoundManager;
-// Import PlayerGrowth class
-import Enemy.PlayerGrowth;
 // Import NumberOfBullet class
-import inventory_develop.NumberOfBullet;
 // Import ShipStatus class
-import inventory_develop.ItemBarrierAndHeart;
-import inventory_develop.ShipStatus;
+import lombok.Getter;
 
-import static engine.Globals.soundManager;
+class PlayerGrowth {
 
+	//Player's base stats
+	private int health;          //Health
+	private static double moveSpeed = 1.5;       //Movement speed
+	private static int bulletSpeed = -4;     // Bullet speed
+	private static int shootingDelay = 750;   // Shooting delay
+
+	//Constructor to set initial values
+	public PlayerGrowth() {//  Base shooting delay is 750ms
+		ResetBulletSpeed();
+		// CtrlS: set player growth based on upgrade_status.properties
+		try {
+			moveSpeed = Globals.getUpgradeManager().getMovementSpeed();
+			shootingDelay = Globals.getUpgradeManager().getAttackSpeed();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	// Increases health
+	public void increaseHealth(int increment) {
+		this.health += increment;
+	}
+
+	//Increases movement speed
+	public void increaseMoveSpeed(double increment) {
+		this.moveSpeed += increment;
+	}
+
+	// Increases bullet speed (makes bullets faster)
+	public void increaseBulletSpeed(int increment) {
+		this.bulletSpeed -= increment; // Increase by subtracting (since negative speed)
+	}
+
+	// Decreases shooting delay (makes shooting faster)
+	public void decreaseShootingDelay(int decrement) {
+		this.shootingDelay -= decrement; //  Decrease delay for faster shooting
+		if (this.shootingDelay < 100) {
+			this.shootingDelay = 100; // Minimum shooting delay is 100ms
+		}
+	}
+
+	// reset bullet speed
+	//Edit by inventory
+	public static void ResetBulletSpeed(){
+		bulletSpeed = -4;
+	}
+
+	// Returns current health
+	public int getHealth() {
+		return this.health;
+	}
+
+	//  Returns current movement speed
+	public double getMoveSpeed() {
+		return this.moveSpeed;
+	}
+
+	// Returns current bullet speed
+	public int getBulletSpeed() {
+		return this.bulletSpeed;
+	}
+
+	//  Returns current shooting delay
+	public int getShootingDelay() {
+		return this.shootingDelay;
+	}
+
+	// Prints player stats (for debugging)
+	public void printStats() {
+		System.out.println("Health: " + this.health);
+		System.out.println("MoveSpeed: " + this.moveSpeed);
+		System.out.println("BulletSpeed: " + this.bulletSpeed);
+		System.out.println("ShootingDelay: " + this.shootingDelay + "ms");
+	}
+}
 /**
  * Implements a ship, to be controlled by the player.
  *
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
  *
  */
+@Getter
 public class Ship extends Entity {
 	/** Minimum time between shots. */
 	private Cooldown shootingCooldown;
@@ -37,10 +103,10 @@ public class Ship extends Entity {
 	private PlayerGrowth growth;
 	/** ShipStaus instance*/
 	private ShipStatus shipStatus;
-	/** Item */
-	private ItemBarrierAndHeart item;
 	/** NumberOfBullet instance*/
 	private NumberOfBullet numberOfBullet;
+
+	//TODO : Move health to ship from GameScreen, and Add immunity time
 
 	/**
 	 * Constructor, establishes the ship's properties.
@@ -53,7 +119,7 @@ public class Ship extends Entity {
 	//Edit by Enemy
 	public Ship(final int positionX, final int positionY, final Color color) {
 		super(positionX, positionY - 50, 13 * 2, 8 * 2, color); // add by team HUD
-
+		setClassName("Ship");
 		this.spriteType = SpriteType.Ship;
 
 		// Create PlayerGrowth object and set initial stats
@@ -97,13 +163,13 @@ public class Ship extends Entity {
 	 * You can set Number of enemies the bullet can pierce at here.
 	 */
 	//Edit by Enemy and Inventory
-	public final boolean shoot(final Set<PiercingBullet> bullets) {
+	public final boolean shoot() {
 
 		if (this.shootingCooldown.checkFinished()) {
 
 			this.shootingCooldown.reset(); // Reset cooldown after shooting
 
-			soundManager.playES("My_Gun_Shot");
+			SoundManager.playES("My_Gun_Shot");
 
 			// Use NumberOfBullet to generate bullets
 			Set<PiercingBullet> newBullets = numberOfBullet.addBullet(
@@ -115,10 +181,6 @@ public class Ship extends Entity {
 
 			// now can't shoot bomb
 			Bomb.setCanShoot(false);
-
-			// Add new bullets to the set
-			bullets.addAll(newBullets);
-
 			return true;
 		}
 		return false;
@@ -131,6 +193,7 @@ public class Ship extends Entity {
 	/**
 	 * Updates status of the ship.
 	 */
+	@Override
 	public final void update() {
 		if (!this.destructionCooldown.checkFinished())
 			this.spriteType = SpriteType.ShipDestroyed;
@@ -138,12 +201,17 @@ public class Ship extends Entity {
 			this.spriteType = SpriteType.Ship;
 	}
 
+	@Override
+	public final void draw(){
+		DrawManager.drawEntity(this, getPositionX(), getPositionY());
+	}
+
 	/**
 	 * Switches the ship to its destroyed state.
 	 */
 	public final void destroy() {
 		this.destructionCooldown.reset();
-		soundManager.playES("ally_airship_damage");
+		SoundManager.playES("ally_airship_damage");
 	}
 
 	/**

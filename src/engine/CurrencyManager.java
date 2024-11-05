@@ -1,8 +1,4 @@
-package CtrlS;
-
-import engine.Core;
-import engine.FileManager;
-import engine.GameState;
+package engine;
 
 import java.io.IOException;
 import java.util.logging.Logger;
@@ -21,8 +17,8 @@ public final class CurrencyManager {
      * private constructor.
      */
     private CurrencyManager() {
-        fileManager = Core.getFileManager();
-        logger = Core.getLogger();
+        fileManager = Globals.getFileManager();
+        logger = Globals.getLogger();
     }
 
     /**

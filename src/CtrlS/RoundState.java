@@ -3,7 +3,7 @@ package CtrlS;
 import engine.Core;
 import engine.GameState;
 // item level Bonus
-import inventory_develop.ShipStatus;
+import engine.Globals;
 
 import java.io.IOException;
 
@@ -49,7 +49,7 @@ public class RoundState {
 
         // CtrlS: load stat bonus via UpgradeManager
         try {
-            this.statBonus = Core.getUpgradeManager().getCoinAcquisitionMultiplier();
+            this.statBonus = Globals.getUpgradeManager().getCoinAcquisitionMultiplier();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

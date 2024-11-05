@@ -1,0 +1,31 @@
+name: Java launch4j
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        submodules: recursive
+
+    - name: Setup Java JDK
+      uses: actions/setup-java@v4.2.1
+      with:
+        distribution: 'oracle'
+        java-version: '22'
+              
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+
+    - name: Build with Gradle
+      run: ./gradlew createExe
+
+    - uses: actions/upload-artifact@v4
+      id: upload_unsigned_v4
+      with:
+        name: Invaders-SDP
+        path: build/launch4j/Invaders-SDP.exe
+      continue-on-error: true

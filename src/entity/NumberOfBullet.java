@@ -1,8 +1,6 @@
-package inventory_develop;
+package entity;
 
-import Enemy.PiercingBullet;
-import Enemy.PiercingBulletPool;
-import engine.Core;
+import engine.Globals;
 
 import java.io.IOException;
 import java.util.HashSet;
@@ -28,7 +26,7 @@ public class NumberOfBullet{
      */
     public NumberOfBullet() {
         try {
-            bulletLevel = Core.getUpgradeManager().getBulletNum();
+            bulletLevel = Globals.getUpgradeManager().getBulletNum();
             if (bulletLevel > 3){
                 bulletLevel = 3;
             }

@@ -1,7 +1,5 @@
 package engine;
 
-import clove.ScoreManager;
-
 /**
  * Implements an object that stores the state of the game between levels.
  * 
@@ -33,8 +31,6 @@ public class GameState {
 	private int gem;
 	/** Current hitCount **/
 	private int hitCount;
-	// Clove
-	public ScoreManager scoreManager;
 	/** Current coinItemsCollected */
 	private int coinItemsCollected;
 
@@ -77,7 +73,6 @@ public class GameState {
 		this.coin = coin; // Team-Ctrl-S(Currency)
 		this.gem = gem; // Team-Ctrl-S(Currency)
 		this.hitCount = hitCount; // Ctrl-S
-		this.scoreManager = new ScoreManager(level, score);
 		this.coinItemsCollected = coinItemsCollected; // Ctrl-S
 	}
 
