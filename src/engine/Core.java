@@ -9,12 +9,10 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import CtrlS.RoundState;
 import screen.ReceiptScreen;
-import level_design.Background;
 import engine.Achievement.AchievementManager;
 import screen.*;
-import twoplayermode.TwoPlayerMode;
+import screen.TwoPlayerGameScreen;
 
 /**
  * Implements core game logic.
@@ -213,7 +211,7 @@ public final class Core {
 					GameState prevState = gameState;
 
 					// TwoPlayerMode의 생성자를 호출할 때 필요한 매개변수를 모두 전달
-					currentScreen = new TwoPlayerMode(gameState, currentGameSettings, bonusLife, width, height, fps);
+					currentScreen = new TwoPlayerGameScreen(gameState, currentGameSettings, bonusLife, width, height, fps);
 					Statistics statistics = new Statistics(); //Clove
 
 
@@ -222,7 +220,7 @@ public final class Core {
 					frame.setScreen(currentScreen);
 					LOGGER.info("Closing game screen.");
 
-					gameState = ((TwoPlayerMode) currentScreen).getGameState();
+					gameState = ((TwoPlayerGameScreen) currentScreen).getGameState();
 
 					roundState = new RoundState(prevState, gameState);
 

@@ -1,9 +1,8 @@
-package level_design;
+package engine;
 
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import engine.Frame;
 
 public class Background {
     private static Background instance;

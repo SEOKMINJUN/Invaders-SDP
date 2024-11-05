@@ -1,4 +1,4 @@
-package twoplayermode;
+package screen;
 
 
 
@@ -6,22 +6,21 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 
-import HUDTeam.DrawManagerImpl;
+import engine.DrawManagerImpl;
 import engine.Achievement.AchievementManager;
 import engine.Achievement.AchievementType;
 import engine.Globals;
 import entity.*;
-import screen.GameScreen;
 import engine.GameState;
 import engine.GameSettings;
 
 
-public class TwoPlayerMode extends GameScreen {
+public class TwoPlayerGameScreen extends GameScreen {
 
     public Ship ship2;
 
 
-    public TwoPlayerMode(GameState gameState, GameSettings gameSettings, boolean bonusLife, int width, int height, int fps) {
+    public TwoPlayerGameScreen(GameState gameState, GameSettings gameSettings, boolean bonusLife, int width, int height, int fps) {
         super(gameState, gameSettings, bonusLife, width, height, fps);
         // ship2 초기화
         this.ship2 = new Ship(this.width / 4, this.height - 30, Color.BLUE); // add by team HUD
