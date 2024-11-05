@@ -60,7 +60,7 @@ public class RoundState {
     private int calculateCoin() {
         int coin, bonusCoin = 0;
         // If it's not Game Over, apply bonus
-        if(currState.getLivesRemaining() > 0) {
+        if(currState.getLivesRemaining() > 0 || currState.getLivesTwoRemaining() > 0) {
             bonusCoin += this.levelBonus_amount + this.accuracyBonus_amount + this.timeBonus_amount;
             Core.getLogger().info("Bonus occurs! level bonus: " + this.levelBonus_amount + ", accuracy bonus: " + this.accuracyBonus_amount + ", time bonus: " + this.timeBonus_amount);
         }

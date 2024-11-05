@@ -24,7 +24,7 @@ import engine.Globals;
 public class GameScreen extends Screen {
 
 	/** Current game difficulty settings. */
-	private GameSettings gameSettings;
+    protected GameSettings gameSettings;
 	/** Current difficulty level number. */
 	@Getter
 	private int level;
@@ -34,7 +34,7 @@ public class GameScreen extends Screen {
     // Team Inventory(Item)
     /** Player's ship1. */
 	@Getter
-    private Ship ship1;
+    protected Ship ship1;
 	/** Bonus enemy ship1 that appears sometimes. */
     public EnemyShip enemyShipSpecial;
 	/** Minimum time between bonus ship1 appearances. */
@@ -42,7 +42,7 @@ public class GameScreen extends Screen {
 	/** Time until bonus ship1 explosion disappears. */
     public Cooldown enemyShipSpecialExplosionCooldown;
 	/** Time from finishing the level to screen change. */
-	private Cooldown screenFinishedCooldown;
+    protected Cooldown screenFinishedCooldown;
     // Team Inventory(Item)
     /** Shield item */
 	@Getter
@@ -67,14 +67,14 @@ public class GameScreen extends Screen {
 	private long gameStartTime;
 	/** Checks if the level is finished. */
 	@Getter
-	private boolean levelFinished;
+    protected boolean levelFinished;
 	/** Checks if a bonus life is received. */
 	private boolean bonusLife;
 	/**
 	* Added by the Level Design team
 	* Counts the number of waves destroyed
 	* **/
-	private int waveCounter;
+    protected int waveCounter;
 
 	/** Booleans for horizontal background movement */
     public boolean backgroundMoveLeft = false;
@@ -108,8 +108,8 @@ public class GameScreen extends Screen {
 	/** Score calculation. */
     protected ScoreManager scoreManager;    //clove
 
-	private Statistics statistics; //Team Clove
-	private int fastKill;
+	protected Statistics statistics; //Team Clove
+	protected int fastKill;
 
 	/** CtrlS: Count the number of coin collected in game */
     public int coinItemsCollected;
@@ -168,6 +168,9 @@ public class GameScreen extends Screen {
 		this.ship1.setKEY_RIGHT(KeyEvent.VK_RIGHT);
 		this.ship1.setKEY_SHOOT(KeyEvent.VK_ENTER);
 		this.ship1.setHealth(gameState.getLivesRemaining());
+		if(this.ship1.getHealth() <= 0){
+			this.ship1.setDestroyed(true);
+		}
 		this.addEntity(ship1);
 	}
 
@@ -217,6 +220,7 @@ public class GameScreen extends Screen {
 	 *
 	 * @return Next screen code.
 	 */
+	@Override
 	public final int run() {
 		super.run();
 
@@ -229,9 +233,10 @@ public class GameScreen extends Screen {
 	/**
 	 * Updates the elements on screen and checks for events.
 	 */
+	@Override
 	protected boolean update() {
 		boolean gameProgress = inputDelay.checkFinished() && !isLevelFinished();
-		ship1.setCanMove(gameProgress);
+		ship1.setCanMove(gameProgress && ship1.getHealth() > 0);
 
 		super.update();
 
@@ -290,18 +295,7 @@ public class GameScreen extends Screen {
 
 		}
 
-		/**
-		* Wave counter condition added by the Level Design team*
-		* Changed the conditions for the game to end  by team Enemy
-		*
-		* Checks if the intended number of waves for this level was destroyed
-		* **/
-		if ((getRemainingEnemies() == 0 || ship1.getHealth() == 0)
-		&& !this.levelFinished
-		&& waveCounter == this.gameSettings.getWavesNumber()) {
-			this.levelFinished = true;
-			this.screenFinishedCooldown.reset();
-		}
+		checkGameEnd();
 
 		if (this.levelFinished && this.screenFinishedCooldown.checkFinished()) {
 			//this.logger.info("Final Playtime: " + playTime + " seconds");    //clove
@@ -309,19 +303,34 @@ public class GameScreen extends Screen {
 				AchievementManager.getInstance().checkAchievement(AchievementType.LIVES, ship1.getHealth());
 			}
 			AchievementManager.getInstance().checkAchievement(AchievementType.SCORE, score);
-            try { //Team Clove
+			try { //Team Clove
 				statistics.comHighestLevel(level);
 				statistics.addBulletShot(bulletsShot);
 				statistics.addShipsDestroyed(shipsDestroyed);
 				AchievementManager.getInstance().checkAchievement(AchievementType.FASTKILL, fastKill);
 
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
 
-            this.isRunning = false;
+			this.isRunning = false;
 		}
 		return true;
+	}
+
+	protected void checkGameEnd() {
+		/**
+		 * Wave counter condition added by the Level Design team*
+		 * Changed the conditions for the game to end  by team Enemy
+		 *
+		 * Checks if the intended number of waves for this level was destroyed
+		 * **/
+		if ((getRemainingEnemies() == 0 || ship1.getHealth() == 0)
+				&& !this.levelFinished
+				&& waveCounter == this.gameSettings.getWavesNumber()) {
+			this.levelFinished = true;
+			this.screenFinishedCooldown.reset();
+		}
 	}
 
 	/**
@@ -439,7 +448,7 @@ public class GameScreen extends Screen {
 	 * @return remaining enemies count.
 	 *
 	 */
-	private int getRemainingEnemies() {
+    protected int getRemainingEnemies() {
 		int remainingEnemies = 0;
 		for (EnemyShip enemyShip : this.enemyShipFormation) {
 			if (!enemyShip.isDestroyed()) {

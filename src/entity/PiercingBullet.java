@@ -1,7 +1,5 @@
 package entity;
 
-import java.awt.Color;
-
 import engine.DrawManager;
 import engine.Globals;
 import engine.SoundManager;
@@ -87,8 +85,8 @@ public class PiercingBullet extends Bullet {
             while((ship = (Ship)screen.findEntityByClassname(ship, "Ship")) != null){
                 if (checkCollision(ship) && !screen.isLevelFinished()) {
                     remove();
-                    if (!ship.isDestroyed() && !screen.getItem().isbarrierActive()) {	// team Inventory
-                        ship.destroy();
+                    if (!ship.isDestroyed() && !ship.isPlayDestroyAnimation() && !screen.getItem().isbarrierActive()) {	// team Inventory
+                        ship.playDestroyAnimation();
                         int health = ship.getHealth()-1;
                         ship.setHealth(health);
                         Globals.getLogger().info("Hit on player ship, " + health

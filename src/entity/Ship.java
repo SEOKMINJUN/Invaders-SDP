@@ -217,6 +217,11 @@ public class Ship extends Entity {
 		else
 			this.spriteType = SpriteType.Ship;
 
+		if(isPlayDestroyAnimation()){
+			// Do not draw when
+			this.setEnabled(false);
+		}
+
 		GameScreen screen = (GameScreen) Globals.getCurrentScreen();
 		if (!isDestroyed() && this.canMove) {
 			InputManager inputManager = Globals.getInputManager();
@@ -246,15 +251,10 @@ public class Ship extends Entity {
 		}
 	}
 
-	@Override
-	public final void draw(){
-		DrawManager.drawEntity(this, getPositionX(), getPositionY());
-	}
-
 	/**
 	 * Switches the ship to its destroyed state.
 	 */
-	public final void destroy() {
+	public final void playDestroyAnimation() {
 		this.destructionCooldown.reset();
 		SoundManager.playES("ally_airship_damage");
 	}
@@ -264,8 +264,21 @@ public class Ship extends Entity {
 	 *
 	 * @return True if the ship is currently destroyed.
 	 */
-	public final boolean isDestroyed() {
+
+	public final boolean isPlayDestroyAnimation() {
 		return !this.destructionCooldown.checkFinished();
+	}
+
+	public final boolean isDestroyed() {
+		return !(this.health > 0);
+	}
+
+	public final void setDestroyed(boolean destroyed) {
+		if(destroyed) {
+			this.destructionCooldown = Core.getCooldown(-1);
+			this.setEnabled(false);
+		}
+		else this.destructionCooldown = Core.getCooldown(1000);
 	}
 	/**
 	 * 스탯을 증가시키는 메서드들 (PlayerGrowth 클래스 사용)

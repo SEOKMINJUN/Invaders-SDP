@@ -8,7 +8,6 @@ import java.util.List;
 import engine.Statistics; //Team Clove
 import engine.*;
 import entity.NumberOfBullet;
-import twoplayermode.TwoPlayerMode;
 
 /**
  * Implements the score screen.
@@ -32,7 +31,7 @@ public class ScoreScreen extends Screen {
 	/** Current score. */
 	private int score;
 	/** Player lives left. */
-	private int livesRemaining;
+	private int health;
 	/** Total bullets shot by the player. */
 	private int bulletsShot;
 	/** Total ships destroyed by the player. */
@@ -85,7 +84,7 @@ public class ScoreScreen extends Screen {
 		super(width, height, fps);
 
 		this.score = gameState.getScore();
-		this.livesRemaining = gameState.getLivesRemaining();
+		this.health = gameState.getLivesRemaining();
 		this.bulletsShot = gameState.getBulletsShot();
 		this.shipsDestroyed = gameState.getShipsDestroyed();
 		this.isNewRecord = false;
@@ -97,7 +96,7 @@ public class ScoreScreen extends Screen {
 		this.gameState = gameState; // Team-Ctrl-S(Currency)
 		this.level = gameState.getLevel(); //Team Clove
 		this.statistics = new Statistics(); //Team Clove
-		this.isGameClear = this.livesRemaining > 0 && this.level > 7; // CtrlS
+		this.isGameClear = this.health > 0 && this.level > 7; // CtrlS
 
 		try {
 			this.highScores = Globals.getFileManager().loadHighScores();
@@ -269,7 +268,7 @@ public class ScoreScreen extends Screen {
 	protected void draw() {
 
 		drawManager.drawGameEnd(this, this.inputDelay.checkFinished(), this.isGameClear); // CtrlS
-		drawManager.drawResults(this, this.score, this.livesRemaining,
+		drawManager.drawResults(this, this.score, this.health,
 				this.shipsDestroyed, (float) this.gameState.getHitCount()
 						/ this.bulletsShot, this.gameState);
 

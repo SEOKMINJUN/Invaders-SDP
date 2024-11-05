@@ -204,17 +204,6 @@ public final class Core {
 				SoundManager.playBGM("inGame_bgm");
 
 				do {
-					if (gameSettings == null || gameSettings.isEmpty()) {
-						gameSettings = new ArrayList<>();
-						gameSettings.add(Globals.SETTINGS_LEVEL_1);
-						gameSettings.add(Globals.SETTINGS_LEVEL_2);
-						gameSettings.add(Globals.SETTINGS_LEVEL_3);
-						gameSettings.add(Globals.SETTINGS_LEVEL_4);
-						gameSettings.add(Globals.SETTINGS_LEVEL_5);
-						gameSettings.add(Globals.SETTINGS_LEVEL_6);
-						gameSettings.add(Globals.SETTINGS_LEVEL_7);
-					}
-
 					GameSettings currentGameSettings = gameSettings.get(gameState.getLevel() - 1);
 
 					int fps = Globals.FPS;

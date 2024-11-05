@@ -76,14 +76,14 @@ public class Obstacle extends Entity {
         Ship ship = null;
         GameScreen screen = (GameScreen) Globals.getCurrentScreen();
         while((ship = (Ship)screen.findEntityByClassname(ship, "Ship")) != null){
-            if(!isDestroyed() && checkCollision(ship)){
+            if(!isDestroyed() && !ship.isPlayDestroyAnimation() && checkCollision(ship)){
                 //Obstacles ignored when barrier activated_team inventory
                 int health = ship.getHealth();
                 if (!screen.getItem().isbarrierActive()) {
                     health -= 1;
                     ship.setHealth(health);
                     if (!ship.isDestroyed()) {
-                        ship.destroy();  // Optionally, destroy the ship or apply other effects.
+                        ship.playDestroyAnimation();  // Optionally, playDestroyAnimation the ship or apply other effects.
                     }
                     this.destroy();  // Destroy obstacle
                     Globals.getLogger().info("Ship hit an obstacle, " + health + " lives remaining.");
