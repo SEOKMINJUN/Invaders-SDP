@@ -99,7 +99,7 @@ public final class Core {
 			// Add hitCount parameter - Ctrl S
 			// Add coinItemsCollected parameter - Ctrl S
 			gameState = new GameState(1, 0
-					, Globals.MAX_LIVES, 0,0, 0, 0, 0, 0, 0, 0);
+					, Globals.MAX_LIVES, Globals.MAX_LIVES,0, 0, 0, 0, 0, 0, 0);
 			switch (returnCode) {
 			case 1:
 				// Main menu.
@@ -225,7 +225,6 @@ public final class Core {
 
 					// TwoPlayerMode의 생성자를 호출할 때 필요한 매개변수를 모두 전달
 					currentScreen = new TwoPlayerMode(gameState, currentGameSettings, bonusLife, width, height, fps);
-					currentScreen.setTwoPlayerMode(true);
 					Statistics statistics = new Statistics(); //Clove
 
 
@@ -288,6 +287,7 @@ public final class Core {
 						+ gameState.getShipsDestroyed() + " ships destroyed.");
 				currentScreen = new ScoreScreen(width, height, Globals.FPS, gameState);
 				returnCode = frame.setScreen(currentScreen);
+				if(returnCode == 2) returnCode = 4;
 				LOGGER.info("Closing score screen.");
 				break;
 			case 5: // 7 -> 5 replaced by Starter

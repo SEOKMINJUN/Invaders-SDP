@@ -3,9 +3,12 @@ package twoplayermode;
 
 
 import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.util.Set;
 import java.util.HashSet;
 
+import HUDTeam.DrawManagerImpl;
+import engine.Globals;
 import entity.*;
 import screen.GameScreen;
 import engine.GameState;
@@ -14,104 +17,48 @@ import engine.GameSettings;
 
 public class TwoPlayerMode extends GameScreen {
 
-
-    public static int livestwo = 3;
+    public Ship ship2;
 
 
     public TwoPlayerMode(GameState gameState, GameSettings gameSettings, boolean bonusLife, int width, int height, int fps) {
         super(gameState, gameSettings, bonusLife, width, height, fps);
-
-
+        // ship2 초기화
+        this.ship2 = new Ship(this.width / 4, this.height - 30, Color.BLUE); // add by team HUD
+        this.ship2.setHealth(gameState.getLivesTwoRemaining());
+        Globals.getLogger().info("TwoPlayerMode : " + ship2.getHealth());
+        this.ship2.setKEY_LEFT(KeyEvent.VK_Z);
+        this.ship2.setKEY_RIGHT(KeyEvent.VK_C);
+        this.ship2.setKEY_SHOOT(KeyEvent.VK_X);
+        this.addEntity(this.ship2);
 
     }
 
     @Override
     public void initialize() {
         super.initialize(); // GameScreen의 초기화 로직 호출
-        this.setTwoPlayerMode(true);
-        // player2 초기화
-        this.player2 = new Ship(this.width / 4, this.height - 30, Color.BLUE); // add by team HUD
     }
 
-//    @Override
-//    protected void update() {
-//        super.update(); // GameScreen의 기존 기능을 사용
-//
-////        if (player2 != null) {
-////            // Player 2 movement and shooting
-////            boolean moveRight2 = inputManager.isKeyDown(KeyEvent.VK_C);
-////            boolean moveLeft2 = inputManager.isKeyDown(KeyEvent.VK_Z);
-////
-////            if (moveRight2 && player2.getPositionX() + player2.getWidth() < width) {
-////                player2.moveRight();
-////            }
-////            if (moveLeft2 && player2.getPositionX() > 0) {
-////                player2.moveLeft();
-////            }
-////            if (inputManager.isKeyDown(KeyEvent.VK_X)) {
-////                player2.shoot(bullets);
-////            }
-////
-////            // Player 2 bullet collision handling
-////            handleBulletCollisionsForPlayer2();
-////
-////            // 장애물과 아이템 상호작용 추가
-////            handleObstacleCollisionsForPlayer2();
-////            handleItemCollisionsForPlayer2();
-////        }
-//    }
-
-    // Player 2의 총알과 충돌 처리
-    public static void handleBulletCollisionsForPlayer2( Set<PiercingBullet> bullets, Ship player2) {
-        if(player2==null) return;
-        Set<Bullet> recyclable = new HashSet<>();
-        for (Bullet bullet : bullets) {
-            if (bullet.getSpeed() > 0 && checkCollision(bullet, player2)) {
-                recyclable.add(bullet);
-                if (!player2.isDestroyed()) {
-                    player2.destroy();
-                    livestwo--;
-                    System.out.println("Player 2 hit, lives remaining: " + livestwo);
-                    if (livestwo <= 0) {
-                        player2 = null; // Player 2가 파괴된 경우
-                    }
-                }
-            }
-        }
-        bullets.removeAll(recyclable);
-        BulletPool.recycle(recyclable);
+    @Override
+    public GameState getGameState() {
+        return new GameState(this.getLevel(), this.scoreManager.getAccumulatedScore(), getShip1().getHealth(), ship2.getHealth(),
+                this.bulletsShot, this.shipsDestroyed, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
     }
 
-    // Player 2의 장애물과 충돌 처리
-    public static void handleObstacleCollisionsForPlayer2(Set<Obstacle> obstacles, Ship player2) {
-        if(player2==null) return;
-        for (Obstacle obstacle : obstacles) {
-            if (!obstacle.isDestroyed() && checkCollision(player2, obstacle)) {
-                livestwo--;
-                if (!player2.isDestroyed()) {
-                    player2.destroy(); // Player 2가 파괴됨
-                }
-                obstacle.destroy(); // 장애물 제거
-                System.out.println("Player 2 hit an obstacle, lives remaining: " + livestwo);
+    @Override
+    protected boolean update() {
+        boolean gameProgress = inputDelay.checkFinished() && !isLevelFinished();
+        ship2.setCanMove(gameProgress);
 
-                if (livestwo <= 0) {
-                    player2 = null; // Player 2가 파괴된 경우
-                }
-                break;
-            }
-        }
+        super.update();
+        return true;
     }
 
-    /**
-     *
-     * */
-    public static int getLivestwo() {
-        return livestwo;
+    @Override
+    public void draw(){
+        super.draw();
+        DrawManagerImpl.drawBulletSpeed2P(this, ship2.getBulletSpeed());
+        DrawManagerImpl.drawSpeed2P(this, ship2.getSpeed());
+        DrawManagerImpl.drawLives2P(this, ship2.getHealth());
     }
-
-    public void setLivestwo(int livestwo) {
-        this.livestwo = livestwo;
-    }
-
 }
 

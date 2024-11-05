@@ -31,17 +31,12 @@ public class ItemManager {
         this.screenHeight = screenHeight;
         this.drawManager = drawManager;
         this.gameScreen = gameScreen;
-        this.ship = gameScreen.getShip();       // Team Inventory
+        this.ship = gameScreen.getShip1();       // Team Inventory
         this.Item2 = gameScreen.getItem();
         this.feverTimeItem = gameScreen.getFeverTimeItem();
         this.numberOfBullet = new NumberOfBullet();
         this.speedItem = gameScreen.getSpeedItem();
         this.enemyShips = new HashSet<>();
-    }
-
-    public void cleanItems() {
-        Set<Item> recyclable = new HashSet<>();
-
     }
 
     public void dropItem(EnemyShip enemyShip, double probability, int enemyship_type) {

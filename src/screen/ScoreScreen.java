@@ -8,6 +8,7 @@ import java.util.List;
 import engine.Statistics; //Team Clove
 import engine.*;
 import entity.NumberOfBullet;
+import twoplayermode.TwoPlayerMode;
 
 /**
  * Implements the score screen.
@@ -129,10 +130,9 @@ public class ScoreScreen extends Screen {
 	/**
 	 * Updates the elements on screen and checks for events.
 	 */
-	protected final void update() {
+	protected final boolean update() {
 		super.update();
 
-		draw();
 		if (this.inputDelay.checkFinished()) {
 			if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
 				// Return to main menu.
@@ -149,12 +149,7 @@ public class ScoreScreen extends Screen {
 				saveRecentScore(); // Team Clove
 			} else if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 				// Play again.
-				System.out.println(this.isTwoPlayerMode());
-				if (this.isTwoPlayerMode()){
-					this.returnCode = 4;
-				} else {
-					this.returnCode = 2;
-				}
+				this.returnCode = 2;
 				this.isRunning = false;
 				if (this.isNewRecord) {
 					saveScore();
@@ -195,6 +190,7 @@ public class ScoreScreen extends Screen {
 			}
 			numberOfBullet.ResetPierceLevel();
 		}
+		return true;
 	}
 
 	/**
@@ -271,7 +267,6 @@ public class ScoreScreen extends Screen {
 	 * Draws the elements associated with the screen.
 	 */
 	protected void draw() {
-		drawManager.initDrawing(this);
 
 		drawManager.drawGameEnd(this, this.inputDelay.checkFinished(), this.isGameClear); // CtrlS
 		drawManager.drawResults(this, this.score, this.livesRemaining,
@@ -281,7 +276,6 @@ public class ScoreScreen extends Screen {
 		if (this.isNewRecord)
 			drawManager.drawNameInput(this, this.name, this.nameCharSelected);
 
-		super.draw();
-		drawManager.completeDrawing(this);
+		super.drawPost();
 	}
 }
