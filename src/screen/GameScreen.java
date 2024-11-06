@@ -415,7 +415,7 @@ public class GameScreen extends Screen {
 		// Interface.
 //		drawManager.drawScore(this, this.scoreManager.getAccumulatedScore());    //clove -> edit by jesung ko - TeamHUD(to udjust score)
 //		drawManager.drawScore(this, this.score); // by jesung ko - TeamHUD
-		DrawManagerImpl.drawScore2(this,this.score); // by jesung ko - TeamHUD
+		DrawManagerImpl.drawScore2(this, scoreManager.getAccumulatedScore()); // by jesung ko - TeamHUD
 		drawManager.drawLives(this, this.lives);	
 		drawManager.drawHorizontalLine(this, Globals.GAME_SCREEN_SEPARATION_LINE_HEIGHT - 1);
 		DrawManagerImpl.drawRemainingEnemies(this, getRemainingEnemies()); // by HUD team SeungYun

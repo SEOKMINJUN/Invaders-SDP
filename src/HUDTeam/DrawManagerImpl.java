@@ -1,7 +1,7 @@
 package HUDTeam;
 
 import engine.DrawManager;
-import screen.GameScreen;
+import entity.ScoreManager;
 import screen.Screen;
 import entity.Entity;
 import java.awt.Color;
@@ -79,7 +79,7 @@ public class DrawManagerImpl extends DrawManager {
      *          The current score to display.
      * by jesung Ko - TeamHUD
      */
-    public static void drawScore2(final Screen screen, final int score) {
+    public static void drawScore2(final Screen screen, int score) {
         String scoreString = "Score: " + score;
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
