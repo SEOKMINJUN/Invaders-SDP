@@ -20,6 +20,8 @@ public class GameState {
 	private int bulletsShot;
 	/** Ships destroyed until now. */
 	public int shipsDestroyed; // TEAM CLOVER : Changed shipsDestroyed from private to public for usage in achievement
+	/** Accuracy until now. */
+	public int accuracy;
 	// Soomin Lee / TeamHUD
 	/** Total time to play. */
 	private int playTime;
@@ -49,7 +51,8 @@ public class GameState {
 	 *            Bullets shot until now.
 	 * @param shipsDestroyed
 	 *            Ships destroyed until now.
-	 *
+	 * @param accuracy
+	 * 			  Accuracy until now.
 	 * Soomin Lee / TeamHUD
 	 * @param playTime
 	 * 	          Total time to play.
@@ -62,13 +65,14 @@ public class GameState {
 	 */
 	public GameState(final int level, final int score,
 					 final int livesRemaining, final int livestwoRemaining, final int bulletsShot,
-					 final int shipsDestroyed, final int playTime, final int coin, final int gem, final int hitCount, final int coinItemsCollected) {
+					 final int shipsDestroyed, final int accuracy, final int playTime, final int coin, final int gem, final int hitCount, final int coinItemsCollected) {
 		this.level = level;
 		this.score = score;
 		this.livesRemaining = livesRemaining;
 		this.livestwoRemaining = livestwoRemaining;
 		this.bulletsShot = bulletsShot;
 		this.shipsDestroyed = shipsDestroyed;
+		this.accuracy = accuracy;
 		this.playTime = playTime;
 		this.coin = coin; // Team-Ctrl-S(Currency)
 		this.gem = gem; // Team-Ctrl-S(Currency)
@@ -142,6 +146,13 @@ public class GameState {
 	 */
 	public final int getShipsDestroyed() {
 		return shipsDestroyed;
+	}
+
+	/**
+	 * @return the accuracy
+	 */
+	public final int getAccuracy() {
+		return accuracy;
 	}
 
 	/**

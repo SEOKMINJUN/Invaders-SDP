@@ -99,7 +99,7 @@ public final class Core {
 			// Add hitCount parameter - Ctrl S
 			// Add coinItemsCollected parameter - Ctrl S
 			gameState = new GameState(1, 0
-					, Globals.MAX_LIVES, 0,0, 0, 0, 0, 0, 0, 0);
+					, Globals.MAX_LIVES, 0,0, 0, 0, 0, 0, 0, 0, 0);
 			switch (returnCode) {
 			case 1:
 				// Main menu.
@@ -141,6 +141,7 @@ public final class Core {
 							gameState.getLivesTwoRemaining(),
 							gameState.getBulletsShot(),
 							gameState.getShipsDestroyed(),
+							gameState.getAccuracy(),
 							gameState.getTime(),
 							gameState.getCoin() + roundState.getRoundCoin(),
 							gameState.getGem(),
@@ -245,6 +246,7 @@ public final class Core {
 							gameState.getLivesTwoRemaining(),
 							gameState.getBulletsShot(),
 							gameState.getShipsDestroyed(),
+							gameState.getAccuracy(),
 							gameState.getTime(),
 							gameState.getCoin() + roundState.getRoundCoin(),
 							gameState.getGem(),

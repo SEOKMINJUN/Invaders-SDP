@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import engine.Achievement.AchievementManager;
 import engine.Achievement.AchievementType;
+import entity.Bullet;
 import lombok.Getter;
 
 public class Statistics {
@@ -37,6 +38,8 @@ public class Statistics {
     private long totalPlaytime;
     /** Additional playtime */
     private long playTime;
+    @Getter
+    private float accuracy;
 
     /** Using for save statistics */
     private List<Statistics> playerStatistics = new ArrayList<>();
@@ -54,10 +57,12 @@ public class Statistics {
      *              Number of achievements cleared
      * @param TotalPlaytime
      *              Total playtime
+     * @param accuracy
+     *              Current bullet hit accuracy
      */
 
     public Statistics(int highestLevel, int totalBulletsShot, int totalShipsDestroyed, int shipsDestructionStreak,
-                      int playedGameNumber, int clearAchievementNumber, long TotalPlaytime) {
+                      int playedGameNumber, int clearAchievementNumber, long TotalPlaytime, float accuracy) {
         this.highestLevel = highestLevel;
         this.totalBulletsShot = totalBulletsShot;
         this.totalShipsDestroyed = totalShipsDestroyed;
@@ -65,6 +70,7 @@ public class Statistics {
         this.playedGameNumber = playedGameNumber;
         this.clearAchievementNumber = clearAchievementNumber;
         this.totalPlaytime = TotalPlaytime;
+        this.accuracy = accuracy;
 
         //this.achievementConditions = new AchievementConditions();
         //this.scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -91,7 +97,7 @@ public class Statistics {
         if(CurrentHighestLevel < Level){
             playerStatistics.clear();
             playerStatistics.add(new Statistics(Level, stat.totalBulletsShot, stat.totalShipsDestroyed, stat.shipsDestructionStreak,
-                    stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
+                    stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime, stat.accuracy));
             Globals.getFileManager().saveUserData(playerStatistics);
         }
 
@@ -113,7 +119,7 @@ public class Statistics {
 
         playerStatistics.clear();
         playerStatistics.add(new Statistics(stat.highestLevel, CurrentBulletShot, stat.totalShipsDestroyed, stat.shipsDestructionStreak,
-                stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
+                stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime, stat.accuracy));
         Globals.getFileManager().saveUserData(playerStatistics);
     }
 
@@ -134,7 +140,7 @@ public class Statistics {
 
         playerStatistics.clear();
         playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, CurrentShipsDestroyed, stat.shipsDestructionStreak,
-                stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
+                stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime, stat.accuracy));
         Globals.getFileManager().saveUserData(playerStatistics);
 
         AchievementManager.getInstance().checkAchievement(AchievementType.KILLS, CurrentShipsDestroyed);
@@ -157,7 +163,7 @@ public class Statistics {
 
         playerStatistics.clear();
         playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, stat.totalShipsDestroyed, stat.shipsDestructionStreak,
-                CurrentPlayedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
+                CurrentPlayedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime, stat.accuracy));
         Globals.getFileManager().saveUserData(playerStatistics);
 
         AchievementManager.getInstance().checkAchievement(AchievementType.TRIALS, CurrentPlayedGameNumber);
@@ -173,13 +179,32 @@ public class Statistics {
      *              In case of saving problems.
      */
 
+    private Bullet lastBullet;
+    private boolean lastBulletCheckCount = true;
+
+    public void setLastBullet(Bullet bullet) {
+        this.lastBullet = bullet;
+    }
+
     public void comShipsDestructionStreak(int DestroyedShipNumber) throws IOException {
         this.stat = loadUserData(stat);
+        Bullet bullet = this.lastBullet;
+
+        if (lastBullet != null) {
+            if (!lastBullet.isCheckCount() && lastBulletCheckCount) {
+                DestroyedShipNumber += 1;
+                lastBulletCheckCount = false;
+            } else if (lastBullet.isCheckCount()) {
+                DestroyedShipNumber = 0;
+                lastBulletCheckCount = true;
+            }
+        }
+
         int CurrentShipsDestructionStreak = stat.getShipsDestructionStreak();
         if(CurrentShipsDestructionStreak < DestroyedShipNumber){
             playerStatistics.clear();
             playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, stat.totalShipsDestroyed, DestroyedShipNumber,
-                    stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime));
+                    stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime, stat.accuracy));
             Globals.getFileManager().saveUserData(playerStatistics);
         }
 
@@ -202,9 +227,23 @@ public class Statistics {
         if(CurrentClearAchievementNumber < ClearedAchievement){
             playerStatistics.clear();
             playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, stat.totalShipsDestroyed,stat.shipsDestructionStreak,
-                    stat.playedGameNumber, ClearedAchievement, stat.totalPlaytime));
+                    stat.playedGameNumber, ClearedAchievement, stat.totalPlaytime, stat.accuracy));
             Globals.getFileManager().saveUserData(playerStatistics);
         }
+    }
+
+    public void comAccuracy(float Accuracy) throws IOException {
+        this.stat = loadUserData(stat);
+        int shots = stat.getTotalBulletsShot();
+        int hits = stat.getTotalShipsDestroyed();
+        Accuracy = shots > 0 ? ((float) hits / shots) * 100 : 0;
+
+        playerStatistics.clear();
+        playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, stat.totalShipsDestroyed, stat.shipsDestructionStreak,
+                stat.playedGameNumber, stat.clearAchievementNumber, stat.totalPlaytime, Accuracy));
+        Globals.getFileManager().saveUserData(playerStatistics);
+
+        AchievementManager.getInstance().checkAchievement(AchievementType.ACCURACY, (int) Accuracy);
     }
 
     /**
@@ -223,7 +262,7 @@ public class Statistics {
 
         playerStatistics.clear();
         playerStatistics.add(new Statistics(stat.highestLevel, stat.totalBulletsShot, stat.totalShipsDestroyed, stat.shipsDestructionStreak,
-                stat.playedGameNumber, stat.clearAchievementNumber, CurrentPlaytime));
+                stat.playedGameNumber, stat.clearAchievementNumber, CurrentPlaytime, stat.accuracy));
         Globals.getFileManager().saveUserData(playerStatistics);
     }
 
@@ -245,7 +284,7 @@ public class Statistics {
     public void resetStatistics() throws IOException {
         this.playerStatistics = new ArrayList<Statistics>();
         playerStatistics.add(new Statistics(0, 0, 0, 0,
-                0, 0, 0));
+                0, 0, 0, 0));
         Globals.getFileManager().saveUserData(playerStatistics);
     }
 

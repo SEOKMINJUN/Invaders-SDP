@@ -304,17 +304,19 @@ public final class FileManager {
 			String highestLevel = reader.readLine();
 			String totalShipDestroyed = reader.readLine();
 			String clearAchievementNumber = reader.readLine();
+			String accuracy = reader.readLine();
 			String name = null;
 
 			while ((date != null) && (score != null)) {
 				recentScore = new Score(name, Integer.parseInt(score), date, Integer.parseInt(highestLevel),
-						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber));
+						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber), Float.parseFloat(accuracy));
 				recentScores.add(recentScore);
 				date = reader.readLine();
 				score = reader.readLine();
 				highestLevel = reader.readLine();
 				totalShipDestroyed = reader.readLine();
 				clearAchievementNumber = reader.readLine();
+				accuracy = reader.readLine();
 			}
 
 		} finally {
@@ -365,18 +367,19 @@ public final class FileManager {
 			String highestLevel = bufferedReader.readLine();
 			String totalShipDestroyed = bufferedReader.readLine();
 			String clearAchievementNumber = bufferedReader.readLine();
+			String accuracy = bufferedReader.readLine();
 			String name = null;
 
 			while ((date != null) && (score != null)) {
 				recentScore = new Score(name, Integer.parseInt(score), date, Integer.parseInt(highestLevel),
-						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber));
+						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber), Float.parseFloat(accuracy));
 				recentScores.add(recentScore);
 				date = bufferedReader.readLine();
 				score = bufferedReader.readLine();
 				highestLevel = bufferedReader.readLine();
 				totalShipDestroyed = bufferedReader.readLine();
 				clearAchievementNumber = bufferedReader.readLine();
-
+				accuracy = bufferedReader.readLine();
 			}
 
 		} catch (FileNotFoundException e) {
@@ -446,6 +449,8 @@ public final class FileManager {
 				bufferedWriter.newLine();
 				bufferedWriter.write(Integer.toString(score.getClearAchievementNumber()));
 				bufferedWriter.newLine();
+				bufferedWriter.write(Float.toString(score.getAccuracy()));
+				bufferedWriter.newLine();
 				savedCount++;
 			}
 			stat.resetStatistics();
@@ -495,6 +500,7 @@ public final class FileManager {
 				properties.setProperty("playedGameNumber", String.valueOf(stat.getPlayedGameNumber()));
 				properties.setProperty("clearAchievementNumber", String.valueOf(stat.getClearAchievementNumber()));
 				properties.setProperty("totalPlaytime", String.valueOf(stat.getTotalPlaytime()));
+				properties.setProperty("accuracy", String.valueOf(stat.getAccuracy()));
 			}
 			outputStream = new FileOutputStream(staticsFile);
 			properties.store(new OutputStreamWriter(outputStream, Charset.forName("UTF-8")),
@@ -545,9 +551,10 @@ public final class FileManager {
 			int playedGameNumber = Integer.parseInt(properties.getProperty("playedGameNumber"));
 			int clearAchievementNumber = Integer.parseInt(properties.getProperty("clearAchievementNumber"));
 			long totalPlaytime = Integer.parseInt(properties.getProperty("totalPlaytime"));
+			float accuracy = Float.parseFloat(properties.getProperty("accuracy"));
 
 			stat = new Statistics(highestLevel, totalBulletsShot, totalShipsDestroyed, shipsDestructionStreak,
-					playedGameNumber, clearAchievementNumber, totalPlaytime);
+					playedGameNumber, clearAchievementNumber, totalPlaytime, accuracy);
 
 		} catch (FileNotFoundException e){
 			logger.info("Loading default user statistics.");
@@ -591,9 +598,10 @@ public final class FileManager {
 			int playedGameNumber = Integer.parseInt(properties.getProperty("playedGameNumber"));
 			int clearAchievementNumber = Integer.parseInt(properties.getProperty("clearAchievementNumber"));
 			long totalPlaytime = Integer.parseInt(properties.getProperty("totalPlaytime"));
+			float accuracy = Float.parseFloat(properties.getProperty("accuracy"));
 
 			stat = new Statistics(highestLevel, totalBulletsShot, totalShipsDestroyed, shipsDestructionStreak,
-					playedGameNumber, clearAchievementNumber, totalPlaytime);
+					playedGameNumber, clearAchievementNumber, totalPlaytime, accuracy);
 
 		} finally {
 			if(inputStream != null){

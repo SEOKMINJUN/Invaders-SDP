@@ -63,6 +63,8 @@ public class GameScreen extends Screen {
 	private int bulletsShot;
 	/** Total ships destroyed by the player. */
 	public int shipsDestroyed;
+	/** Current accuracy of the player. */
+	public int accuracy;
 	/** Moment the game starts. */
 	private long gameStartTime;
 	/** Checks if the level is finished. */
@@ -151,6 +153,7 @@ public class GameScreen extends Screen {
 			this.livestwo++;
 		this.bulletsShot = gameState.getBulletsShot();
 		this.shipsDestroyed = gameState.getShipsDestroyed();
+		this.accuracy = gameState.getAccuracy();
 		this.item = new ItemBarrierAndHeart();   // team Inventory
 		this.feverTimeItem = new FeverTimeItem(); // team Inventory
 		this.speedItem = new SpeedItem();   // team Inventory
@@ -374,7 +377,9 @@ public class GameScreen extends Screen {
 				statistics.comHighestLevel(level);
 				statistics.addBulletShot(bulletsShot);
 				statistics.addShipsDestroyed(shipsDestroyed);
+				statistics.comAccuracy(accuracy);
 				AchievementManager.getInstance().checkAchievement(AchievementType.FASTKILL, fastKill);
+				AchievementManager.getInstance().checkAchievement(AchievementType.ACCURACY, accuracy);
 
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -506,7 +511,7 @@ public class GameScreen extends Screen {
 	 */
 	public final GameState getGameState() {
 		return new GameState(this.level, this.scoreManager.getAccumulatedScore(), this.lives,this.livestwo,
-				this.bulletsShot, this.shipsDestroyed, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
+				this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
 	}
 	public int getLives() {
 		return lives;
