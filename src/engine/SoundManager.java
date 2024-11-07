@@ -2,9 +2,7 @@ package engine;
 
 import javax.sound.sampled.*;
 import java.io.*;
-import java.net.URL;
 import java.util.*;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class SoundManager {
