@@ -298,6 +298,13 @@ public final class Core {
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing recent record screen.");
 				break;
+			case 6:
+				currentScreen = new CollectionsScreen(width, height, Globals.FPS);
+				LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
+						+ " collection screen at " + Globals.FPS + " fps.");
+				returnCode = frame.setScreen(currentScreen);
+				LOGGER.info("Closing collection screen.");
+				break;
 			default:
 				break;
 			}
