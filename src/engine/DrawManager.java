@@ -1,5 +1,6 @@
 package engine;
 
+import java.awt.event.KeyEvent;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
@@ -24,6 +25,8 @@ import entity.Entity;
 import level_design.Background;
 
 import javax.imageio.ImageIO;
+
+import static screen.CollectionsScreen.CollectionsScreenCode;
 
 /**
 * Manages screen drawing.
@@ -458,7 +461,7 @@ public class DrawManager {
             backBufferGraphics.setColor(Color.WHITE);
         drawCenteredRegularString(screen, RecentRecord, screen.getHeight()
                 / 4 * 2 + fontRegularMetrics.getHeight() * 6); // adjusted Height
-
+		//Collections
 		if (option == 6)
 			backBufferGraphics.setColor(Color.GREEN);
 		else
@@ -644,14 +647,21 @@ public class DrawManager {
 	}
 
 	public void drawCollectionsMenu(final Screen screen){
-		String CollectionsString = "Collections";
+		String collectionsString = "Collections";
+		String[] guideString = {"<-                       Enemies                       ->",
+								"<-                  Achievements                  ->",
+								"<-                      Items                     ->"} ;
 		String instructionsString = "Press Space to return";
 
 		backBufferGraphics.setColor(Color.GREEN);
-		drawCenteredBigString(screen, CollectionsString, screen.getHeight() / 8);
+		drawCenteredBigString(screen, collectionsString, screen.getHeight() / 8);
 
 		backBufferGraphics.setColor(Color.GRAY);
 		drawCenteredRegularString(screen, instructionsString,
+				screen.getHeight() / 6);
+
+		backBufferGraphics.setColor(Color.GRAY);
+		drawCenteredRegularString(screen, guideString[CollectionsScreenCode],
 				screen.getHeight() / 5);
 	}
 
