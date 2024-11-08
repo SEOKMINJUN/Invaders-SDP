@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 import engine.Achievement.AchievementHud;
-import HUDTeam.DrawManagerImpl;
+import engine.DrawManagerImpl;
 import engine.*;
 import entity.EntityBase;
 import lombok.Getter;
@@ -38,14 +38,12 @@ public class Screen {
 	/** Screen insets. */
 	protected Insets insets;
 	/** Time until the screen accepts user input. */
-	protected Cooldown inputDelay;
+    public Cooldown inputDelay;
 
 	/** If the screen is running. */
 	protected boolean isRunning;
 	/** What kind of screen goes next. */
 	protected int returnCode;
-	/** Checks if the game is in 2 player mode **/
-	private boolean isTwoPlayerMode;
 
 	@Getter
     private ArrayList<EntityBase> entityList;
@@ -93,7 +91,12 @@ public class Screen {
 		while (this.isRunning) {
 			long time = System.currentTimeMillis();
 
-			update();
+			if(update());
+			{
+				drawManager.initDrawing(this);
+				draw();
+				drawManager.completeDrawing(this);
+			}
 
 			time = (1000 / this.fps) - (System.currentTimeMillis() - time);
 			if (time > 0) {
@@ -111,11 +114,12 @@ public class Screen {
 	/**
 	 * Updates the elements on screen and checks for events.
 	 */
-	protected void update() {
+	protected boolean update() {
 		EntityBase entity = null;
 		while((entity = findEntityByClassname(entity, "*")) != null){
 			entity.update();
 		}
+		return false;
 	}
 
 
@@ -158,12 +162,6 @@ public class Screen {
 	 */
 	public final int getHeight() {
 		return this.height;
-	}
-	public final boolean isTwoPlayerMode() {
-		return this.isTwoPlayerMode;
-	}
-	public final void setTwoPlayerMode(boolean isTwoPlayerMode) {
-		this.isTwoPlayerMode = isTwoPlayerMode;
 	}
 
 	public final void addEntity(final EntityBase entity) {

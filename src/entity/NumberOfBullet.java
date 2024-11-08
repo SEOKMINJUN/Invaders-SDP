@@ -19,7 +19,7 @@ public class NumberOfBullet{
     private static int bulletLevel = 1;
     /** PiercingBullet levles */
     private static int piercingbulletLevel = 1;
-    private final int PierceMax = 3;
+    private final static int PierceMax = 3;
 
     /**
      * Constructor
@@ -66,7 +66,7 @@ public class NumberOfBullet{
 
     }
 
-    public void pierceup() {
+    public static void pierceup() {
         if (piercingbulletLevel < PierceMax){
             piercingbulletLevel += 1;
         }

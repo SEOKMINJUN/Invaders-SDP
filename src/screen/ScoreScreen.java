@@ -31,7 +31,7 @@ public class ScoreScreen extends Screen {
 	/** Current score. */
 	private int score;
 	/** Player lives left. */
-	private int livesRemaining;
+	private int health;
 	/** Total bullets shot by the player. */
 	private int bulletsShot;
 	/** Total ships destroyed by the player. */
@@ -84,7 +84,7 @@ public class ScoreScreen extends Screen {
 		super(width, height, fps);
 
 		this.score = gameState.getScore();
-		this.livesRemaining = gameState.getLivesRemaining();
+		this.health = gameState.getLivesRemaining();
 		this.bulletsShot = gameState.getBulletsShot();
 		this.shipsDestroyed = gameState.getShipsDestroyed();
 		this.isNewRecord = false;
@@ -96,7 +96,7 @@ public class ScoreScreen extends Screen {
 		this.gameState = gameState; // Team-Ctrl-S(Currency)
 		this.level = gameState.getLevel(); //Team Clove
 		this.statistics = new Statistics(); //Team Clove
-		this.isGameClear = this.livesRemaining > 0 && this.level > 7; // CtrlS
+		this.isGameClear = this.health > 0 && this.level > 7; // CtrlS
 
 		try {
 			this.highScores = Globals.getFileManager().loadHighScores();
@@ -129,10 +129,9 @@ public class ScoreScreen extends Screen {
 	/**
 	 * Updates the elements on screen and checks for events.
 	 */
-	protected final void update() {
+	protected final boolean update() {
 		super.update();
 
-		draw();
 		if (this.inputDelay.checkFinished()) {
 			if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
 				// Return to main menu.
@@ -149,12 +148,7 @@ public class ScoreScreen extends Screen {
 				saveRecentScore(); // Team Clove
 			} else if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 				// Play again.
-				System.out.println(this.isTwoPlayerMode());
-				if (this.isTwoPlayerMode()){
-					this.returnCode = 4;
-				} else {
-					this.returnCode = 2;
-				}
+				this.returnCode = 2;
 				this.isRunning = false;
 				if (this.isNewRecord) {
 					saveScore();
@@ -195,6 +189,7 @@ public class ScoreScreen extends Screen {
 			}
 			numberOfBullet.ResetPierceLevel();
 		}
+		return true;
 	}
 
 	/**
@@ -271,17 +266,15 @@ public class ScoreScreen extends Screen {
 	 * Draws the elements associated with the screen.
 	 */
 	protected void draw() {
-		drawManager.initDrawing(this);
 
 		drawManager.drawGameEnd(this, this.inputDelay.checkFinished(), this.isGameClear); // CtrlS
-		drawManager.drawResults(this, this.score, this.livesRemaining,
+		drawManager.drawResults(this, this.score, this.health,
 				this.shipsDestroyed, (float) this.gameState.getHitCount()
 						/ this.bulletsShot, this.gameState);
 
 		if (this.isNewRecord)
 			drawManager.drawNameInput(this, this.name, this.nameCharSelected);
 
-		super.draw();
-		drawManager.completeDrawing(this);
+		super.drawPost();
 	}
 }
