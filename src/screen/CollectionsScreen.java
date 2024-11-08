@@ -1,24 +1,25 @@
 package screen;
 
+import engine.Achievement.AchievementList;
 import engine.Core;
 import engine.Globals;
+import engine.Statistics;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Logger;
-
 public class CollectionsScreen extends Screen {
 
     public static int CollectionsScreenCode;
     private boolean checkArrow;
-    private boolean isFirst;
+    private List<Statistics> collectionsStatistics;
 
     public CollectionsScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
 
         CollectionsScreenCode = 0;
         checkArrow = false;
-        isFirst = true;
         this.returnCode = 1;
     }
 
@@ -37,23 +38,13 @@ public class CollectionsScreen extends Screen {
             this.isRunning = false;
         if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
                 && this.inputDelay.checkFinished() && !checkArrow) {
-            if (CollectionsScreenCode >= 0) {
-                CollectionsScreenCode--;
-            }
-            if (CollectionsScreenCode == -1) {
-                CollectionsScreenCode = 2;
-            }
+            CollectionsScreenCode = (CollectionsScreenCode - 1 + 3) % 3;
             //System.out.println("Activate LEFT" + CollectionsScreenCode);
             checkArrow = true;
         }
         else if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
                 && this.inputDelay.checkFinished() && !checkArrow) {
-            if (CollectionsScreenCode <= 2) {
-                CollectionsScreenCode++;
-            }
-            if (CollectionsScreenCode == 3) {
-                CollectionsScreenCode = 0;
-            }
+            CollectionsScreenCode = (CollectionsScreenCode + 1 + 3) % 3;
             //System.out.println("Activate RIGHT" + CollectionsScreenCode);
             checkArrow = true;
         }
@@ -67,6 +58,20 @@ public class CollectionsScreen extends Screen {
         drawManager.initDrawing(this);
 
         drawManager.drawCollectionsMenu(this);
+
+        switch (CollectionsScreenCode){
+            case 0:
+                drawManager.drawCollectionsData(this, collectionsStatistics);
+                break;
+            case 1:
+                System.out.println(CollectionsScreenCode);
+                break;
+            case 2:
+                System.out.println(CollectionsScreenCode);
+                break;
+            default:
+                break;
+        }
 
         super.draw();
         drawManager.completeDrawing(this);

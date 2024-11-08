@@ -1,6 +1,7 @@
 package engine;
 
 import engine.Achievement.AchievementManager;
+import entity.CollectionManager;
 import entity.ScoreManager;
 import lombok.Getter;
 import lombok.Setter;
@@ -103,6 +104,8 @@ public class Globals {
     public static AchievementManager getAchievementManager() { return AchievementManager.getInstance(); }
 
     public static SoundManager getSoundManager() { return SoundManager.getInstance(); }
+
+    public static CollectionManager getCollectionManager() { return CollectionManager.getInstance(); }
 
     public static void severe(String msg){
         getLogger().severe(msg);

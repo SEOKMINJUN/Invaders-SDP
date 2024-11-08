@@ -1,6 +1,8 @@
 package entity;
 
 import java.awt.Color;
+import java.util.HashMap;
+import java.util.Map;
 
 import engine.*;
 import engine.DrawManager.SpriteType;
@@ -27,6 +29,10 @@ public class EnemyShip extends Entity {
 	private int x; // Add by team Enemy
 	/** EnemyShip's Initial y=coordinate **/
 	private int y; // Add by team Enemy
+
+	public static Map<SpriteType, Integer> enemiesId = new HashMap<>();
+	private static int nextId = 0;
+	private int id;
 
 	/** Cooldown between sprite changes. */
 	private Cooldown animationCooldown;
@@ -65,6 +71,14 @@ public class EnemyShip extends Entity {
 		this.y = y; // Add by team enemy
 		this.speedMultiplier=1.0; // default 1.0
 		this.defaultSpeedMultiplier = 1.0;
+
+		if (enemiesId.containsKey(spriteType)) {
+			this.id = enemiesId.get(spriteType);
+		} else {
+			this.id = nextId;
+			enemiesId.put(spriteType, nextId);
+			nextId++;
+		}
 
 		switch (this.spriteType) {
 			case EnemyShipA1:
@@ -177,6 +191,7 @@ public class EnemyShip extends Entity {
 		}else{
 			SoundManager.playES("basic_enemy_die");
 		}
+		Globals.getCollectionManager().AddCollectionEnemyTypes(id);
 		this.spriteType = SpriteType.Explosion;
 
 	}

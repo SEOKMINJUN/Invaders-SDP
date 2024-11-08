@@ -8,6 +8,7 @@ class AchievementBase {
     private String Description;
     private AchievementType achievementType;
     private int gem = 0;
+    private int id;
 
     public void Achievement() {}
 
@@ -47,9 +48,10 @@ public class Achievement extends AchievementBase{
         AchievementManager.getInstance().addAchievement(this);
     }
 
-    public Achievement(String Name, String achievementDescription, int requiredValue, AchievementType type, int gem) {
+    public Achievement(String Name, String achievementDescription, int requiredValue, AchievementType type, int gem, int id) {
         this(Name, achievementDescription, requiredValue, type);
         this.setGem(gem);
+        this.setId(id);
     }
 
     public void logCompleteAchievement() {

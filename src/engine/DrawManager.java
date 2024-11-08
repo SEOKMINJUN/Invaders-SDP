@@ -731,6 +731,16 @@ public class DrawManager {
 		}
 	}
 
+	public void drawCollectionsData(final Screen screen,
+									final List<Statistics> collectionsStatistics){
+		backBufferGraphics.setColor(Color.WHITE);
+		int z = 0;
+		if(CollectionsScreenCode == 0) {
+			int[] instanceXPosition = {200, 300, 400};
+		}
+
+	}
+
 
 	/**
 	 * Draws a righted string on regular font

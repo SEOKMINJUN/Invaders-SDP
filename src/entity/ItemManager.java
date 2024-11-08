@@ -1,11 +1,13 @@
 package entity;
 
-import engine.Core;
-import engine.SoundManager;
+import engine.*;
 import screen.GameScreen;
-import engine.DrawManager;
+import screen.ScoreScreen;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -26,6 +28,7 @@ public class ItemManager {
     private SpeedItem speedItem;
     private Ship ship;
     private FeverTimeItem feverTimeItem;
+    private int[] itemGainNumber;
 
     public ItemManager(int screenHeight, DrawManager drawManager, GameScreen gameScreen) {
         this.screenHeight = screenHeight;
@@ -38,6 +41,11 @@ public class ItemManager {
         this.speedItem = gameScreen.getSpeedItem();
         this.enemyShips = new HashSet<>();
     }
+
+    public ItemManager(){
+        this.itemGainNumber = new int[8];
+    }
+
 
     public void cleanItems() {
         Set<Item> recyclable = new HashSet<>();
@@ -56,40 +64,48 @@ public class ItemManager {
     }
 
     // team Inventory
-    public void OperateItem(Item item) {
+    public void OperateItem(Item item){
         if(item!= null) {
 
             DrawManager.SpriteType whatItem = item.getSpriteType();
 
             switch (whatItem) {     // Operates according to the SpriteType of the item.
                 case ItemBomb:
+                    Globals.getCollectionManager().AddCollectionItemTypes(0);
                     Bomb.setIsbomb(true);
                     Bomb.setCanShoot(true);
                     SoundManager.playES("get_item");
                     break;
                 case ItemBarrier:
+                    Globals.getCollectionManager().AddCollectionItemTypes(1);
                     Item2.activatebarrier();
                     SoundManager.playES("get_item");
                     break;
                 case ItemHeart:
+                    Globals.getCollectionManager().AddCollectionItemTypes(2);
                     Item2.activeheart(gameScreen);
                     SoundManager.playES("get_item");
                     break;
                 case ItemFeverTime:
+                    Globals.getCollectionManager().AddCollectionItemTypes(3);
                     feverTimeItem.activate();
                     break;
                 case ItemPierce:
+                    Globals.getCollectionManager().AddCollectionItemTypes(4);
                     numberOfBullet.pierceup();
                     ship.increaseBulletSpeed();
                     SoundManager.playES("get_item");
                     break;
                 case ItemCoin:
+                    Globals.getCollectionManager().AddCollectionItemTypes(5);
                     this.logger.info("You get coin!");
                     break;
                 case ItemSpeedUp:
+                    Globals.getCollectionManager().AddCollectionItemTypes(6);
                     speedItem.activate(true, enemyShips);
                     break;
                 case ItemSpeedSlow:
+                    Globals.getCollectionManager().AddCollectionItemTypes(7);
                     speedItem.activate(false, enemyShips);
                     break;
             }
@@ -112,5 +128,4 @@ public class ItemManager {
         this.items.removeAll(recyclableItems);
         ItemPool.recycle(recyclableItems);
     }
-
 }

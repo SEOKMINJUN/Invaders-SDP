@@ -67,6 +67,8 @@ public final class Core {
 			statistics.resetStatistics();
 			LOGGER.info("Reset Player Statistics");
 
+			Globals.getCollectionManager();
+
 		} catch (Exception e) {
 			// TODO handle exception
 			e.printStackTrace();

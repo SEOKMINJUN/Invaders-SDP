@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import engine.Achievement.AchievementManager;
 import engine.Achievement.AchievementType;
 import lombok.Getter;
+import lombok.Setter;
 
 public class Statistics {
 
@@ -42,6 +43,13 @@ public class Statistics {
     private List<Statistics> playerStatistics = new ArrayList<>();
     private Statistics stat;
 
+    @Getter @Setter
+    private int[] itemsArray = new int[8];
+    @Getter @Setter
+    private int[] enemiesArray = new int[8];
+    @Getter @Setter
+    private int[] achievementsArray = new int[19];
+
     /**
      *
      * Constructor for save Variables
@@ -68,6 +76,12 @@ public class Statistics {
 
         //this.achievementConditions = new AchievementConditions();
         //this.scheduler = Executors.newSingleThreadScheduledExecutor();
+    }
+
+    public Statistics(final int[] itemsArray, final int[] achievementArray, final int[] enemiesArray){
+        this.itemsArray = itemsArray;
+        this.achievementsArray = achievementArray;
+        this.enemiesArray = enemiesArray;
     }
 
     /**
