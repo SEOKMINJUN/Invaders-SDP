@@ -2,18 +2,15 @@ package engine;
 
 import javax.sound.sampled.*;
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.logging.Level;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class SoundManager {
     private static SoundManager instance;
     static Map<String, String[]> EffectSounds;
     static Map<String, Clip> BGMs;
-    static String[][] ESFiles;
-    static String[][] BGMFiles;
+    static ArrayList<String[]> ESFiles;
+    static ArrayList<String[]> BGMFiles;
     private static Logger logger;
 /**
 * Code Description
@@ -35,14 +32,14 @@ public class SoundManager {
     private SoundManager() {
         try {
             logger = Core.getLogger();
-            BufferedReader br = new BufferedReader(new FileReader("res/sound"));
-            int ESFileCount = Objects.requireNonNull((new File("res/Sound.assets/ES")).listFiles()).length;
-            int BGMFileCount = Objects.requireNonNull((new File("res/Sound.assets/BGM")).listFiles()).length;
 
-            EffectSounds = new HashMap<String, String[]>(ESFileCount);
-            BGMs = new HashMap<String, Clip>(BGMFileCount);
-            ESFiles = new String[ESFileCount][3];
-            BGMFiles = new String[BGMFileCount][3];
+            InputStream stream = SoundManager.class.getClassLoader().getResourceAsStream("sound");
+            BufferedReader br = new BufferedReader(new InputStreamReader(stream));
+
+            EffectSounds = new HashMap<>();
+            BGMs = new HashMap<>();
+            ESFiles = new ArrayList<>();
+            BGMFiles = new ArrayList<>();
 
             int idx = 0;
             int idy = 0;
@@ -52,16 +49,12 @@ public class SoundManager {
                 // 세미콜론(;)로 구분된 데이터를 파싱
                 String[] data = line.split(";");
                 if(data[0].equals("es")){
-                    ESFiles[idx][0] = data[1];
-                    ESFiles[idx][1] = data[2];
-                    ESFiles[idx][2] = data[3];
-                    this.presetEffectSound(ESFiles[idx][0], "res/Sound.assets/ES/"+ESFiles[idx][1], Float.parseFloat(ESFiles[idx][2]));
+                    ESFiles.add(idx, new String[] {data[1], data[2], data[3]});
+                    this.presetEffectSound(ESFiles.get(idx)[0], "Sound.assets/ES/"+ ESFiles.get(idx)[1], Float.parseFloat(ESFiles.get(idx)[2]));
                     idx += 1;
                 }else if(data[0].equals("bgm")){
-                    BGMFiles[idy][0] = data[1];
-                    BGMFiles[idy][1] = data[2];
-                    BGMFiles[idy][2] = data[3];
-                    this.preloadBGM(BGMFiles[idy][0], "res/Sound.assets/BGM/"+BGMFiles[idy][1], Float.parseFloat(BGMFiles[idy][2]));
+                    BGMFiles.add(idy, new String[] {data[1], data[2], data[3]});
+                    this.preloadBGM(BGMFiles.get(idy)[0], "Sound.assets/BGM/"+ BGMFiles.get(idy)[1], Float.parseFloat(BGMFiles.get(idy)[2]));
                     idy += 1;
                 }
             }
@@ -87,9 +80,8 @@ public class SoundManager {
     public void preloadBGM(String name, String filePath, float volume){
         try {
             if (!BGMs.containsKey(name)) {
-                File soundFile = new File(filePath);
-                logger.info(soundFile.getName()+" is loading");
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+                logger.info(filePath +" is loading");
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(SoundManager.class.getClassLoader().getResource(filePath));
                 AudioFormat baseFormat = audioStream.getFormat();
                 AudioFormat targetFormat = new AudioFormat(
                         AudioFormat.Encoding.PCM_SIGNED,
@@ -111,9 +103,9 @@ public class SoundManager {
 
 //                해쉬멥에 추가
                 BGMs.put(name, clip); // 미리 로드하여 맵에 저장
-                logger.fine(soundFile.getName()+" load complete");
+                logger.fine(name+" load complete");
             }
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+        } catch (UnsupportedAudioFileException | IOException | NullPointerException | LineUnavailableException e) {
             logger.info(String.valueOf(e));
         }
     }
@@ -146,9 +138,8 @@ public class SoundManager {
         try {
             if (EffectSounds.containsKey(name)) {
                 String[] tmp = EffectSounds.get(name);
-                File soundFile = new File(tmp[0]);
-                logger.finest(soundFile.getName() + " is loading");
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(soundFile);
+                logger.finest(tmp[0] + " is loading");
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(SoundManager.class.getClassLoader().getResource(tmp[0]));
                 AudioFormat baseFormat = audioStream.getFormat();
                 AudioFormat targetFormat = new AudioFormat(
                         AudioFormat.Encoding.PCM_SIGNED,
@@ -175,12 +166,12 @@ public class SoundManager {
                             }
                         }
                 );
-                logger.finest(soundFile.getName() + " load complete");
+                logger.finest(name + " load complete");
                 return 1;
             }
             logger.warning("Failed to find Sound : " + name);
             return 0;
-        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+        } catch (UnsupportedAudioFileException | IOException | NullPointerException | LineUnavailableException e) {
             logger.info(String.valueOf(e));
             return 0;
         }
