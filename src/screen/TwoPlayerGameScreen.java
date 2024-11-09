@@ -24,9 +24,11 @@ public class TwoPlayerGameScreen extends GameScreen {
         super(gameState, gameSettings, bonusLife, width, height, fps);
         // ship2 초기화
         this.ship2 = new Ship(this.width / 4, this.height - 30, Color.BLUE); // add by team HUD
-        this.ship2.setKEY_LEFT(KeyEvent.VK_Z);
-        this.ship2.setKEY_RIGHT(KeyEvent.VK_C);
-        this.ship2.setKEY_SHOOT(KeyEvent.VK_X);
+        this.ship2.setKEY_LEFT(KeyEvent.VK_A);
+        this.ship2.setKEY_RIGHT(KeyEvent.VK_D);
+        this.ship2.setKEY_UP(KeyEvent.VK_W);
+        this.ship2.setKEY_DOWN(KeyEvent.VK_S);
+        this.ship2.setKEY_SHOOT(KeyEvent.VK_SPACE);
         this.ship2.setHealth(gameState.getLivesTwoRemaining());
         if(this.ship2.getHealth() <= 0){
             this.ship2.setDestroyed(true);
