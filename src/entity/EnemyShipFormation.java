@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import javax.swing.Timer;
 
 import engine.*;
+import screen.GameScreen;
 import screen.Screen;
 import engine.DrawManager.SpriteType;
 
@@ -106,8 +107,6 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 	/** Number of not destroyed ships. */
 	private int shipCount;
 
-	private ItemManager itemManager; //add by team Enemy
-
 	/** Directions the formation can move. */
 	private enum Direction {
 		/** Movement to the right side of the screen. */
@@ -117,10 +116,6 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 		/** Movement to the bottom of the screen. */
 		DOWN
 	};
-
-	public void setItemManager (ItemManager itemManager){//add by team Enemy
-		this.itemManager = itemManager;
-	}
 
 	/**
 	 * Constructor, sets the initial conditions.
@@ -425,7 +420,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 	 */
 	public final void destroy(final EnemyShip destroyedShip) {
 			if (Bomb.getIsBomb()) {		// team Inventory
-				Bomb.destroyByBomb(enemyShips, destroyedShip, this.itemManager , this.logger);
+				Bomb.destroyByBomb(enemyShips, destroyedShip, this.logger);
 			} else {
 				for (List<EnemyShip> column : this.enemyShips)
 					for (int i = 0; i < column.size(); i++)
@@ -527,11 +522,11 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 		}
 
 		if (bullet.getSpriteType() == SpriteType.ItemBomb && isCircle) {	// Bomb Item type1
-			int[] score = Bomb.destroyByBomb_isCircle(enemyShips, destroyedShip, this.itemManager, this.logger);
+			int[] score = Bomb.destroyByBomb_isCircle(enemyShips, destroyedShip, this.logger);
 			count = score[0];
 			point = score[1];
 		} else if (bullet.getSpriteType() == SpriteType.ItemBomb) {		// Bomb Item type2
-			int[] score = Bomb.destroyByBomb(enemyShips, destroyedShip, this.itemManager, this.logger);
+			int[] score = Bomb.destroyByBomb(enemyShips, destroyedShip, this.logger);
 			count = score[0];
 			point = score[1];
 		} else {
@@ -574,12 +569,6 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 								}
 								break;
 						}
-						if (column.get(i).getColor().equals(Color.MAGENTA)) { //add by team enemy
-							this.itemManager.dropItem(destroyedShip, 1, 1);
-						}
-
-
-
 					}
 				}
 		}

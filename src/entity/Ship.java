@@ -1,6 +1,7 @@
 package entity;
 
 import java.awt.Color;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.Set;
 
@@ -9,6 +10,8 @@ import engine.DrawManager.SpriteType;
 // Import NumberOfBullet class
 // Import ShipStatus class
 import lombok.Getter;
+import lombok.Setter;
+import screen.GameScreen;
 
 class PlayerGrowth {
 
@@ -105,6 +108,22 @@ public class Ship extends Entity {
 	private ShipStatus shipStatus;
 	/** NumberOfBullet instance*/
 	private NumberOfBullet numberOfBullet;
+	/** */
+	@Getter @Setter
+	private boolean canMove;
+	/** Key to move ship left */
+	@Setter
+	private int KEY_LEFT = KeyEvent.VK_LEFT;
+	/** Key to move ship right */
+	@Setter
+	private int KEY_RIGHT = KeyEvent.VK_RIGHT;
+	/** Key to shoot bullet */
+	@Setter
+	private int KEY_SHOOT = KeyEvent.VK_ENTER;
+	/** Ship health */
+	@Getter @Setter
+	private int health;
+
 
 	//TODO : Move health to ship from GameScreen, and Add immunity time
 
@@ -156,8 +175,6 @@ public class Ship extends Entity {
 	/**
 	 * Shoots a bullet upwards.
 	 *
-	 * @param bullets
-	 *            List of bullets on screen, to add the new bullet.
 	 * @return Checks if the bullet was shot correctly.
 	 *
 	 * You can set Number of enemies the bullet can pierce at here.
@@ -199,17 +216,45 @@ public class Ship extends Entity {
 			this.spriteType = SpriteType.ShipDestroyed;
 		else
 			this.spriteType = SpriteType.Ship;
-	}
 
-	@Override
-	public final void draw(){
-		DrawManager.drawEntity(this, getPositionX(), getPositionY());
+		if(!isPlayDestroyAnimation() && isDestroyed()){
+			// Do not draw when ship destroyed
+			this.setEnabled(false);
+		}
+
+		GameScreen screen = (GameScreen) Globals.getCurrentScreen();
+		if (!isDestroyed() && this.canMove) {
+			InputManager inputManager = Globals.getInputManager();
+
+			boolean moveRight = inputManager.isKeyDown(KEY_RIGHT);
+			boolean moveLeft = inputManager.isKeyDown(KEY_LEFT);
+
+			boolean isRightBorder = getPositionX()
+					+ this.getWidth() + this.getSpeed() > screen.getWidth() - 1;
+			boolean isLeftBorder = getPositionX()
+					- this.getSpeed() < 1;
+
+			if (moveRight && !isRightBorder) {
+				this.moveRight();
+				screen.backgroundMoveRight = true;
+			}
+			if (moveLeft && !isLeftBorder) {
+				this.moveLeft();
+				screen.backgroundMoveLeft = true;
+			}
+			if (inputManager.isKeyDown(KEY_SHOOT))
+				if (this.shoot()) {
+					screen.bulletsShot++;
+					screen.fire_id++;
+					Globals.getLogger().fine("Bullet's fire_id is " + screen.fire_id);
+				}
+		}
 	}
 
 	/**
 	 * Switches the ship to its destroyed state.
 	 */
-	public final void destroy() {
+	public final void playDestroyAnimation() {
 		this.destructionCooldown.reset();
 		SoundManager.playES("ally_airship_damage");
 	}
@@ -219,8 +264,21 @@ public class Ship extends Entity {
 	 *
 	 * @return True if the ship is currently destroyed.
 	 */
-	public final boolean isDestroyed() {
+
+	public final boolean isPlayDestroyAnimation() {
 		return !this.destructionCooldown.checkFinished();
+	}
+
+	public final boolean isDestroyed() {
+		return !(this.health > 0);
+	}
+
+	public final void setDestroyed(boolean destroyed) {
+		if(destroyed) {
+			this.destructionCooldown = Core.getCooldown(-1);
+			this.setEnabled(false);
+		}
+		else this.destructionCooldown = Core.getCooldown(1000);
 	}
 	/**
 	 * 스탯을 증가시키는 메서드들 (PlayerGrowth 클래스 사용)
@@ -275,6 +333,4 @@ public class Ship extends Entity {
 	public PlayerGrowth getPlayerGrowth() {
 		return growth;
 	}	// Team Inventory(Item)
-
-
 }

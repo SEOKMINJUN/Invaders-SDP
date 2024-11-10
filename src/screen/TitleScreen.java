@@ -91,10 +91,9 @@ public class TitleScreen extends Screen {
 	/**
 	 * Updates the elements on screen and checks for events.
 	 */
-	protected final void update() {
+	protected final boolean update() {
 		super.update();
 
-		draw();
 		if (this.selectionCooldown.checkFinished()
 				&& this.inputDelay.checkFinished()) {
 			if (inputManager.isKeyDown(KeyEvent.VK_UP)
@@ -155,6 +154,7 @@ public class TitleScreen extends Screen {
 				}
 				else this.isRunning = false;
 		}
+		return true;
 	}
 	// Use later if needed. -Starter
 	// public int getPnumSelectionCode() {return this.pnumSelectionCode;}
@@ -362,8 +362,6 @@ public class TitleScreen extends Screen {
 	 * Draws the elements associated with the screen.
 	 */
 	protected void draw() {
-		drawManager.initDrawing(this);
-
 		drawManager.drawTitle(this);
 		drawManager.drawMenu(this, this.returnCode, this.pnumSelectionCode, this.merchantState);
 		// CtrlS
@@ -371,7 +369,6 @@ public class TitleScreen extends Screen {
 		drawManager.drawCurrentGem(this, gem);
 
 		super.drawPost();
-		drawManager.completeDrawing(this);
 	}
 
 }

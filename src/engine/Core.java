@@ -9,12 +9,10 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import CtrlS.RoundState;
 import screen.ReceiptScreen;
-import level_design.Background;
 import engine.Achievement.AchievementManager;
 import screen.*;
-import twoplayermode.TwoPlayerMode;
+import screen.TwoPlayerGameScreen;
 
 /**
  * Implements core game logic.
@@ -101,7 +99,7 @@ public final class Core {
 			// Add hitCount parameter - Ctrl S
 			// Add coinItemsCollected parameter - Ctrl S
 			gameState = new GameState(1, 0
-					, Globals.MAX_LIVES, 0,0, 0, 0, 0, 0, 0, 0);
+					, Globals.MAX_LIVES, Globals.MAX_LIVES,0, 0, 0, 0, 0, 0, 0);
 			switch (returnCode) {
 			case 1:
 				// Main menu.
@@ -206,17 +204,6 @@ public final class Core {
 				SoundManager.playBGM("inGame_bgm");
 
 				do {
-					if (gameSettings == null || gameSettings.isEmpty()) {
-						gameSettings = new ArrayList<>();
-						gameSettings.add(Globals.SETTINGS_LEVEL_1);
-						gameSettings.add(Globals.SETTINGS_LEVEL_2);
-						gameSettings.add(Globals.SETTINGS_LEVEL_3);
-						gameSettings.add(Globals.SETTINGS_LEVEL_4);
-						gameSettings.add(Globals.SETTINGS_LEVEL_5);
-						gameSettings.add(Globals.SETTINGS_LEVEL_6);
-						gameSettings.add(Globals.SETTINGS_LEVEL_7);
-					}
-
 					GameSettings currentGameSettings = gameSettings.get(gameState.getLevel() - 1);
 
 					int fps = Globals.FPS;
@@ -226,8 +213,7 @@ public final class Core {
 					GameState prevState = gameState;
 
 					// TwoPlayerMode의 생성자를 호출할 때 필요한 매개변수를 모두 전달
-					currentScreen = new TwoPlayerMode(gameState, currentGameSettings, bonusLife, width, height, fps);
-					currentScreen.setTwoPlayerMode(true);
+					currentScreen = new TwoPlayerGameScreen(gameState, currentGameSettings, bonusLife, width, height, fps);
 					Statistics statistics = new Statistics(); //Clove
 
 
@@ -236,7 +222,7 @@ public final class Core {
 					frame.setScreen(currentScreen);
 					LOGGER.info("Closing game screen.");
 
-					gameState = ((TwoPlayerMode) currentScreen).getGameState();
+					gameState = ((TwoPlayerGameScreen) currentScreen).getGameState();
 
 					roundState = new RoundState(prevState, gameState);
 
@@ -290,6 +276,7 @@ public final class Core {
 						+ gameState.getShipsDestroyed() + " ships destroyed.");
 				currentScreen = new ScoreScreen(width, height, Globals.FPS, gameState);
 				returnCode = frame.setScreen(currentScreen);
+				if(returnCode == 2) returnCode = 4;
 				LOGGER.info("Closing score screen.");
 				break;
 			case 5: // 7 -> 5 replaced by Starter

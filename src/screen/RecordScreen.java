@@ -51,25 +51,23 @@ public class RecordScreen extends Screen {
     /**
      * Updates the elements on screen and checks for events.
      */
-    protected final void update() {
+    protected final boolean update() {
         super.update();
 
-        draw();
         if (inputManager.isKeyDown(KeyEvent.VK_SPACE)
                 && this.inputDelay.checkFinished())
             this.isRunning = false;
+        return true;
     }
 
     /**
      * Draws the elements associated with the screen.
      */
     protected void draw() {
-        drawManager.initDrawing(this);
 
         drawManager.drawRecordMenu(this);
         drawManager.drawRecentScores(this, this.recentScores);
 
-        super.draw();
-        drawManager.completeDrawing(this);
+        super.drawPost();
     }
 }

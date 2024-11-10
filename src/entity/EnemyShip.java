@@ -6,6 +6,7 @@ import java.util.Map;
 
 import engine.*;
 import engine.DrawManager.SpriteType;
+import screen.GameScreen;
 
 /**
  * Implements a enemy ship, to be destroyed by the player.
@@ -188,8 +189,10 @@ public class EnemyShip extends Entity {
 		this.isDestroyed = true;
 		if(this.spriteType == SpriteType.EnemyShipSpecial){
 			SoundManager.playES("special_enemy_die");
+			GameScreen.dropItem(this,1,2);
 		}else{
 			SoundManager.playES("basic_enemy_die");
+			if (getColor().equals(Color.MAGENTA)) GameScreen.dropItem(this, 1, 1);
 		}
 		Globals.getCollectionManager().AddCollectionEnemyTypes(this.spriteType);
 		this.spriteType = SpriteType.Explosion;
