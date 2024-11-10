@@ -73,7 +73,6 @@ public class AchievementManager {
             if(achievement.getGem() > 0) {
                 try {
                     Globals.getCurrencyManager().addGem(achievement.getGem());
-                    Globals.getCollectionManager().AddCollectionAchievementTypes(achievement.getId());
                 } catch (IOException e) {
                     Globals.getLogger().warning("Couldn't load gem!");
                 }

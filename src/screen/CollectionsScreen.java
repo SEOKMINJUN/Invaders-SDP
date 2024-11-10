@@ -1,7 +1,9 @@
 package screen;
 
+import engine.DrawManager;
 import engine.Globals;
 import engine.Statistics;
+import lombok.Getter;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -9,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CollectionsScreen extends Screen {
-
     public static int CollectionsScreenCode;
     private boolean checkArrow;
     private List<Statistics> collectionsStatistics;
@@ -43,13 +44,13 @@ public class CollectionsScreen extends Screen {
             this.isRunning = false;
         if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
                 && this.inputDelay.checkFinished() && !checkArrow) {
-            CollectionsScreenCode = (CollectionsScreenCode - 1 + 3) % 3;
+            CollectionsScreenCode = (CollectionsScreenCode + 7) % 8;
             //System.out.println("Activate LEFT" + CollectionsScreenCode);
             checkArrow = true;
         }
         else if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
                 && this.inputDelay.checkFinished() && !checkArrow) {
-            CollectionsScreenCode = (CollectionsScreenCode + 1 + 3) % 3;
+            CollectionsScreenCode = (CollectionsScreenCode + 1) % 8;
             //System.out.println("Activate RIGHT" + CollectionsScreenCode);
             checkArrow = true;
         }

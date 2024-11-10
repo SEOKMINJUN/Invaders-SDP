@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import engine.Achievement.AchievementHud;
+import engine.Achievement.AchievementList;
 import engine.RoundState;
 import entity.Gem;
 import entity.AddSign;
@@ -645,8 +647,13 @@ public class DrawManager {
 	public void drawCollectionsMenu(final Screen screen){
 		String collectionsString = "Collections";
 		String[] guideString = {"<-            Enemy Types and Kills             ->",
-								"<-        Achievement Types and Cleared         ->",
-								"<-             Item Types and Gets              ->"} ;
+								"<-             Item Types and Gets              ->",
+								"<-        Achievement Types and Cleared 1        ->",
+								"<-        Achievement Types and Cleared 2        ->",
+								"<-        Achievement Types and Cleared 3        ->",
+								"<-        Achievement Types and Cleared 4        ->",
+								"<-        Achievement Types and Cleared 5        ->",
+								"<-        Achievement Types and Cleared 6        ->",} ;
 		String instructionsString = "Press Space to return";
 
 		backBufferGraphics.setColor(Color.GREEN);
@@ -729,18 +736,9 @@ public class DrawManager {
 
 	public void drawCollectionsData(final Screen screen,
 									final List<Statistics> collectionsStatistics){
+		backBufferGraphics.setColor(Color.WHITE);
 		if(CollectionsScreenCode == 0) {
-			Object[][] enemySprite = {
-					{SpriteType.EnemyShipA1, "Enemy_A1", 100, 180},
-					{SpriteType.EnemyShipA2, "Enemy_A2", 100, 235},
-					{SpriteType.EnemyShipB1, "Enemy_B1", 100, 290},
-					{SpriteType.EnemyShipB2, "Enemy_B2", 100, 345},
-					{SpriteType.EnemyShipC1, "Enemy_C1", 100, 400},
-					{SpriteType.EnemyShipC2, "Enemy_C2", 100, 455},
-					{SpriteType.ExplosiveEnemyShip1, "Explosive_Enemy_1", 100, 510},
-					{SpriteType.ExplosiveEnemyShip2, "Explosive_Enemy_2", 100, 565},
-					{SpriteType.EnemyShipSpecial, "Special_Enemy",95, 630}
-			};
+			Object[][] enemySprite = Globals.getCollectionManager().getEnemySprite();
             for (Object[] objects : enemySprite) {
                 SpriteType enemy = (SpriteType) objects[0];
                 int xPosition = (int) objects[2];
@@ -762,19 +760,7 @@ public class DrawManager {
 			}
 		}
 		else if(CollectionsScreenCode == 1){
-
-		}
-		else if(CollectionsScreenCode == 2){
-			Object[][] itemSprite = {
-					{SpriteType.ItemCoin, "Coin", 100, 180},
-					{SpriteType.ItemBomb, "Bomb", 100, 235},
-					{SpriteType.ItemHeart, "Heart", 100, 290},
-					{SpriteType.ItemBarrier, "Barrier", 100, 345},
-					{SpriteType.ItemPierce, "Pierce", 100, 400},
-					{SpriteType.ItemFeverTime, "FeverTime", 100, 455},
-					{SpriteType.ItemSpeedUp, "SpeedUp", 100, 510},
-					{SpriteType.ItemSpeedSlow, "SpeedSlow", 100, 565}
-			};
+			Object[][] itemSprite = Globals.getCollectionManager().getItemSprite();
 			for (Object[] objects : itemSprite) {
 				SpriteType item = (SpriteType) objects[0];
 				int xPosition = (int) objects[2];
@@ -792,6 +778,56 @@ public class DrawManager {
 				for(int k = 0; k < itemsArray.length; k++){
 					int yPosition = (int) itemSprite[k][3];
 					drawRightedRegularString(screen, Instance[k], 500, yPosition + 12);
+				}
+			}
+		}
+		else if(CollectionsScreenCode >= 2 && CollectionsScreenCode <= 7){
+			Object[][] AchievementSet = switch (CollectionsScreenCode) {
+                case 2 -> Globals.getCollectionManager().getAchievementSet_1();
+                case 3 -> Globals.getCollectionManager().getAchievementSet_2();
+                case 4 -> Globals.getCollectionManager().getAchievementSet_3();
+                case 5 -> Globals.getCollectionManager().getAchievementSet_4();
+                case 6 -> Globals.getCollectionManager().getAchievementSet_5();
+                case 7 -> Globals.getCollectionManager().getAchievementSet_6();
+                default -> null;
+            };
+			int startIndex = switch (CollectionsScreenCode) {
+				case 2 -> 0;
+				case 3 -> 5;
+				case 4 -> 8;
+				case 5 -> 11;
+				case 6 -> 14;
+				case 7 -> 17;
+				default -> 0;
+			};
+            for (Object[] objects : AchievementSet) {
+				int xPosition = (int) objects[2];
+				int yPosition = (int) objects[3];
+				//TODO: Set the condition to be checked only if the achievement has been completed at least once.
+				boolean show = false;
+				if(show){
+					drawRightedRegularString(screen, (String)objects[1], xPosition, yPosition + 30);
+				}
+				else{
+					drawRightedRegularString(screen, "???", xPosition, yPosition + 30);
+				}
+
+				drawRightedBigString(screen, (String)objects[0], xPosition, yPosition);
+			}
+
+
+
+			for (Statistics statistics : collectionsStatistics) {
+				int[] AchievementsArray = statistics.getAchievementsArray();
+				String[] Instance = new String[AchievementSet.length];
+
+				for (int i = 0; i < Instance.length; i++) {
+					Instance[i] = String.format("%d", AchievementsArray[startIndex + i]);
+				}
+
+				for (int k = 0; k < Instance.length; k++) {
+					int yPosition = (int) AchievementSet[k][3];
+					drawRightedRegularString(screen, Instance[k], 500, yPosition);
 				}
 			}
 		}
@@ -832,6 +868,12 @@ public class DrawManager {
 	public void drawRightedRegularString(final Screen screen,
 										 final String string, final int width, final int height) {
 		backBufferGraphics.setFont(fontRegular);
+		backBufferGraphics.drawString(string, width, height);
+	}
+
+	public void drawRightedBigString(final Screen screen,
+										 final String string, final int width, final int height) {
+		backBufferGraphics.setFont(fontBig);
 		backBufferGraphics.drawString(string, width, height);
 	}
 

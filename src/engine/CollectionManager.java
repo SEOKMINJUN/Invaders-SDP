@@ -1,5 +1,6 @@
 package engine;
 
+import engine.Achievement.AchievementList;
 import engine.DrawManager.SpriteType;
 import lombok.Getter;
 
@@ -10,6 +11,70 @@ import java.util.logging.Logger;
 
 public class CollectionManager {
     public static CollectionManager instance;
+
+    @Getter
+    private Object[][] enemySprite = {
+            {DrawManager.SpriteType.EnemyShipA1, "Enemy_A1", 100, 180},
+            {DrawManager.SpriteType.EnemyShipA2, "Enemy_A2", 100, 235},
+            {DrawManager.SpriteType.EnemyShipB1, "Enemy_B1", 100, 290},
+            {DrawManager.SpriteType.EnemyShipB2, "Enemy_B2", 100, 345},
+            {DrawManager.SpriteType.EnemyShipC1, "Enemy_C1", 100, 400},
+            {DrawManager.SpriteType.EnemyShipC2, "Enemy_C2", 100, 455},
+            {DrawManager.SpriteType.ExplosiveEnemyShip1, "Explosive_Enemy_1", 100, 510},
+            {DrawManager.SpriteType.ExplosiveEnemyShip2, "Explosive_Enemy_2", 100, 565},
+            {DrawManager.SpriteType.EnemyShipSpecial, "Special_Enemy",95, 630}
+    };
+    @Getter
+    private Object[][] itemSprite = {
+            {SpriteType.ItemCoin, "Coin", 100, 180},
+            {SpriteType.ItemBomb, "Bomb", 100, 235},
+            {SpriteType.ItemHeart, "Heart", 100, 290},
+            {SpriteType.ItemBarrier, "Barrier", 100, 345},
+            {SpriteType.ItemPierce, "Pierce", 100, 400},
+            {SpriteType.ItemFeverTime, "FeverTime", 100, 455},
+            {SpriteType.ItemSpeedUp, "SpeedUp", 100, 510},
+            {SpriteType.ItemSpeedSlow, "SpeedSlow", 100, 565}
+    };
+    AchievementList achievementList = new AchievementList();
+    private final int XPosition = 60;
+    @Getter
+    private Object[][] AchievementSet_1 = {
+            {achievementList.getACHIEVEMENT_LIVE().getName(), achievementList.getACHIEVEMENT_LIVE().getDescription(), XPosition, 180},
+            {achievementList.getACHIEVEMENT_KILL_25().getName(), achievementList.getACHIEVEMENT_KILL_25().getDescription(), XPosition, 280},
+            {achievementList.getACHIEVEMENT_KILL_100().getName(), achievementList.getACHIEVEMENT_KILL_100().getDescription(), XPosition, 380},
+            {achievementList.getACHIEVEMENT_KILL_250().getName(), achievementList.getACHIEVEMENT_KILL_250().getDescription(), XPosition, 480},
+            {achievementList.getACHIEVEMENT_KILL_500().getName(), achievementList.getACHIEVEMENT_KILL_500().getDescription(), XPosition, 580},
+    };
+    @Getter
+    private Object[][] AchievementSet_2 = {
+            {achievementList.getACHIEVEMENT_TRIALS_1().getName(), achievementList.getACHIEVEMENT_TRIALS_1().getDescription(), XPosition, 180},
+            {achievementList.getACHIEVEMENT_TRIALS_10().getName(), achievementList.getACHIEVEMENT_TRIALS_10().getDescription(), XPosition, 380},
+            {achievementList.getACHIEVEMENT_TRIALS_50().getName(), achievementList.getACHIEVEMENT_TRIALS_50().getDescription(), XPosition, 580},
+    };
+    @Getter
+    private Object[][] AchievementSet_3 = {
+            {achievementList.getACHIEVEMENT_KILLSTREAKS_10().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_10().getDescription(), XPosition, 180},
+            {achievementList.getACHIEVEMENT_KILLSTREAKS_30().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_30().getDescription(), XPosition, 380},
+            {achievementList.getACHIEVEMENT_KILLSTREAKS_60().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_60().getDescription(), XPosition, 580},
+    };
+    @Getter
+    private Object[][] AchievementSet_4 = {
+            {achievementList.getACHIEVEMENT_FASTKILL_3().getName(), achievementList.getACHIEVEMENT_FASTKILL_3().getDescription(), XPosition, 180},
+            {achievementList.getACHIEVEMENT_FASTKILL_5().getName(), achievementList.getACHIEVEMENT_FASTKILL_5().getDescription(), XPosition, 380},
+            {achievementList.getACHIEVEMENT_FASTKILL_15().getName(), achievementList.getACHIEVEMENT_FASTKILL_15().getDescription(), XPosition, 580},
+    };
+    @Getter
+    private Object[][] AchievementSet_5 = {
+            {achievementList.getACHIEVEMENT_SCORE_1000().getName(), achievementList.getACHIEVEMENT_SCORE_1000().getDescription(), XPosition, 180},
+            {achievementList.getACHIEVEMENT_SCORE_15000().getName(), achievementList.getACHIEVEMENT_SCORE_15000().getDescription(), XPosition, 380},
+            {achievementList.getACHIEVEMENT_SCORE_30000().getName(), achievementList.getACHIEVEMENT_SCORE_30000().getDescription(), XPosition, 580},
+    };
+    @Getter
+    private Object[][] AchievementSet_6 = {
+            {achievementList.getACHIEVEMENT_STAGE_MAX().getName(), achievementList.getACHIEVEMENT_STAGE_MAX().getDescription(), XPosition, 180},
+            {achievementList.getACHIEVEMENT_ALL().getName(), achievementList.getACHIEVEMENT_ALL().getDescription(), XPosition, 450},
+    };
+
 
     private static Logger logger;
 
@@ -97,6 +162,8 @@ public class CollectionManager {
         collection.setAchievementsArray(achievementTypes);
         logger.info("Added achievement type " + i + " to collection : " + achievementTypes[i]);
     }
+
+
 
 
 }
