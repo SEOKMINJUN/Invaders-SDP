@@ -191,7 +191,7 @@ public class EnemyShip extends Entity {
 		}else{
 			SoundManager.playES("basic_enemy_die");
 		}
-		Globals.getCollectionManager().AddCollectionEnemyTypes(id);
+		Globals.getCollectionManager().AddCollectionEnemyTypes(this.spriteType);
 		this.spriteType = SpriteType.Explosion;
 
 	}

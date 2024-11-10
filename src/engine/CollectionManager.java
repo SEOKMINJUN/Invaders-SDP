@@ -1,11 +1,8 @@
-package entity;
+package engine;
 
-import engine.Globals;
-import engine.Statistics;
+import engine.DrawManager.SpriteType;
 import lombok.Getter;
-import lombok.Setter;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -61,10 +58,38 @@ public class CollectionManager {
         logger.info("Added item type " + i + " to collection : " + itemTypes[i]);
     }
 
-    public void AddCollectionEnemyTypes(int i) {
-        enemyTypes[i]++;
+    public void AddCollectionEnemyTypes(SpriteType spriteType) {
+        switch (spriteType){
+            case EnemyShipA1:
+                enemyTypes[0]++;
+                break;
+            case EnemyShipA2:
+                enemyTypes[1]++;
+                break;
+            case EnemyShipB1:
+                enemyTypes[2]++;
+                break;
+            case EnemyShipB2:
+                enemyTypes[3]++;
+                break;
+            case EnemyShipC1:
+                enemyTypes[4]++;
+                break;
+            case EnemyShipC2:
+                enemyTypes[5]++;
+                break;
+            case ExplosiveEnemyShip1:
+                enemyTypes[6]++;
+                break;
+            case ExplosiveEnemyShip2:
+                enemyTypes[7]++;
+                break;
+            case EnemyShipSpecial:
+                enemyTypes[8]++;
+                break;
+        }
+        logger.info("Added enemy type " + spriteType + " to collection");
         collection.setEnemiesArray(enemyTypes);
-        logger.info("Added enemy type " + i + " to collection : " + enemyTypes[i]);
     }
 
     public void AddCollectionAchievementTypes(int i) {

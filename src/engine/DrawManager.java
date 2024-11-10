@@ -1,11 +1,7 @@
 package engine;
 
+import java.awt.*;
 import java.awt.event.KeyEvent;
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -733,12 +729,63 @@ public class DrawManager {
 
 	public void drawCollectionsData(final Screen screen,
 									final List<Statistics> collectionsStatistics){
-		backBufferGraphics.setColor(Color.WHITE);
-		int z = 0;
+		int m = 0;
+		Object[][] enemySprite = {
+				{SpriteType.EnemyShipA1, 100, 180},
+				{SpriteType.EnemyShipA2, 100, 235},
+				{SpriteType.EnemyShipB1, 100, 290},
+				{SpriteType.EnemyShipB2, 100, 345},
+				{SpriteType.EnemyShipC1, 100, 400},
+				{SpriteType.EnemyShipC2, 100, 455},
+				{SpriteType.ExplosiveEnemyShip1, 100, 510},
+				{SpriteType.ExplosiveEnemyShip2, 100, 565},
+				{SpriteType.EnemyShipSpecial, 95, 630}
+		};
 		if(CollectionsScreenCode == 0) {
-			int[] instanceXPosition = {200, 300, 400};
-		}
+			for (int i = 0; i < enemySprite.length; i++) {
+				SpriteType ship = (SpriteType) enemySprite[i][0];
+				int xPosition = (int) enemySprite[i][1];
+				int yPosition = (int) enemySprite[i][2];
+				drawSprite(ship, xPosition, yPosition, Color.WHITE);
+			}
+			for (Statistics statistics : collectionsStatistics) {
+				int[] enemiesArray = statistics.getEnemiesArray();
+				String[] Instance = new String[enemiesArray.length];
 
+				for (int i = 0; i < enemiesArray.length; i++) {
+					Instance[i] = String.format("%d", enemiesArray[i]);
+				}
+				for(int k = 0; k < enemiesArray.length; k++){
+					int yPosition = (int) enemySprite[k][2];
+					drawRightedRegularString(screen, Instance[k], 500, yPosition + 12);
+				}
+			}
+		}
+		else if(CollectionsScreenCode == 1){
+
+		}
+		else if(CollectionsScreenCode == 2){
+
+		}
+	}
+
+	public static void drawSprite(final SpriteType spriteType, final int positionX, final int positionY, Color color) {
+		try {
+			boolean[][] image = spriteMap.get(spriteType);
+
+			backBufferGraphics.setColor(color);
+
+			for (int i = 0; i < image.length; i++) {
+				for (int j = 0; j < image[i].length; j++) {
+					if (image[i][j]) {
+						backBufferGraphics.fillRect(positionX + i * 2, positionY + j * 2, 2, 2);
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			System.exit(1);
+		}
 	}
 
 

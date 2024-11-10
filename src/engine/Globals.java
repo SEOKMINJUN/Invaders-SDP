@@ -1,7 +1,6 @@
 package engine;
 
 import engine.Achievement.AchievementManager;
-import entity.CollectionManager;
 import entity.ScoreManager;
 import lombok.Getter;
 import lombok.Setter;

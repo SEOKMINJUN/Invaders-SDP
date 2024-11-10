@@ -46,7 +46,7 @@ public class Statistics {
     @Getter @Setter
     private int[] itemsArray = new int[8];
     @Getter @Setter
-    private int[] enemiesArray = new int[8];
+    private int[] enemiesArray = new int[9];
     @Getter @Setter
     private int[] achievementsArray = new int[19];
 

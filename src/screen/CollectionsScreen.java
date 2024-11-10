@@ -7,6 +7,7 @@ import engine.Statistics;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 public class CollectionsScreen extends Screen {
@@ -17,6 +18,12 @@ public class CollectionsScreen extends Screen {
 
     public CollectionsScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
+        collectionsStatistics = new ArrayList<Statistics>();
+        try {
+            this.collectionsStatistics.add(Globals.getFileManager().loadCollections());
+        } catch (NumberFormatException | IOException e) {
+            logger.warning("Couldn't load records!");
+        }
 
         CollectionsScreenCode = 0;
         checkArrow = false;
