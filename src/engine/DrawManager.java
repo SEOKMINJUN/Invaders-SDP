@@ -10,12 +10,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import CtrlS.RoundState;
 import entity.Gem;
 import entity.AddSign;
 import entity.Coin;
 import entity.Bomb;
 import screen.Screen;
 import entity.Entity;
+
+import level_design.Background;
 
 import javax.imageio.ImageIO;
 

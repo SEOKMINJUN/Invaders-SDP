@@ -65,20 +65,7 @@ public class CollectionsScreen extends Screen {
         drawManager.initDrawing(this);
 
         drawManager.drawCollectionsMenu(this);
-
-        switch (CollectionsScreenCode){
-            case 0:
-                drawManager.drawCollectionsData(this, collectionsStatistics);
-                break;
-            case 1:
-                System.out.println(CollectionsScreenCode);
-                break;
-            case 2:
-                System.out.println(CollectionsScreenCode);
-                break;
-            default:
-                break;
-        }
+        drawManager.drawCollectionsData(this, collectionsStatistics);
 
         super.draw();
         drawManager.completeDrawing(this);
