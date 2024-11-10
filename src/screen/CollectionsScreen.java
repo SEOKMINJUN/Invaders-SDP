@@ -1,7 +1,5 @@
 package screen;
 
-import engine.Achievement.AchievementList;
-import engine.Core;
 import engine.Globals;
 import engine.Statistics;
 
@@ -9,7 +7,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
+
 public class CollectionsScreen extends Screen {
 
     public static int CollectionsScreenCode;
@@ -36,7 +34,7 @@ public class CollectionsScreen extends Screen {
         return this.returnCode;
     }
 
-    protected final void update() {
+    protected final boolean update() {
         super.update();
 
         draw();
@@ -59,6 +57,7 @@ public class CollectionsScreen extends Screen {
         if (!inputManager.isKeyDown(KeyEvent.VK_LEFT) && !inputManager.isKeyDown(KeyEvent.VK_RIGHT)) {
             checkArrow = false;
         }
+        return false;
     }
 
     protected void draw() {

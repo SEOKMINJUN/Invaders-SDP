@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import CtrlS.RoundState;
+import engine.RoundState;
 import entity.Gem;
 import entity.AddSign;
 import entity.Coin;
@@ -18,7 +18,7 @@ import entity.Bomb;
 import screen.Screen;
 import entity.Entity;
 
-import level_design.Background;
+import engine.Background;
 
 import javax.imageio.ImageIO;
 
@@ -644,9 +644,9 @@ public class DrawManager {
 
 	public void drawCollectionsMenu(final Screen screen){
 		String collectionsString = "Collections";
-		String[] guideString = {"<-                       Enemies                       ->",
-								"<-                  Achievements                  ->",
-								"<-                      Items                     ->"} ;
+		String[] guideString = {"<-            Enemy Types and Kills             ->",
+								"<-        Achievement Types and Cleared         ->",
+								"<-             Item Types and Gets              ->"} ;
 		String instructionsString = "Press Space to return";
 
 		backBufferGraphics.setColor(Color.GREEN);
@@ -729,25 +729,25 @@ public class DrawManager {
 
 	public void drawCollectionsData(final Screen screen,
 									final List<Statistics> collectionsStatistics){
-		int m = 0;
-		Object[][] enemySprite = {
-				{SpriteType.EnemyShipA1, 100, 180},
-				{SpriteType.EnemyShipA2, 100, 235},
-				{SpriteType.EnemyShipB1, 100, 290},
-				{SpriteType.EnemyShipB2, 100, 345},
-				{SpriteType.EnemyShipC1, 100, 400},
-				{SpriteType.EnemyShipC2, 100, 455},
-				{SpriteType.ExplosiveEnemyShip1, 100, 510},
-				{SpriteType.ExplosiveEnemyShip2, 100, 565},
-				{SpriteType.EnemyShipSpecial, 95, 630}
-		};
 		if(CollectionsScreenCode == 0) {
-			for (int i = 0; i < enemySprite.length; i++) {
-				SpriteType ship = (SpriteType) enemySprite[i][0];
-				int xPosition = (int) enemySprite[i][1];
-				int yPosition = (int) enemySprite[i][2];
-				drawSprite(ship, xPosition, yPosition, Color.WHITE);
-			}
+			Object[][] enemySprite = {
+					{SpriteType.EnemyShipA1, "Enemy_A1", 100, 180},
+					{SpriteType.EnemyShipA2, "Enemy_A2", 100, 235},
+					{SpriteType.EnemyShipB1, "Enemy_B1", 100, 290},
+					{SpriteType.EnemyShipB2, "Enemy_B2", 100, 345},
+					{SpriteType.EnemyShipC1, "Enemy_C1", 100, 400},
+					{SpriteType.EnemyShipC2, "Enemy_C2", 100, 455},
+					{SpriteType.ExplosiveEnemyShip1, "Explosive_Enemy_1", 100, 510},
+					{SpriteType.ExplosiveEnemyShip2, "Explosive_Enemy_2", 100, 565},
+					{SpriteType.EnemyShipSpecial, "Special_Enemy",95, 630}
+			};
+            for (Object[] objects : enemySprite) {
+                SpriteType enemy = (SpriteType) objects[0];
+                int xPosition = (int) objects[2];
+                int yPosition = (int) objects[3];
+                drawRightedRegularString(screen, (String)objects[1], 200, yPosition + 12);
+                drawSprite(enemy, xPosition, yPosition, Color.WHITE);
+            }
 			for (Statistics statistics : collectionsStatistics) {
 				int[] enemiesArray = statistics.getEnemiesArray();
 				String[] Instance = new String[enemiesArray.length];
@@ -756,7 +756,7 @@ public class DrawManager {
 					Instance[i] = String.format("%d", enemiesArray[i]);
 				}
 				for(int k = 0; k < enemiesArray.length; k++){
-					int yPosition = (int) enemySprite[k][2];
+					int yPosition = (int) enemySprite[k][3];
 					drawRightedRegularString(screen, Instance[k], 500, yPosition + 12);
 				}
 			}
@@ -765,7 +765,35 @@ public class DrawManager {
 
 		}
 		else if(CollectionsScreenCode == 2){
+			Object[][] itemSprite = {
+					{SpriteType.ItemCoin, "Coin", 100, 180},
+					{SpriteType.ItemBomb, "Bomb", 100, 235},
+					{SpriteType.ItemHeart, "Heart", 100, 290},
+					{SpriteType.ItemBarrier, "Barrier", 100, 345},
+					{SpriteType.ItemPierce, "Pierce", 100, 400},
+					{SpriteType.ItemFeverTime, "FeverTime", 100, 455},
+					{SpriteType.ItemSpeedUp, "SpeedUp", 100, 510},
+					{SpriteType.ItemSpeedSlow, "SpeedSlow", 100, 565}
+			};
+			for (Object[] objects : itemSprite) {
+				SpriteType item = (SpriteType) objects[0];
+				int xPosition = (int) objects[2];
+				int yPosition = (int) objects[3];
+				drawRightedRegularString(screen, (String)objects[1], 200, yPosition + 12);
+				drawSprite(item, xPosition, yPosition, Color.WHITE);
+			}
+			for (Statistics statistics : collectionsStatistics) {
+				int[] itemsArray = statistics.getItemsArray();
+				String[] Instance = new String[itemsArray.length];
 
+				for (int i = 0; i < itemsArray.length; i++) {
+					Instance[i] = String.format("%d", itemsArray[i]);
+				}
+				for(int k = 0; k < itemsArray.length; k++){
+					int yPosition = (int) itemSprite[k][3];
+					drawRightedRegularString(screen, Instance[k], 500, yPosition + 12);
+				}
+			}
 		}
 	}
 
