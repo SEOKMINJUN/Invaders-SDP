@@ -1,11 +1,14 @@
 package entity;
 
 import java.awt.Color;
+import java.util.Collection;
+import java.util.HashSet;
 
 import engine.Core;
 import engine.DrawManager;
 import engine.DrawManager.SpriteType;
 import engine.Globals;
+import engine.SoundManager;
 import screen.GameScreen;
 
 public class Item extends Entity {
@@ -79,19 +82,55 @@ public class Item extends Entity {
         Ship ship = null;
         while((ship = (Ship) screen.findEntityByClassname(ship, "Ship")) != null){
             if (checkCollision(ship)) {
-                screen.itemManager.OperateItem(this);
+                switch (getSpriteType()) {     // Operates according to the SpriteType of the item.
+                    case ItemBomb:
+                        Bomb.setIsbomb(true);
+                        Bomb.setCanShoot(true);
+                        SoundManager.playES("get_item");
+                        break;
+                    case ItemBarrier:
+                        screen.getItem().activatebarrier();
+                        SoundManager.playES("get_item");
+                        break;
+                    case ItemHeart:
+                        screen.getItem().activeheart(ship);
+                        SoundManager.playES("get_item");
+                        break;
+                    case ItemFeverTime:
+                        screen.getFeverTimeItem().activate();
+                        break;
+                    case ItemPierce:
+                        NumberOfBullet.pierceup();
+                        ship.increaseBulletSpeed();
+                        SoundManager.playES("get_item");
+                        break;
+                    case ItemCoin:
+                        Core.getLogger().info("You get coin!");
+                        break;
+                    case ItemSpeedUp:
+                        screen.getSpeedItem().activate(true, new HashSet<>((Collection<EnemyShip>) screen.getEnemyShipFormation()));
+                        break;
+                    case ItemSpeedSlow:
+                        screen.getSpeedItem().activate(false, new HashSet<>((Collection<EnemyShip>) screen.getEnemyShipFormation()));
+                        break;
+                }
+
+                remove();
+
+                String itemLog = getSpriteType().toString().toLowerCase().substring(4);
+                // Sound Operator
+                if (itemLog.equals("coin")){
+                    SoundManager.playES("item_coin");
+                }
+
+                if (!itemLog.equals("coin")) {
+                    Core.getLogger().info("get " + itemLog + " item");   // Change log for each item
+                }
                 // CtrlS: Count coin
                 if (getSpriteType() == DrawManager.SpriteType.ItemCoin) screen.coinItemsCollected++;
                 Core.getLogger().info("coin: " + screen.coinItemsCollected);
             }
-            remove();
         }
-    }
-
-    @Override
-    public void remove(){
-        this.setEnabled(false);
-        ItemPool.recycle(this);
     }
 
     public final void setSpeed(final int speed) {

@@ -62,7 +62,6 @@ public class Obstacle extends Entity {
         } else {
             // If destroyed, check if the explosion animation should finish
             if (this.explosionCooldown != null && this.explosionCooldown.checkFinished()) {
-                Globals.getLogger().info("kill obstacle : end explosion");
                 this.remove();
                 return;
             }
@@ -70,28 +69,27 @@ public class Obstacle extends Entity {
 
         if (getPositionY() > Globals.getCurrentScreen().getHeight() - 70 ||
                 getPositionY() < Globals.GAME_SCREEN_SEPARATION_LINE_HEIGHT) {
-            Globals.getLogger().info("kill obstacle : end position");
             this.remove();
             return;
         }
 
-        Ship entity = null;
+        Ship ship = null;
         GameScreen screen = (GameScreen) Globals.getCurrentScreen();
-        while((entity = (Ship)screen.findEntityByClassname(entity, "Ship")) != null){
-            if(!isDestroyed() && checkCollision(entity)){
+        while((ship = (Ship)screen.findEntityByClassname(ship, "Ship")) != null){
+            if(!isDestroyed() && !ship.isPlayDestroyAnimation() && checkCollision(ship)){
                 //Obstacles ignored when barrier activated_team inventory
-                int lives = screen.getLives();
+                int health = ship.getHealth();
                 if (!screen.getItem().isbarrierActive()) {
-                    lives -= 1;
-                    screen.setLives(lives);
-                    if (!entity.isDestroyed()) {
-                        entity.destroy();  // Optionally, destroy the ship or apply other effects.
+                    health -= 1;
+                    ship.setHealth(health);
+                    if (!ship.isDestroyed()) {
+                        ship.playDestroyAnimation();  // Optionally, playDestroyAnimation the ship or apply other effects.
                     }
                     this.destroy();  // Destroy obstacle
-                    Globals.getLogger().info("Ship hit an obstacle, " + lives + " lives remaining.");
+                    Globals.getLogger().info("Ship hit an obstacle, " + health + " lives remaining.");
                 } else {
                     this.destroy();  // Destroy obstacle
-                    Globals.getLogger().info("Shield blocked the hit from an obstacle, " + lives + " lives remaining.");
+                    Globals.getLogger().info("Shield blocked the hit from an obstacle, " + health + " lives remaining.");
                 }
             }
             break;

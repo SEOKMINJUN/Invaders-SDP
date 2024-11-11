@@ -28,8 +28,6 @@ public class ItemBarrierAndHeart {
                 ship.setSpriteType(DrawManager.SpriteType.Ship);
                 deactivatebarrier();    // deactive barrier
             }
-        } else {    // When barrier is not active, call the ship's update()
-            ship.update();
         }
     }
 
@@ -48,9 +46,10 @@ public class ItemBarrierAndHeart {
     }
 
     //heart
-    public void activeheart(GameScreen gameScreen) {
-        if (gameScreen.getLives() < MAX_LIVES) {
-            gameScreen.setLives(gameScreen.getLives() + 1);
+    public void activeheart(Ship ship) {
+        int health = ship.getHealth();
+        if (health < MAX_LIVES) {
+            ship.setHealth(health + 1);
         }
     }
 }
