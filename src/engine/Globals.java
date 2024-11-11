@@ -104,6 +104,8 @@ public class Globals {
 
     public static SoundManager getSoundManager() { return SoundManager.getInstance(); }
 
+    public static CollectionManager getCollectionManager() { return CollectionManager.getInstance(); }
+
     public static void severe(String msg){
         getLogger().severe(msg);
     }

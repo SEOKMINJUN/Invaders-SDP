@@ -86,31 +86,39 @@ public class Item extends Entity {
                     case ItemBomb:
                         Bomb.setIsbomb(true);
                         Bomb.setCanShoot(true);
+                        Globals.getCollectionManager().AddCollectionItemTypes(1);
                         SoundManager.playES("get_item");
                         break;
                     case ItemBarrier:
                         screen.getItem().activatebarrier();
+                        Globals.getCollectionManager().AddCollectionItemTypes(3);
                         SoundManager.playES("get_item");
                         break;
                     case ItemHeart:
                         screen.getItem().activeheart(ship);
+                        Globals.getCollectionManager().AddCollectionItemTypes(2);
                         SoundManager.playES("get_item");
                         break;
                     case ItemFeverTime:
+                        Globals.getCollectionManager().AddCollectionItemTypes(5);
                         screen.getFeverTimeItem().activate();
                         break;
                     case ItemPierce:
                         NumberOfBullet.pierceup();
                         ship.increaseBulletSpeed();
+                        Globals.getCollectionManager().AddCollectionItemTypes(4);
                         SoundManager.playES("get_item");
                         break;
                     case ItemCoin:
+                        Globals.getCollectionManager().AddCollectionItemTypes(0);
                         Core.getLogger().info("You get coin!");
                         break;
                     case ItemSpeedUp:
+                        Globals.getCollectionManager().AddCollectionItemTypes(6);
                         screen.getSpeedItem().activate(true, new HashSet<>((Collection<EnemyShip>) screen.getEnemyShipFormation()));
                         break;
                     case ItemSpeedSlow:
+                        Globals.getCollectionManager().AddCollectionItemTypes(7);
                         screen.getSpeedItem().activate(false, new HashSet<>((Collection<EnemyShip>) screen.getEnemyShipFormation()));
                         break;
                 }

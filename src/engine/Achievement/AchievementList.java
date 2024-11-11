@@ -1,10 +1,12 @@
 package engine.Achievement;
 
+import lombok.Getter;
+
 import static engine.Globals.NUM_LEVELS;
 
-
+@Getter
 public class AchievementList {
-    Achievement ACHIEVEMENT_LIVE            = (new Achievement("Aerobatics","Maintain Maximum Life",3, AchievementType.LIVES));
+    Achievement ACHIEVEMENT_LIVE            = (new Achievement("Aerobatics","Maintain Maximum Life",3, AchievementType.LIVES, 1));
     Achievement ACHIEVEMENT_KILL_25         = (new Achievement("Rookie Pilot", "Destroy 25 enemies", 25, AchievementType.KILLS, 1));
     Achievement ACHIEVEMENT_KILL_100        = (new Achievement("Space Hunter", "Destroy 50 enemies", 100, AchievementType.KILLS, 1));
     Achievement ACHIEVEMENT_KILL_250        = (new Achievement("Space Trooper", "Destroy 100 enemies", 250, AchievementType.KILLS, 1));
