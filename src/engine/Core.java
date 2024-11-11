@@ -211,7 +211,6 @@ public final class Core {
 
 					GameState prevState = gameState;
 
-					// TwoPlayerMode의 생성자를 호출할 때 필요한 매개변수를 모두 전달
 					currentScreen = new TwoPlayerGameScreen(gameState, currentGameSettings, bonusLife, width, height, fps);
 					Statistics statistics = new Statistics(); //Clove
 

@@ -45,7 +45,7 @@ public class TwoPlayerGameScreen extends GameScreen {
     @Override
     public GameState getGameState() {
         return new GameState(this.getLevel(), this.scoreManager.getAccumulatedScore(), getShip1().getHealth(), ship2.getHealth(),
-                this.bulletsShot, this.shipsDestroyed, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
+                this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
     }
 
     @Override
@@ -65,7 +65,6 @@ public class TwoPlayerGameScreen extends GameScreen {
                 this.statistics.comHighestLevel(this.getLevel());
                 this.statistics.addBulletShot(bulletsShot);
                 this.statistics.addShipsDestroyed(shipsDestroyed);
-                AchievementManager.getInstance().checkAchievement(AchievementType.FASTKILL, this.fastKill);
 
             } catch (IOException e) {
                 throw new RuntimeException(e);

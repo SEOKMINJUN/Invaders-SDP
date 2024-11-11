@@ -64,7 +64,7 @@ public class GameScreen extends Screen {
 	/** Total ships destroyed by the player. */
 	public int shipsDestroyed;
 	/** Current accuracy of the player. */
-	public int accuracy;
+	public float accuracy;
 	/** Kill streak by the player. */
 	public int maxShipsDestructionStreak;
 	/** Moment the game starts. */
@@ -112,7 +112,7 @@ public class GameScreen extends Screen {
 	/** Score calculation. */
     protected ScoreManager scoreManager;    //clove
 
-	private Statistics statistics; //Team Clove
+	Statistics statistics; //Team Clove
 
 	/** CtrlS: Count the number of coin collected in game */
     public int coinItemsCollected;
@@ -333,7 +333,7 @@ public class GameScreen extends Screen {
 				statistics.checkAndUpdateStreak();
 				statistics.comShipsDestructionStreak(maxShipsDestructionStreak);
 				AchievementManager.getInstance().checkAchievement(AchievementType.KILLSTREAKS, maxShipsDestructionStreak);
-				AchievementManager.getInstance().checkAchievement(AchievementType.ACCURACY, accuracy);
+				AchievementManager.getInstance().checkAchievement(AchievementType.ACCURACY, (int) accuracy);
 
 			} catch (IOException e) {
 				throw new RuntimeException(e);
@@ -463,7 +463,7 @@ public class GameScreen extends Screen {
 	 *
 	 * @return Current game state.
 	 */
-	public final GameState getGameState() {
+	public GameState getGameState() {
 		return new GameState(this.level, this.scoreManager.getAccumulatedScore(), ship1.getHealth(), 0,
 				this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
 	}
