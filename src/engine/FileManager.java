@@ -542,7 +542,7 @@ public final class FileManager {
 			inputStream = new FileInputStream(staticsFile);
 			properties.load(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
 
-			logger.info("Loading Player Statistic.");
+			//logger.info("Loading Player Statistic.");
 
 			int highestLevel = Integer.parseInt(properties.getProperty("highestLevel"));
 			int totalBulletsShot = Integer.parseInt(properties.getProperty("totalBulletsShot"));

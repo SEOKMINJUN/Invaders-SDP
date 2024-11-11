@@ -102,6 +102,8 @@ public class Globals {
 
     public static AchievementManager getAchievementManager() { return AchievementManager.getInstance(); }
 
+    public static Statistics getStatistics() { return Statistics.getInstance(); }
+
     public static SoundManager getSoundManager() { return SoundManager.getInstance(); }
 
     public static void severe(String msg){

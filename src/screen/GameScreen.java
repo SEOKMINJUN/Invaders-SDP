@@ -65,6 +65,8 @@ public class GameScreen extends Screen {
 	public int shipsDestroyed;
 	/** Current accuracy of the player. */
 	public int accuracy;
+	/** Kill streak by the player. */
+	public int maxShipsDestructionStreak;
 	/** Moment the game starts. */
 	private long gameStartTime;
 	/** Checks if the level is finished. */
@@ -115,7 +117,6 @@ public class GameScreen extends Screen {
 	private ScoreManager scoreManager;    //clove
 
 	private Statistics statistics; //Team Clove
-	private int fastKill;
 
 	/** CtrlS: Count the number of coin collected in game */
     public int coinItemsCollected;
@@ -182,6 +183,7 @@ public class GameScreen extends Screen {
 	 */
 	public void initialize() {
 		super.initialize();
+		this.statistics = new Statistics();
 		/** initialize background **/
 		drawManager.loadBackground(this.level);
 
@@ -310,8 +312,25 @@ public class GameScreen extends Screen {
 			this.item.updateBarrierAndShip(this.ship);   // team Inventory
 			this.speedItem.update();         // team Inventory
 			this.feverTimeItem.update();
+
+			int previousRemainingEnemies = getRemainingEnemies();
+
 			this.enemyShipFormation.update();
 			this.enemyShipFormation.shoot();
+
+			int currentRemainingEnemies = getRemainingEnemies();
+			int destroyedEnemies = previousRemainingEnemies - currentRemainingEnemies;
+
+			if (destroyedEnemies > 0) {
+				this.shipsDestroyed += destroyedEnemies;
+				try {
+					for (int i = 0; i < destroyedEnemies; i++) {
+						statistics.addShipsDestroyed(1);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		this.itemManager.cleanItems(); //by Enemy team
 
@@ -378,7 +397,9 @@ public class GameScreen extends Screen {
 				statistics.addBulletShot(bulletsShot);
 				statistics.addShipsDestroyed(shipsDestroyed);
 				statistics.comAccuracy(accuracy);
-				AchievementManager.getInstance().checkAchievement(AchievementType.FASTKILL, fastKill);
+				statistics.checkAndUpdateStreak();
+				statistics.comShipsDestructionStreak(maxShipsDestructionStreak);
+				AchievementManager.getInstance().checkAchievement(AchievementType.KILLSTREAKS, maxShipsDestructionStreak);
 				AchievementManager.getInstance().checkAchievement(AchievementType.ACCURACY, accuracy);
 
             } catch (IOException e) {

@@ -1,7 +1,9 @@
 package entity;
 
 import java.awt.Color;
+import java.io.IOException;
 
+import engine.Statistics;
 import engine.DrawManager.SpriteType;
 
 /**
