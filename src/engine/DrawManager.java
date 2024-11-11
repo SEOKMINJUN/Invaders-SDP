@@ -644,10 +644,14 @@ public class DrawManager {
 				screen.getHeight() / 5);
 	}
 
+	/**
+	 * Draws Collection screen title and instructions.
+	 * @param screen Screen to draw on
+	 */
 	public void drawCollectionsMenu(final Screen screen){
 		String collectionsString = "Collections";
 		String[] guideString = {"<-            Enemy Types and Kills             ->",
-								"<-             Item Types and Gets              ->",
+								"<-             Item Types and Gains              ->",
 								"<-        Achievement Types and Cleared 1        ->",
 								"<-        Achievement Types and Cleared 2        ->",
 								"<-        Achievement Types and Cleared 3        ->",
@@ -734,6 +738,12 @@ public class DrawManager {
 		}
 	}
 
+	/**
+	 * draw Collections
+	 * decide what to draw according to CollectionsScreenCode
+	 * @param screen Screen to draw on.
+	 * @param collectionsStatistics List of Collections.
+	 */
 	public void drawCollectionsData(final Screen screen,
 									final List<Statistics> collectionsStatistics){
 		backBufferGraphics.setColor(Color.WHITE);

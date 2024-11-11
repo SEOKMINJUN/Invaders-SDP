@@ -11,10 +11,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CollectionsScreen extends Screen {
+    /** Current Screen Code*/
     public static int CollectionsScreenCode;
+    /** check isArrowDown*/
     private boolean checkArrow;
+    /** Array List*/
     private List<Statistics> collectionsStatistics;
 
+    /**
+     * Constructor, establishes the properties of the screen.
+     *
+     * @param width
+     *            Screen width.
+     * @param height
+     *            Screen height.
+     * @param fps
+     *            Frames per second, frame rate at which the game is run.
+     */
     public CollectionsScreen(final int width, final int height, final int fps) {
         super(width, height, fps);
         collectionsStatistics = new ArrayList<Statistics>();
@@ -35,6 +48,10 @@ public class CollectionsScreen extends Screen {
         return this.returnCode;
     }
 
+    /**
+     * Updates the elements on screen and checks for events.
+     * Press the arrow to determine the screen
+     */
     protected final boolean update() {
         super.update();
 

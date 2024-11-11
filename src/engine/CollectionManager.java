@@ -12,6 +12,14 @@ import java.util.logging.Logger;
 public class CollectionManager {
     public static CollectionManager instance;
 
+    /**
+     * enemySpriteSet
+     * index:
+     * 0 - Enemy Sprite
+     * 1 - Enemy Name
+     * 2 - xPosition
+     * 3 - yPosition
+     */
     @Getter
     private Object[][] enemySprite = {
             {DrawManager.SpriteType.EnemyShipA1, "Enemy_A1", 100, 180},
@@ -24,6 +32,14 @@ public class CollectionManager {
             {DrawManager.SpriteType.ExplosiveEnemyShip2, "Explosive_Enemy_2", 100, 565},
             {DrawManager.SpriteType.EnemyShipSpecial, "Special_Enemy",95, 630}
     };
+    /**
+     * itemSpriteSet
+     * index:
+     * 0 - Item Sprite
+     * 1 - Item Name
+     * 2 - xPosition
+     * 3 - yPosition
+     */
     @Getter
     private Object[][] itemSprite = {
             {SpriteType.ItemCoin, "Coin", 100, 180},
@@ -35,6 +51,16 @@ public class CollectionManager {
             {SpriteType.ItemSpeedUp, "SpeedUp", 100, 510},
             {SpriteType.ItemSpeedSlow, "SpeedSlow", 100, 565}
     };
+
+
+    /**
+     * Use AchievementList Because Achievement is not working
+     * index:
+     * 0 - Achievement Name
+     * 1 - Achievement Description
+     * 2 - xPosition
+     * 3 - yPosition
+     */
     AchievementList achievementList = new AchievementList();
     private final int XPosition = 60;
     @Getter
@@ -75,18 +101,23 @@ public class CollectionManager {
             {achievementList.getACHIEVEMENT_ALL().getName(), achievementList.getACHIEVEMENT_ALL().getDescription(), XPosition, 450},
     };
 
-
+    /** Logger*/
     private static Logger logger;
 
+    /** Item Array*/
     @Getter
     private int[] itemTypes = new int[8];
+    /** Enemy Array*/
     @Getter
     private int[] enemyTypes = new int[8];
+    /** Achievement Array*/
     @Getter
     private int[] achievementTypes = new int[19];
 
+    /** Statistics type variables that contain collections*/
     @Getter
     Statistics collection;
+    /** Statistics type List*/
     @Getter
     List<Statistics> collectionList;
 
@@ -117,12 +148,20 @@ public class CollectionManager {
         return instance;
     }
 
+    /**
+     * Add Collection Player Gained Enemy
+     * @param i index of itemTypesArray
+     */
     public void AddCollectionItemTypes(int i) {
         itemTypes[i]++;
         collection.setItemsArray(itemTypes);
         logger.info("Added item type " + i + " to collection : " + itemTypes[i]);
     }
 
+    /**
+     * Add Collection Player killed Enemy
+     * @param spriteType Player killed enemy type
+     */
     public void AddCollectionEnemyTypes(SpriteType spriteType) {
         switch (spriteType){
             case EnemyShipA1:
@@ -157,6 +196,10 @@ public class CollectionManager {
         collection.setEnemiesArray(enemyTypes);
     }
 
+    /**
+     * Add Collection Player Achievement Cleared
+     * @param i Player cleared Achievement Number
+     */
     public void AddCollectionAchievementTypes(int i) {
         achievementTypes[i]++;
         collection.setAchievementsArray(achievementTypes);
