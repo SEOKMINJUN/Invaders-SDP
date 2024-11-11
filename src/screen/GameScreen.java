@@ -63,6 +63,10 @@ public class GameScreen extends Screen {
 	public int bulletsShot;
 	/** Total ships destroyed by the player. */
 	public int shipsDestroyed;
+	/** Current accuracy of the player. */
+	public float accuracy;
+	/** Kill streak by the player. */
+	public int maxShipsDestructionStreak;
 	/** Moment the game starts. */
 	private long gameStartTime;
 	/** Checks if the level is finished. */
@@ -108,8 +112,7 @@ public class GameScreen extends Screen {
 	/** Score calculation. */
     protected ScoreManager scoreManager;    //clove
 
-	protected Statistics statistics; //Team Clove
-	protected int fastKill;
+	Statistics statistics; //Team Clove
 
 	/** CtrlS: Count the number of coin collected in game */
     public int coinItemsCollected;
@@ -141,6 +144,7 @@ public class GameScreen extends Screen {
 		this.score = gameState.getScore();
 		this.bulletsShot = gameState.getBulletsShot();
 		this.shipsDestroyed = gameState.getShipsDestroyed();
+		this.accuracy = gameState.getAccuracy();
 		this.item = new ItemBarrierAndHeart();   // team Inventory
 		this.feverTimeItem = new FeverTimeItem(); // team Inventory
 		this.speedItem = new SpeedItem();   // team Inventory
@@ -187,6 +191,7 @@ public class GameScreen extends Screen {
 	 */
 	public void initialize() {
 		super.initialize();
+		this.statistics = new Statistics();
 		/** initialize background **/
 		drawManager.loadBackground(this.level);
 
@@ -277,8 +282,25 @@ public class GameScreen extends Screen {
 			this.item.updateBarrierAndShip(this.ship1);   // team Inventory
 			this.speedItem.update();         // team Inventory
 			this.feverTimeItem.update();
+
+			int previousRemainingEnemies = getRemainingEnemies();
+
 			this.enemyShipFormation.update();
 			this.enemyShipFormation.shoot();
+
+			int currentRemainingEnemies = getRemainingEnemies();
+			int destroyedEnemies = previousRemainingEnemies - currentRemainingEnemies;
+
+			if (destroyedEnemies > 0) {
+				this.shipsDestroyed += destroyedEnemies;
+				try {
+					for (int i = 0; i < destroyedEnemies; i++) {
+						statistics.addShipsDestroyed(1);
+					}
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 
 		/**
@@ -307,7 +329,11 @@ public class GameScreen extends Screen {
 				statistics.comHighestLevel(level);
 				statistics.addBulletShot(bulletsShot);
 				statistics.addShipsDestroyed(shipsDestroyed);
-				AchievementManager.getInstance().checkAchievement(AchievementType.FASTKILL, fastKill);
+				statistics.comAccuracy(accuracy);
+				statistics.checkAndUpdateStreak();
+				statistics.comShipsDestructionStreak(maxShipsDestructionStreak);
+				AchievementManager.getInstance().checkAchievement(AchievementType.KILLSTREAKS, maxShipsDestructionStreak);
+				AchievementManager.getInstance().checkAchievement(AchievementType.ACCURACY, (int) accuracy);
 
 			} catch (IOException e) {
 				throw new RuntimeException(e);
@@ -439,7 +465,7 @@ public class GameScreen extends Screen {
 	 */
 	public GameState getGameState() {
 		return new GameState(this.level, this.scoreManager.getAccumulatedScore(), ship1.getHealth(), 0,
-				this.bulletsShot, this.shipsDestroyed, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
+				this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
 	}
 
     /**

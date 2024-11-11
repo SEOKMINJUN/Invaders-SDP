@@ -1,7 +1,9 @@
 package entity;
 
 import java.awt.Color;
+import java.io.IOException;
 
+import engine.Statistics;
 import engine.DrawManager.SpriteType;
 
 /**
@@ -11,7 +13,6 @@ import engine.DrawManager.SpriteType;
  * 
  */
 public class Bullet extends Entity {
-
 	/**
 	 * Speed of the bullet, positive or negative depending on direction -
 	 * positive is down.
@@ -51,7 +52,6 @@ public class Bullet extends Entity {
 		this.speed = speed;
 		setSprite();
 	}
-
 
 	/**
 	 * Sets correct sprite for the bullet, based on speed.

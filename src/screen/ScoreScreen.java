@@ -243,8 +243,10 @@ public class ScoreScreen extends Screen {
 
 	private void saveStatistics(){
 		try{
+			statistics.checkAndUpdateStreak();
 			statistics.comShipsDestructionStreak(0);
-			statistics.addPlayedGameNumber(1);
+			statistics.addShipsDestroyed(0);
+			statistics.addPlayedGameNumber(0);
 			statistics.comClearAchievementNumber(0);
 		} catch (IOException e) {
 			logger.warning("Couldn't load Statistics!");
