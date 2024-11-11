@@ -117,6 +117,12 @@ public class Ship extends Entity {
 	/** Key to move ship right */
 	@Setter
 	private int KEY_RIGHT = KeyEvent.VK_RIGHT;
+	/** Key to move ship up */
+	@Setter
+	private int KEY_UP = KeyEvent.VK_UP;
+	/** Key to move ship down */
+	@Setter
+	private int KEY_DOWN = KeyEvent.VK_DOWN;
 	/** Key to shoot bullet */
 	@Setter
 	private int KEY_SHOOT = KeyEvent.VK_ENTER;
@@ -171,6 +177,16 @@ public class Ship extends Entity {
 	public final void moveLeft() {
 		this.positionX -= growth.getMoveSpeed(); // Use PlayerGrowth for movement speed
 	} //Edit by Enemy
+
+
+
+	public final void moveUP() {
+		this.positionY -= growth.getMoveSpeed();
+	}
+
+	public final void moveDown() {
+		this.positionY += growth.getMoveSpeed();
+	}
 
 	/**
 	 * Shoots a bullet upwards.
@@ -228,11 +244,17 @@ public class Ship extends Entity {
 
 			boolean moveRight = inputManager.isKeyDown(KEY_RIGHT);
 			boolean moveLeft = inputManager.isKeyDown(KEY_LEFT);
+			boolean moveUp = inputManager.isKeyDown((KEY_UP));
+			boolean moveDown = inputManager.isKeyDown((KEY_DOWN));
 
 			boolean isRightBorder = getPositionX()
 					+ this.getWidth() + this.getSpeed() > screen.getWidth() - 1;
 			boolean isLeftBorder = getPositionX()
 					- this.getSpeed() < 1;
+			boolean isTopBorder = (getPositionY() - this.getSpeed())
+                    < screen.getHeight() * 0.6;
+			boolean isBottomBorder = getPositionY() + this.getHeight() + this.getSpeed()
+					> screen.getHeight() - 63;
 
 			if (moveRight && !isRightBorder) {
 				this.moveRight();
@@ -241,6 +263,12 @@ public class Ship extends Entity {
 			if (moveLeft && !isLeftBorder) {
 				this.moveLeft();
 				screen.backgroundMoveLeft = true;
+			}
+			if (moveUp && !isTopBorder) {
+				this.moveUP();
+			}
+			if (moveDown && !isBottomBorder) {
+				this.moveDown();
 			}
 			if (inputManager.isKeyDown(KEY_SHOOT))
 				if (this.shoot()) {
