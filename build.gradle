@@ -1,10 +1,11 @@
 plugins {
-    id "java"
+    id "application"
     id "edu.sc.seis.launch4j" version "3.0.6"
 }
 
 group 'org.invaders-sdp'
 version '0.0'
+mainClassName = 'engine.Core'
 
 repositories {
     mavenCentral()
