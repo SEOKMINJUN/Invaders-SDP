@@ -1,6 +1,5 @@
 package entity;
 
-import engine.DrawManager;
 import engine.Globals;
 import engine.SoundManager;
 import lombok.Getter;

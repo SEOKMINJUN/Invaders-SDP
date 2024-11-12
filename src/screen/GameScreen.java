@@ -103,9 +103,6 @@ public class GameScreen extends Screen {
 	/** Set of fire_id **/
 	public Set<Integer> processedFireBullet;
 
-	/** Score calculation. */
-    protected ScoreManager scoreManager;    //clove
-
 	Statistics statistics; //Team Clove
 
 	/** CtrlS: Count the number of coin collected in game */
@@ -156,7 +153,6 @@ public class GameScreen extends Screen {
 
 		// Soomin Lee / TeamHUD
 		this.playTime = gameState.getTime();
-		this.scoreManager = new ScoreManager(level, score); //Team Clove
 		this.statistics = new Statistics(); //Team Clove
 		this.coinItemsCollected = gameState.getCoinItemsCollected(); // CtrlS
 
@@ -221,7 +217,7 @@ public class GameScreen extends Screen {
 		super.run();
 
 		this.score += Globals.GAME_SCREEN_LIFE_SCORE * (this.lives - 1);
-		this.logger.info("Screen cleared with a score of " + this.scoreManager.getAccumulatedScore());
+		this.logger.info("Screen cleared with a score of " + this.score);
 
 		return this.returnCode;
 	}
@@ -367,9 +363,9 @@ public class GameScreen extends Screen {
 
 
 		// Interface.
-//		drawManager.drawScore(this, this.scoreManager.getAccumulatedScore());    //clove -> edit by jesung ko - TeamHUD(to udjust score)
+//		drawManager.drawScore(this, this.score);    //clove -> edit by jesung ko - TeamHUD(to udjust score)
 //		drawManager.drawScore(this, this.score); // by jesung ko - TeamHUD
-        DrawManagerImpl.drawScore2(this, scoreManager.getAccumulatedScore()); // by jesung ko - TeamHUD
+        DrawManagerImpl.drawScore2(this, this.score); // by jesung ko - TeamHUD
 		drawManager.drawLives(this, ship1.getHealth());
 		drawManager.drawHorizontalLine(this, Globals.GAME_SCREEN_SEPARATION_LINE_HEIGHT - 1);
 		DrawManagerImpl.drawRemainingEnemies(this, getRemainingEnemies()); // by HUD team SeungYun
@@ -447,7 +443,7 @@ public class GameScreen extends Screen {
 	 * @return Current game state.
 	 */
 	public GameState getGameState() {
-		return new GameState(this.level, this.scoreManager.getAccumulatedScore(), ship1.getHealth(), 0,
+		return new GameState(this.level, this.score, ship1.getHealth(), 0,
 				this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
 	}
 

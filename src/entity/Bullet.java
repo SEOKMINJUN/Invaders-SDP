@@ -3,7 +3,6 @@ package entity;
 import java.awt.Color;
 
 import engine.DrawManager.SpriteType;
-import lombok.Setter;
 
 /**
  * Implements a bullet that moves vertically up or down.

@@ -1,7 +1,5 @@
 package engine;
 
-import engine.DrawManager;
-import entity.ScoreManager;
 import screen.Screen;
 import entity.Entity;
 import java.awt.Color;

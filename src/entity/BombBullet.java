@@ -5,12 +5,6 @@ import engine.Globals;
 import engine.SoundManager;
 import screen.GameScreen;
 
-import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.LinkedList;
-import java.util.Queue;
-
 /**
  * Implements a bullet that moves vertically up or down.
  * 

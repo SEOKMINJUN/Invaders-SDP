@@ -1,12 +1,9 @@
 package entity;
 
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
 import java.util.logging.Logger;
-import javax.swing.Timer;
 
 import engine.*;
 import lombok.Getter;
@@ -24,7 +21,7 @@ import static java.lang.Math.*;
  */
 @Getter
 public class EnemyShipFormation implements Iterable<EnemyShip> {
-	private boolean isCircle = false;
+	private boolean isCircle;
 	/** Number of iteration of movement */
 	private int iteration = 0;
 
@@ -60,8 +57,6 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 	/** Minimum speed allowed. */
 	private static final int MINIMUM_SPEED = 10;
 
-	/** DrawManager instance. */
-	private DrawManager drawManager;
 	/** Application logger. */
 	private Logger logger;
 	/** Screen to draw ships on. */
@@ -124,7 +119,6 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 	 *            Current game settings.
 	 */
 	public EnemyShipFormation(final GameSettings gameSettings) {
-		this.drawManager = Globals.getDrawManager();
 		this.logger = Core.getLogger();
 		this.enemyShips = new ArrayList<List<EnemyShip>>();
 		this.activeSpeedItems = new ArrayList<>();
@@ -194,8 +188,8 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 		}
 
 
-		this.shipWidth = this.enemyShips.get(0).get(0).getWidth();
-		this.shipHeight = this.enemyShips.get(0).get(0).getHeight();
+		this.shipWidth = this.enemyShips.getFirst().getFirst().getWidth();
+		this.shipHeight = this.enemyShips.getFirst().getFirst().getHeight();
 
 		this.width = (this.nShipsWide - 1) * SEPARATION_DISTANCE
 				+ this.shipWidth;
@@ -203,7 +197,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 				+ this.shipHeight;
 
 		for (List<EnemyShip> column : this.enemyShips)
-			this.shooters.add(column.get(column.size() - 1));
+			this.shooters.add(column.getLast());
 
 	}
 
@@ -298,7 +292,7 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 			positionY += movementY;
 
 			double angle = (PI/this.nShipsHigh);
-			int temp=0;
+			int temp;
 			iteration++;
 			for (List<EnemyShip> column : this.enemyShips){
 				temp=0;

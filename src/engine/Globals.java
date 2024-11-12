@@ -1,7 +1,6 @@
 package engine;
 
 import engine.Achievement.AchievementManager;
-import entity.ScoreManager;
 import lombok.Getter;
 import lombok.Setter;
 import screen.Screen;
@@ -60,15 +59,9 @@ public class Globals {
     public static final int barrier_DURATION = 3000;
 
     public static int currentMaxEntityIndex;
-    @Getter @Setter
-    public static ScoreManager scoreManager;
 
     @Getter @Setter
     private static Screen currentScreen;
-
-    public void Initialize(){
-        scoreManager = null;
-    }
 
     /**
      * Controls access to the drawing manager.
