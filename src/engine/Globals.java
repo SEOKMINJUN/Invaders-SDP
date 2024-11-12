@@ -98,7 +98,7 @@ public class Globals {
 
     public static CurrencyManager getCurrencyManager() { return CurrencyManager.getInstance(); }
 
-    public static UpgradeManager getUpgradeManager() { return UpgradeManager.getInstance(); }
+    public static ShipUpgradeManager getUpgradeManager() { return ShipUpgradeManager.getInstance(); }
 
     public static AchievementManager getAchievementManager() { return AchievementManager.getInstance(); }
 

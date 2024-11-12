@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class ShipStatus {
+public class ShipUpgradeStatus {
 
     private double Speed_increase;
     private int SHOOTING_INTERVAL_increase;
@@ -30,10 +30,10 @@ public class ShipStatus {
     Properties properties = new Properties();
 
 
-    public ShipStatus() {}
+    public ShipUpgradeStatus() {}
 
     public void loadStatus(){
-        try (InputStream inputStream = ShipStatus.class.getClassLoader().getResourceAsStream("StatusConfig.properties")) {
+        try (InputStream inputStream = ShipUpgradeStatus.class.getClassLoader().getResourceAsStream("StatusConfig.properties")) {
             if (inputStream == null) {
                 System.out.println("FileNotFound");
                 return;
@@ -54,7 +54,7 @@ public class ShipStatus {
     }
 
     public void loadProbability(){
-        try (InputStream inputStream = ShipStatus.class.getClassLoader().getResourceAsStream("StatusConfig.properties")) {
+        try (InputStream inputStream = ShipUpgradeStatus.class.getClassLoader().getResourceAsStream("StatusConfig.properties")) {
             if (inputStream == null) {
                 System.out.println("FileNotFound");
                 return;
@@ -77,7 +77,7 @@ public class ShipStatus {
     }
 
     public void loadPrice(){
-        try (InputStream inputStream = ShipStatus.class.getClassLoader().getResourceAsStream("StatusConfig.properties")) {
+        try (InputStream inputStream = ShipUpgradeStatus.class.getClassLoader().getResourceAsStream("StatusConfig.properties")) {
             if (inputStream == null) {
                 System.out.println("FileNotFound");
                 return;

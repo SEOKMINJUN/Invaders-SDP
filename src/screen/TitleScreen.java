@@ -8,7 +8,7 @@ import engine.Core;
 // Sound Operator
 import engine.Globals;
 import engine.SoundManager;
-import entity.ShipStatus;
+import entity.ShipUpgradeStatus;
 
 /**
  * Implements the title screen.
@@ -32,7 +32,7 @@ public class TitleScreen extends Screen {
 	private int pnumSelectionCode; //produced by Starter
 	private int merchantState;
 	//inventory
-	private ShipStatus shipStatus;
+	private ShipUpgradeStatus shipUpgradeStatus;
 
 
 	/**
@@ -68,8 +68,8 @@ public class TitleScreen extends Screen {
 		SoundManager.playBGM("mainMenu_bgm");
 
 		// inventory load upgrade price
-		shipStatus = new ShipStatus();
-		shipStatus.loadPrice();
+		shipUpgradeStatus = new ShipUpgradeStatus();
+		shipUpgradeStatus.loadPrice();
 	}
 
 	/**

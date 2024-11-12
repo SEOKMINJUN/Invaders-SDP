@@ -12,7 +12,7 @@ import engine.SoundManager;
 import screen.GameScreen;
 
 public class Item extends Entity {
-    private final ShipStatus shipStatus = new ShipStatus();
+    private final ShipUpgradeStatus shipUpgradeStatus = new ShipUpgradeStatus();
     private int speed;
     public Item(final int positionX, final int positionY, final int speed, final int type) {
         super(positionX, positionY, 3 * 2, 5 * 2, Color.yellow);
@@ -24,14 +24,14 @@ public class Item extends Entity {
 
     public final void setSprite() {
         double rdItem = Math.random();
-        shipStatus.loadProbability();
-        double bombP = shipStatus.getBomb_probability();
-        double PierceP = shipStatus.getPierce_probability();
-        double ShieldP = shipStatus.getShield_probability();
-        double HearthP = shipStatus.getHearth_probability();
-        double FeverP = shipStatus.getFeverTimeProbability();
-        double SpeedUpP = shipStatus.getSpeedUpProbability();
-        double SpeedSlowP = shipStatus.getSpeedSlowProbability();
+        shipUpgradeStatus.loadProbability();
+        double bombP = shipUpgradeStatus.getBomb_probability();
+        double PierceP = shipUpgradeStatus.getPierce_probability();
+        double ShieldP = shipUpgradeStatus.getShield_probability();
+        double HearthP = shipUpgradeStatus.getHearth_probability();
+        double FeverP = shipUpgradeStatus.getFeverTimeProbability();
+        double SpeedUpP = shipUpgradeStatus.getSpeedUpProbability();
+        double SpeedSlowP = shipUpgradeStatus.getSpeedSlowProbability();
 
         // Import odds from properties file for easy balance patches
         if (rdItem < bombP) { // 30%

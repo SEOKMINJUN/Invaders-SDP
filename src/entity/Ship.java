@@ -105,7 +105,7 @@ public class Ship extends Entity {
 	/** PlayerGrowth 인스턴스 / PlayerGrowth instance */
 	private PlayerGrowth growth;
 	/** ShipStaus instance*/
-	private ShipStatus shipStatus;
+	private ShipUpgradeStatus shipUpgradeStatus;
 	/** NumberOfBullet instance*/
 	private NumberOfBullet numberOfBullet;
 	/** */
@@ -150,8 +150,8 @@ public class Ship extends Entity {
 		// Create PlayerGrowth object and set initial stats
 		this.growth = new PlayerGrowth();  // PlayerGrowth 객체를 먼저 초기화
 
-		this.shipStatus = new ShipStatus();
-		shipStatus.loadStatus();
+		this.shipUpgradeStatus = new ShipUpgradeStatus();
+		shipUpgradeStatus.loadStatus();
 
 		//  Now use the initialized growth object
 		this.shootingCooldown = Core.getCooldown(growth.getShootingDelay());
@@ -322,19 +322,19 @@ public class Ship extends Entity {
 	//  Increases movement speed
 	//Edit by Enemy
 	public void increaseMoveSpeed() {
-		growth.increaseMoveSpeed(shipStatus.getSpeedIn());
+		growth.increaseMoveSpeed(shipUpgradeStatus.getSpeedIn());
 	}
 
 	// Increases bullet speed
 	//Edit by Enemy
 	public void increaseBulletSpeed() {
-		growth.increaseBulletSpeed(shipStatus.getBulletSpeedIn());
+		growth.increaseBulletSpeed(shipUpgradeStatus.getBulletSpeedIn());
 	}
 
 	//  Decreases shooting delay
 	//Edit by Enemy
 	public void decreaseShootingDelay() {
-		growth.decreaseShootingDelay(shipStatus.getSuootingInIn());
+		growth.decreaseShootingDelay(shipUpgradeStatus.getSuootingInIn());
 		System.out.println(growth.getShootingDelay());
 		this.shootingCooldown = Core.getCooldown(growth.getShootingDelay()); // Apply new shooting delay
 	}
