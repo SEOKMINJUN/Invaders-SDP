@@ -68,8 +68,8 @@ public class CollectionManager {
             {achievementList.getACHIEVEMENT_LIVE().getName(), achievementList.getACHIEVEMENT_LIVE().getDescription(), XPosition, 180},
             {achievementList.getACHIEVEMENT_KILL_25().getName(), achievementList.getACHIEVEMENT_KILL_25().getDescription(), XPosition, 280},
             {achievementList.getACHIEVEMENT_KILL_100().getName(), achievementList.getACHIEVEMENT_KILL_100().getDescription(), XPosition, 380},
-            {achievementList.getACHIEVEMENT_KILL_250().getName(), achievementList.getACHIEVEMENT_KILL_250().getDescription(), XPosition, 480},
             {achievementList.getACHIEVEMENT_KILL_500().getName(), achievementList.getACHIEVEMENT_KILL_500().getDescription(), XPosition, 580},
+            {achievementList.getACHIEVEMENT_KILL_1000().getName(), achievementList.getACHIEVEMENT_KILL_1000().getDescription(), XPosition, 480},
     };
     @Getter
     private Object[][] AchievementSet_2 = {
@@ -79,19 +79,19 @@ public class CollectionManager {
     };
     @Getter
     private Object[][] AchievementSet_3 = {
-            {achievementList.getACHIEVEMENT_KILLSTREAKS_10().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_10().getDescription(), XPosition, 180},
-            {achievementList.getACHIEVEMENT_KILLSTREAKS_30().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_30().getDescription(), XPosition, 380},
-            {achievementList.getACHIEVEMENT_KILLSTREAKS_60().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_60().getDescription(), XPosition, 580},
+            {achievementList.getACHIEVEMENT_KILLSTREAKS_3().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_3().getDescription(), XPosition, 180},
+            {achievementList.getACHIEVEMENT_KILLSTREAKS_5().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_5().getDescription(), XPosition, 380},
+            {achievementList.getACHIEVEMENT_KILLSTREAKS_7().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_7().getDescription(), XPosition, 580},
     };
     @Getter
     private Object[][] AchievementSet_4 = {
-            {achievementList.getACHIEVEMENT_FASTKILL_3().getName(), achievementList.getACHIEVEMENT_FASTKILL_3().getDescription(), XPosition, 180},
-            {achievementList.getACHIEVEMENT_FASTKILL_5().getName(), achievementList.getACHIEVEMENT_FASTKILL_5().getDescription(), XPosition, 380},
-            {achievementList.getACHIEVEMENT_FASTKILL_15().getName(), achievementList.getACHIEVEMENT_FASTKILL_15().getDescription(), XPosition, 580},
+            {achievementList.getACHIEVEMENT_ACCURACY_60().getName(), achievementList.getACHIEVEMENT_ACCURACY_60().getDescription(), XPosition, 180},
+            {achievementList.getACHIEVEMENT_ACCURACY_75().getName(), achievementList.getACHIEVEMENT_ACCURACY_75().getDescription(), XPosition, 380},
+            {achievementList.getACHIEVEMENT_ACCURACY_85().getName(), achievementList.getACHIEVEMENT_ACCURACY_85().getDescription(), XPosition, 580},
     };
     @Getter
     private Object[][] AchievementSet_5 = {
-            {achievementList.getACHIEVEMENT_SCORE_1000().getName(), achievementList.getACHIEVEMENT_SCORE_1000().getDescription(), XPosition, 180},
+            {achievementList.getACHIEVEMENT_SCORE_6000().getName(), achievementList.getACHIEVEMENT_SCORE_6000().getDescription(), XPosition, 180},
             {achievementList.getACHIEVEMENT_SCORE_15000().getName(), achievementList.getACHIEVEMENT_SCORE_15000().getDescription(), XPosition, 380},
             {achievementList.getACHIEVEMENT_SCORE_30000().getName(), achievementList.getACHIEVEMENT_SCORE_30000().getDescription(), XPosition, 580},
     };
