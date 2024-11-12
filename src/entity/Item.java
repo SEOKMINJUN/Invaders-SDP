@@ -1,8 +1,11 @@
 package entity;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Properties;
 
 import engine.Core;
 import engine.DrawManager;
@@ -11,9 +14,21 @@ import engine.Globals;
 import engine.SoundManager;
 import screen.GameScreen;
 
+import static engine.Globals.MAX_LIVES;
+
 public class Item extends Entity {
     private final ShipUpgradeStatus shipUpgradeStatus = new ShipUpgradeStatus();
     private int speed;
+
+    private static boolean isLoadProbability = false;
+    private static double pierce_probability;
+    private static double hearth_probability;
+    private static double bomb_probability;
+    private static double shield_probability;
+    private static double feverTime_probability;
+    private static double speedUp_probability;
+    private static double speedSlow_probability;
+
     public Item(final int positionX, final int positionY, final int speed, final int type) {
         super(positionX, positionY, 3 * 2, 5 * 2, Color.yellow);
         setClassName("Item");
@@ -24,14 +39,15 @@ public class Item extends Entity {
 
     public final void setSprite() {
         double rdItem = Math.random();
-        shipUpgradeStatus.loadProbability();
-        double bombP = shipUpgradeStatus.getBomb_probability();
-        double PierceP = shipUpgradeStatus.getPierce_probability();
-        double ShieldP = shipUpgradeStatus.getShield_probability();
-        double HearthP = shipUpgradeStatus.getHearth_probability();
-        double FeverP = shipUpgradeStatus.getFeverTimeProbability();
-        double SpeedUpP = shipUpgradeStatus.getSpeedUpProbability();
-        double SpeedSlowP = shipUpgradeStatus.getSpeedSlowProbability();
+
+        loadProbability(); //Load only once
+        double PierceP = pierce_probability;
+        double HearthP = hearth_probability;
+        double bombP = 100.0;//bomb_probability;
+        double ShieldP = shield_probability;
+        double FeverP = feverTime_probability;
+        double SpeedUpP = speedUp_probability;
+        double SpeedSlowP = speedSlow_probability;
 
         // Import odds from properties file for easy balance patches
         if (rdItem < bombP) { // 30%
@@ -84,18 +100,18 @@ public class Item extends Entity {
             if (checkCollision(ship)) {
                 switch (getSpriteType()) {     // Operates according to the SpriteType of the item.
                     case ItemBomb:
-                        Bomb.setIsbomb(true);
-                        Bomb.setCanShoot(true);
+                        ship.setBombBullet(true);
                         Globals.getCollectionManager().AddCollectionItemTypes(1);
                         SoundManager.playES("get_item");
                         break;
                     case ItemBarrier:
-                        screen.getItem().activatebarrier();
+                        ship.activatebarrier();
                         Globals.getCollectionManager().AddCollectionItemTypes(3);
                         SoundManager.playES("get_item");
                         break;
                     case ItemHeart:
-                        screen.getItem().activeheart(ship);
+                        int health = ship.getHealth();
+                        if (health < MAX_LIVES) { ship.setHealth(health + 1); }
                         Globals.getCollectionManager().AddCollectionItemTypes(2);
                         SoundManager.playES("get_item");
                         break;
@@ -104,7 +120,7 @@ public class Item extends Entity {
                         screen.getFeverTimeItem().activate();
                         break;
                     case ItemPierce:
-                        NumberOfBullet.pierceup();
+                        ship.getNumberOfBullet().pierceup();
                         ship.increaseBulletSpeed();
                         Globals.getCollectionManager().AddCollectionItemTypes(4);
                         SoundManager.playES("get_item");
@@ -148,5 +164,32 @@ public class Item extends Entity {
         return this.speed;
     }
 
+    public static void loadProbability(){
+        if(isLoadProbability){
+            return;
+        }
+        Properties properties = new Properties();
+        try {
+            InputStream inputStream = ShipUpgradeStatus.class.getClassLoader().getResourceAsStream("StatusConfig.properties");
+            if (inputStream == null) {
+                System.out.println("FileNotFound");
+                return;
+            }
+
+            properties.load(inputStream);
+
+            pierce_probability = Double.parseDouble(properties.getProperty("pierce.probability"));
+            hearth_probability = Double.parseDouble(properties.getProperty("hearth.probability"));
+            bomb_probability = Double.parseDouble(properties.getProperty("bomb.probability"));
+            shield_probability = Double.parseDouble(properties.getProperty("shield.probability"));
+            feverTime_probability = Double.parseDouble(properties.getProperty("feverTime.probability"));
+            speedUp_probability = Double.parseDouble(properties.getProperty("SpeedUp.probability"));
+            speedSlow_probability = Double.parseDouble(properties.getProperty("SpeedSlow.probability"));
+
+            isLoadProbability = true;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

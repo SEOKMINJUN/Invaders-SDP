@@ -79,7 +79,7 @@ public class Obstacle extends Entity {
             if(!isDestroyed() && !ship.isPlayDestroyAnimation() && checkCollision(ship)){
                 //Obstacles ignored when barrier activated_team inventory
                 int health = ship.getHealth();
-                if (!screen.getItem().isbarrierActive()) {
+                if (!ship.isBarrierActive()) {
                     health -= 1;
                     ship.setHealth(health);
                     if (!ship.isDestroyed()) {

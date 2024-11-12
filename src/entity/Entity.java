@@ -164,6 +164,35 @@ public abstract class Entity extends EntityBase{
 		return distanceX < maxDistanceX && distanceY < maxDistanceY;
 	}
 
+	private double clamp(double value, double min, double max) {
+		if (value < min) return min;
+		if (value > max) return max;
+		return value;
+	}
+
+	//Use radius instead of Width and Height value.
+	public boolean checkCollisionWithRadius(final Entity target, int radius) {
+
+		double nx = getPositionX() - target.getPositionX();
+		double ny = getPositionY() - target.getPositionY();
+
+		double extent_x = (double) getWidth() / 2;
+		double extent_y = (double) getHeight() / 2;
+
+		double closest_x = clamp(nx, -extent_x, extent_x);
+		double closest_y = clamp(ny, -extent_y, extent_y);
+
+		//target find at inside of circle
+		if(nx == closest_x && ny == closest_y) {
+			return true;
+		}
+		double normal_x = nx - closest_x;
+		double normal_y = ny - closest_y;
+		double distanceSquared = normal_x*normal_x + normal_y*normal_y;
+
+		return distanceSquared <= radius*radius;
+	}
+
 	@Override
 	public void draw() {
 		if(enabled) DrawManager.drawEntity(this, getPositionX(), getPositionY());

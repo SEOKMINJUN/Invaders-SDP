@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.Setter;
 import screen.GameScreen;
 
+import static engine.Globals.barrier_DURATION;
+
 class PlayerGrowth {
 
 	//Player's base stats
@@ -129,6 +131,15 @@ public class Ship extends Entity {
 	/** Ship health */
 	@Getter @Setter
 	private int health;
+	/**	Has bomb bullet item */
+	@Getter @Setter
+	private boolean bombBullet;
+	/**	Is barrier activated */
+	@Getter @Setter
+	private boolean barrierActive = false;
+	/**	Store barrier acivated time */
+	@Getter @Setter
+	private long barrierActivationTime;
 
 
 	//TODO : Move health to ship from GameScreen, and Add immunity time
@@ -204,16 +215,19 @@ public class Ship extends Entity {
 
 			SoundManager.playES("My_Gun_Shot");
 
-			// Use NumberOfBullet to generate bullets
-			Set<PiercingBullet> newBullets = numberOfBullet.addBullet(
-					positionX + this.width / 2,
-					positionY,
-					growth.getBulletSpeed(), // Use PlayerGrowth for bullet speed
-					Bomb.getCanShoot()
-			);
-
-			// now can't shoot bomb
-			Bomb.setCanShoot(false);
+			if(isBombBullet()) {
+				BombBullet bombBullet = new BombBullet(positionX, positionY, growth.getBulletSpeed());
+				Globals.getCurrentScreen().addEntity(bombBullet);
+				this.setBombBullet(false);
+			}
+			else{
+				// Use NumberOfBullet to generate bullets
+				Set<PiercingBullet> newBullets = numberOfBullet.addBullet(
+						positionX + this.width / 2,
+						positionY,
+						growth.getBulletSpeed() // Use PlayerGrowth for bullet speed
+				);
+			}
 			return true;
 		}
 		return false;
@@ -277,6 +291,8 @@ public class Ship extends Entity {
 					Globals.getLogger().fine("Bullet's fire_id is " + screen.fire_id);
 				}
 		}
+
+		updateBarrier();
 	}
 
 	/**
@@ -360,5 +376,41 @@ public class Ship extends Entity {
 
 	public PlayerGrowth getPlayerGrowth() {
 		return growth;
-	}	// Team Inventory(Item)
+	}	// Team Inventory(Item)]
+
+	public void subtractHealth(){
+		this.playDestroyAnimation();
+		this.health -= 1;
+		Globals.getLogger().info("Hit on player ship, " + this.health
+				+ " lives remaining.");
+
+		// Sound Operator
+		if (this.health == 0){
+			SoundManager.playShipDieSounds();
+		}
+	}
+
+	//barrier item stuffs
+	public void updateBarrier() {
+		if (this.barrierActive) {
+			this.setSpriteType(DrawManager.SpriteType.ShipBarrierStatus);
+
+			long currentTime = System.currentTimeMillis();
+
+			if (currentTime - this.barrierActivationTime >= barrier_DURATION) {
+				this.setSpriteType(DrawManager.SpriteType.Ship);
+				deactivatebarrier();    // deactive barrier
+			}
+		}
+	}
+
+	public void activatebarrier() {
+		this.barrierActive = true;
+		this.barrierActivationTime = System.currentTimeMillis();
+	}
+
+	public void deactivatebarrier() {
+		this.barrierActive = false;
+		Globals.getLogger().info("barrier effect ends");
+	}
 }

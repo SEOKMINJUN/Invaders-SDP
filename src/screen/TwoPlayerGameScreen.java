@@ -54,7 +54,6 @@ public class TwoPlayerGameScreen extends GameScreen {
         ship2.setCanMove(gameProgress && ship2.getHealth() > 0);
 
         super.update();
-        this.getItem().updateBarrierAndShip(ship2);
         if (this.isLevelFinished() && this.screenFinishedCooldown.checkFinished()) {
             //this.logger.info("Final Playtime: " + playTime + " seconds");    //clove
             if(this.getLevel() == Globals.NUM_LEVELS){

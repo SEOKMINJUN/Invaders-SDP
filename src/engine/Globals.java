@@ -57,6 +57,7 @@ public class Globals {
     public static final int GAME_SCREEN_SCREEN_CHANGE_INTERVAL = 1500;
     /** Height of the interface separation line. */
     public static final int GAME_SCREEN_SEPARATION_LINE_HEIGHT = 40;
+    public static final int barrier_DURATION = 3000;
 
     public static int currentMaxEntityIndex;
     @Getter @Setter
