@@ -413,7 +413,6 @@ public class EnemyShipFormation implements Iterable<EnemyShip> {
 	 * @param destroyedShip
 	 *            Destroyed ship for update shooter
 	 */
-	//TODO : Fix this when dead by bomb
 	public final void setNextShooterByDestroyedShip(EnemyShip destroyedShip) {
 		if (this.shooters.contains(destroyedShip)) {
 			int destroyedShipIndex = this.shooters.indexOf(destroyedShip);
