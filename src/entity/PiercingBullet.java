@@ -51,6 +51,7 @@ public class PiercingBullet extends Bullet {
      * @param entity The entity the bullet collided with.
      */
     public void onCollision(Entity entity) {
+        Globals.getStatistics().setShipDestroyed();
         this.piercingCount--;
         if (this.piercingCount <= 0) {
             this.destroy(); // Destroys the bullet when it can no longer pierce.
@@ -130,6 +131,7 @@ public class PiercingBullet extends Bullet {
                         if (this.isCheckCount()) {
                             screen.hitCount++;
                             this.setCheckCount(false);
+
                             Globals.getLogger().info("Hit count!");
                             screen.processedFireBullet.add(this.getFire_id()); // mark this bullet_id is processed.
                         }

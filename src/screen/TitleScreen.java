@@ -299,7 +299,7 @@ public class TitleScreen extends Screen {
 		}
 	}
 	private void nextMenuItem() {
-		if (this.returnCode == 5) // Team Clover changed values because recordMenu added
+		if (this.returnCode == 6) // Team Clover changed values because recordMenu added
 			this.returnCode = 0; // from '2 player mode' to 'Exit' (Starter)
 		else if (this.returnCode == 0)
 			this.returnCode = 2; // from 'Exit' to 'Play' (Starter)
@@ -313,7 +313,7 @@ public class TitleScreen extends Screen {
 	private void previousMenuItem() {
 		this.merchantState =0;
 		if (this.returnCode == 0)
-			this.returnCode = 5; // from 'Exit' to '2 player mode' (Starter) // Team Clover changed values because recordMenu added
+			this.returnCode = 6; // from 'Exit' to '2 player mode' (Starter) // Team Clover changed values because recordMenu added
 		else if (this.returnCode == 2)
 			this.returnCode = 0; // from 'Play' to 'Exit' (Starter)
 		else

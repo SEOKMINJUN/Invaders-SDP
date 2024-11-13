@@ -304,17 +304,19 @@ public final class FileManager {
 			String highestLevel = reader.readLine();
 			String totalShipDestroyed = reader.readLine();
 			String clearAchievementNumber = reader.readLine();
+			String accuracy = reader.readLine();
 			String name = null;
 
 			while ((date != null) && (score != null)) {
 				recentScore = new Score(name, Integer.parseInt(score), date, Integer.parseInt(highestLevel),
-						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber));
+						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber), Float.parseFloat(accuracy));
 				recentScores.add(recentScore);
 				date = reader.readLine();
 				score = reader.readLine();
 				highestLevel = reader.readLine();
 				totalShipDestroyed = reader.readLine();
 				clearAchievementNumber = reader.readLine();
+				accuracy = reader.readLine();
 			}
 
 		} finally {
@@ -365,18 +367,19 @@ public final class FileManager {
 			String highestLevel = bufferedReader.readLine();
 			String totalShipDestroyed = bufferedReader.readLine();
 			String clearAchievementNumber = bufferedReader.readLine();
+			String accuracy = bufferedReader.readLine();
 			String name = null;
 
 			while ((date != null) && (score != null)) {
 				recentScore = new Score(name, Integer.parseInt(score), date, Integer.parseInt(highestLevel),
-						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber));
+						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber), Float.parseFloat(accuracy));
 				recentScores.add(recentScore);
 				date = bufferedReader.readLine();
 				score = bufferedReader.readLine();
 				highestLevel = bufferedReader.readLine();
 				totalShipDestroyed = bufferedReader.readLine();
 				clearAchievementNumber = bufferedReader.readLine();
-
+				accuracy = bufferedReader.readLine();
 			}
 
 		} catch (FileNotFoundException e) {
@@ -446,6 +449,8 @@ public final class FileManager {
 				bufferedWriter.newLine();
 				bufferedWriter.write(Integer.toString(score.getClearAchievementNumber()));
 				bufferedWriter.newLine();
+				bufferedWriter.write(Float.toString(score.getAccuracy()));
+				bufferedWriter.newLine();
 				savedCount++;
 			}
 			stat.resetStatistics();
@@ -454,6 +459,109 @@ public final class FileManager {
 			if (bufferedWriter != null)
 				bufferedWriter.close();
 		}
+	}
+
+	public void saveCollections(final List<Statistics> collectionsStatistics)
+			throws IOException {
+		Properties properties = new Properties();
+		OutputStream outputStream = null;
+
+		try {
+			String jarPath = FileManager.class.getProtectionDomain()
+					.getCodeSource().getLocation().getPath();
+			jarPath = URLDecoder.decode(jarPath, "UTF-8");
+
+			String collectionsPath = new File(jarPath).getParent();
+			collectionsPath += File.separator;
+			collectionsPath += "Collections.properties";
+
+			File staticsFile = new File(collectionsPath);
+
+			logger.info("Saving Collections");
+
+			if (!staticsFile.exists())
+				staticsFile.createNewFile();
+
+			if(!collectionsStatistics.isEmpty()){
+				Statistics stat = collectionsStatistics.get(0);
+				properties.setProperty("itemsArray", arrayToString(stat.getItemsArray()));
+				properties.setProperty("achievementArray", arrayToString(stat.getAchievementsArray()));
+				properties.setProperty("enemiesArray", arrayToString(stat.getEnemiesArray()));
+			}
+			outputStream = new FileOutputStream(staticsFile);
+			properties.store(new OutputStreamWriter(outputStream, Charset.forName("UTF-8")),
+					"Collections");
+
+
+		} finally {
+			if (outputStream != null)
+				outputStream.close();
+		}
+	}
+
+	public Statistics loadCollections() throws IOException {
+		Properties properties = new Properties();
+		InputStream inputStream = null;
+
+		Statistics stat;
+
+		try {
+			String jarPath = FileManager.class.getProtectionDomain()
+					.getCodeSource().getLocation().getPath();
+			jarPath = URLDecoder.decode(jarPath, "UTF-8");
+
+			String collectionsPath = new File(jarPath).getParent();
+			collectionsPath += File.separator;
+			collectionsPath += "Collections.properties";
+
+			File staticsFile = new File(collectionsPath);
+
+			inputStream = new FileInputStream(staticsFile);
+			properties.load(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
+
+			logger.info("Loading Collections");
+
+			int[] itemsArray = stringToArray(properties.getProperty("itemsArray"));
+			int[] achievementArray = stringToArray(properties.getProperty("achievementArray"));
+			int[] enemiesArray = stringToArray(properties.getProperty("enemiesArray"));
+
+			stat = new Statistics(itemsArray, achievementArray, enemiesArray);
+
+		} catch (FileNotFoundException e) {
+			logger.info("Loading default Collections.");
+			stat = loadDefaultCollections();
+		} finally {
+			if (inputStream != null) {
+				inputStream.close();
+			}
+		}
+		return stat;
+	}
+
+	public Statistics loadDefaultCollections() throws IOException {
+		Properties properties = new Properties();
+		InputStream inputStream = null;
+
+		Statistics stat;
+
+		try{
+			inputStream = FileManager.class.getClassLoader()
+					.getResourceAsStream("Collections.properties");
+
+			properties.load(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
+
+			int[] itemsArray = stringToArray(properties.getProperty("itemsArray"));
+			int[] achievementArray = stringToArray(properties.getProperty("achievementArray"));
+			int[] enemiesArray = stringToArray(properties.getProperty("enemiesArray"));
+
+			stat = new Statistics(itemsArray, achievementArray, enemiesArray);
+
+		} finally {
+			if(inputStream != null){
+				inputStream.close();
+			}
+		}
+		return stat;
 	}
 
 	/**
@@ -495,6 +603,7 @@ public final class FileManager {
 				properties.setProperty("playedGameNumber", String.valueOf(stat.getPlayedGameNumber()));
 				properties.setProperty("clearAchievementNumber", String.valueOf(stat.getClearAchievementNumber()));
 				properties.setProperty("totalPlaytime", String.valueOf(stat.getTotalPlaytime()));
+				properties.setProperty("accuracy", String.valueOf(stat.getAccuracy()));
 			}
 			outputStream = new FileOutputStream(staticsFile);
 			properties.store(new OutputStreamWriter(outputStream, Charset.forName("UTF-8")),
@@ -536,7 +645,7 @@ public final class FileManager {
 			inputStream = new FileInputStream(staticsFile);
 			properties.load(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
 
-			logger.info("Loading Player Statistic.");
+			//logger.info("Loading Player Statistic.");
 
 			int highestLevel = Integer.parseInt(properties.getProperty("highestLevel"));
 			int totalBulletsShot = Integer.parseInt(properties.getProperty("totalBulletsShot"));
@@ -545,9 +654,10 @@ public final class FileManager {
 			int playedGameNumber = Integer.parseInt(properties.getProperty("playedGameNumber"));
 			int clearAchievementNumber = Integer.parseInt(properties.getProperty("clearAchievementNumber"));
 			long totalPlaytime = Integer.parseInt(properties.getProperty("totalPlaytime"));
+			float accuracy = Float.parseFloat(properties.getProperty("accuracy"));
 
 			stat = new Statistics(highestLevel, totalBulletsShot, totalShipsDestroyed, shipsDestructionStreak,
-					playedGameNumber, clearAchievementNumber, totalPlaytime);
+					playedGameNumber, clearAchievementNumber, totalPlaytime, accuracy);
 
 		} catch (FileNotFoundException e){
 			logger.info("Loading default user statistics.");
@@ -591,9 +701,10 @@ public final class FileManager {
 			int playedGameNumber = Integer.parseInt(properties.getProperty("playedGameNumber"));
 			int clearAchievementNumber = Integer.parseInt(properties.getProperty("clearAchievementNumber"));
 			long totalPlaytime = Integer.parseInt(properties.getProperty("totalPlaytime"));
+			float accuracy = Float.parseFloat(properties.getProperty("accuracy"));
 
 			stat = new Statistics(highestLevel, totalBulletsShot, totalShipsDestroyed, shipsDestructionStreak,
-					playedGameNumber, clearAchievementNumber, totalPlaytime);
+					playedGameNumber, clearAchievementNumber, totalPlaytime, accuracy);
 
 		} finally {
 			if(inputStream != null){
@@ -639,6 +750,7 @@ public final class FileManager {
 		}
 
 		// Modify the first line (coin)
+		/*
 		if (!lines.isEmpty()) {
 			lines.set(0, EncryptionSupport.encrypt(Integer.toString(coin)));
 		} else {
@@ -646,7 +758,7 @@ public final class FileManager {
 			lines.add(EncryptionSupport.encrypt(Integer.toString(coin)));
 			lines.add(EncryptionSupport.encrypt("0"));
 		}
-
+		*/
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(currencyFile), Charset.forName("UTF-8")))) {
 			// Write back the modified content
@@ -681,6 +793,7 @@ public final class FileManager {
 			currencyFile.createNewFile();
 
 		// If the file was empty, add the new coin as the first line and the new gem as the second line
+		/*
 		if (currencyFile.length() == 0) {
 			try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(currencyFile), Charset.forName("UTF-8")))) {
@@ -690,12 +803,14 @@ public final class FileManager {
 				bufferedWriter.newLine();
 			}
 		}
+		 */
 
 		try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
 				new FileInputStream(currencyFile), Charset.forName("UTF-8")))) {
 			logger.info("Loading user's coin.");
 			String amount = bufferedReader.readLine();
-			coin = Integer.parseInt(EncryptionSupport.decrypt(amount));
+			//coin = Integer.parseInt(EncryptionSupport.decrypt(amount));
+			coin = Integer.parseInt(amount);
 		}
 
 		return coin;
@@ -737,6 +852,7 @@ public final class FileManager {
 		}
 
 		// Modify the second line (gem)
+		/*
 		if (!lines.isEmpty()) {
 			lines.set(1, EncryptionSupport.encrypt(Integer.toString(gem)));
 		} else {
@@ -744,6 +860,7 @@ public final class FileManager {
 			lines.add(EncryptionSupport.encrypt("0"));
 			lines.add(EncryptionSupport.encrypt(Integer.toString(gem)));
 		}
+		*/
 
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(currencyFile), Charset.forName("UTF-8")))) {
@@ -780,6 +897,7 @@ public final class FileManager {
 			currencyFile.createNewFile();
 
 		// If the file was empty, add the new coin as the first line and the new gem as the second line
+		/*
 		if (currencyFile.length() == 0) {
 			try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(currencyFile), Charset.forName("UTF-8")))) {
@@ -789,6 +907,7 @@ public final class FileManager {
 				bufferedWriter.newLine();
 			}
 		}
+		 */
 
 		try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
 				new FileInputStream(currencyFile), Charset.forName("UTF-8")))) {
@@ -796,7 +915,8 @@ public final class FileManager {
 
 			bufferedReader.readLine(); // Ignore first(coin) line
 			String amount = bufferedReader.readLine();
-			gem = Integer.parseInt(EncryptionSupport.decrypt(amount));
+			//gem = Integer.parseInt(EncryptionSupport.decrypt(amount));
+			gem = Integer.parseInt(amount);
 		}
 
 		return gem;
@@ -907,5 +1027,27 @@ public final class FileManager {
 		}
 
 		return defaultProperties;
+	}
+
+	private String arrayToString(int[] array) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < array.length; i++) {
+			sb.append(array[i]);
+			if (i < array.length - 1) {
+				sb.append(",");
+			}
+		}
+		logger.info("arraytostring result = " + sb.toString());
+		return sb.toString();
+	}
+
+	private int[] stringToArray(String str) {
+		String[] strArray = str.split(",");
+		int[] array = new int[strArray.length];
+		for (int i = 0; i < strArray.length; i++) {
+			array[i] = Integer.parseInt(strArray[i]);
+		}
+		logger.info("stringtoarray result = " + Arrays.toString(array));
+		return array;
 	}
 }

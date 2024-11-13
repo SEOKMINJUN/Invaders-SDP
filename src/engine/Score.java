@@ -32,6 +32,7 @@ public class Score implements Comparable<Score> {
 	private int clearAchievementNumber;
 	/** Time for Total level clear time(player has done) */
 	private long playTime;
+	private float accuracy;
 
 	/**
 	 * Constructor.
@@ -60,6 +61,7 @@ public class Score implements Comparable<Score> {
 			this.totalShipDestroyed = stat.getTotalShipsDestroyed();
 			this.clearAchievementNumber = stat.getClearAchievementNumber();
 			this.playTime = stat.getTotalPlaytime();
+			this.accuracy = stat.getAccuracy();
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -80,15 +82,18 @@ public class Score implements Comparable<Score> {
 	 * 				Number of Destroyed Ship.
 	 * @param clearAchievementNumber
 	 * 				Number of Cleared Achievement.
+	 * @param accuracy
+	 * 				Current Accuracy of bullets hit
 	 */
 	public Score(final String name, final int score, final String date, int highestLevel,
-				 final int totalShipDestroyed, final int clearAchievementNumber) {
+				 final int totalShipDestroyed, final int clearAchievementNumber, float accuracy) {
 		this.name = name;
 		this.score = score;
 		this.Date = date;
 		this.highestLevel = highestLevel;
 		this.totalShipDestroyed = totalShipDestroyed;
 		this.clearAchievementNumber = clearAchievementNumber;
+		this.accuracy = accuracy;
 	}
 	/**
 	 * Constructor
@@ -137,6 +142,8 @@ public class Score implements Comparable<Score> {
 	public final int getShipDestroyed() { return this.totalShipDestroyed; }
 
 	public final int getClearAchievementNumber() { return this.clearAchievementNumber; }
+
+	public final float getAccuracy() { return this.accuracy; }
 
 	/**
 	 * Orders the scores descending by score.

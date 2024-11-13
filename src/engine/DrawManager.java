@@ -1,10 +1,7 @@
 package engine;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.FontFormatException;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
+import java.awt.*;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -13,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+import engine.Achievement.AchievementHud;
+import engine.Achievement.AchievementList;
+import engine.RoundState;
 import entity.Gem;
 import entity.AddSign;
 import entity.Coin;
@@ -20,7 +20,11 @@ import entity.Bomb;
 import screen.Screen;
 import entity.Entity;
 
+import engine.Background;
+
 import javax.imageio.ImageIO;
+
+import static screen.CollectionsScreen.CollectionsScreenCode;
 
 /**
 * Manages screen drawing.
@@ -380,6 +384,7 @@ public class DrawManager {
 		String onePlayerModeString = "1 player mode";
 		String twoPlayerModeString = "2 player mode";
 		String mode = onePlayerModeString;
+		String Collections = "Collections";
 		String RecentRecord = "Recent Records";
 		String playString = "Play";
 		String highScoresString = "High scores";
@@ -454,6 +459,13 @@ public class DrawManager {
             backBufferGraphics.setColor(Color.WHITE);
         drawCenteredRegularString(screen, RecentRecord, screen.getHeight()
                 / 4 * 2 + fontRegularMetrics.getHeight() * 6); // adjusted Height
+		//Collections
+		if (option == 6)
+			backBufferGraphics.setColor(Color.GREEN);
+		else
+			backBufferGraphics.setColor(Color.WHITE);
+		drawCenteredRegularString(screen, Collections, screen.getHeight()
+				/ 4 * 2 + fontRegularMetrics.getHeight() * 8);
 
         // Exit (Starter)
 		if (option == 0)
@@ -461,7 +473,7 @@ public class DrawManager {
 		else
 			backBufferGraphics.setColor(Color.WHITE);
 		drawCenteredRegularString(screen, exitString, screen.getHeight()
-				/ 4 * 2 + fontRegularMetrics.getHeight() * 10); // adjusted Height
+				/ 4 * 2 + fontRegularMetrics.getHeight() * 12); // adjusted Height
 	}
 
 	/**
@@ -633,6 +645,34 @@ public class DrawManager {
 	}
 
 	/**
+	 * Draws Collection screen title and instructions.
+	 * @param screen Screen to draw on
+	 */
+	public void drawCollectionsMenu(final Screen screen){
+		String collectionsString = "Collections";
+		String[] guideString = {"<-            Enemy Types and Kills             ->",
+								"<-             Item Types and Gains              ->",
+								"<-        Achievement Types and Cleared 1        ->",
+								"<-        Achievement Types and Cleared 2        ->",
+								"<-        Achievement Types and Cleared 3        ->",
+								"<-        Achievement Types and Cleared 4        ->",
+								"<-        Achievement Types and Cleared 5        ->",
+								"<-        Achievement Types and Cleared 6        ->",} ;
+		String instructionsString = "Press Space to return";
+
+		backBufferGraphics.setColor(Color.GREEN);
+		drawCenteredBigString(screen, collectionsString, screen.getHeight() / 8);
+
+		backBufferGraphics.setColor(Color.GRAY);
+		drawCenteredRegularString(screen, instructionsString,
+				screen.getHeight() / 6);
+
+		backBufferGraphics.setColor(Color.GRAY);
+		drawCenteredRegularString(screen, guideString[CollectionsScreenCode],
+				screen.getHeight() / 5);
+	}
+
+	/**
 	 * Draws high scores.
 	 *
 	 * @param screen
@@ -698,6 +738,130 @@ public class DrawManager {
 		}
 	}
 
+	/**
+	 * draw Collections
+	 * decide what to draw according to CollectionsScreenCode
+	 * @param screen Screen to draw on.
+	 * @param collectionsStatistics List of Collections.
+	 */
+	public void drawCollectionsData(final Screen screen,
+									final List<Statistics> collectionsStatistics){
+		backBufferGraphics.setColor(Color.WHITE);
+		if(CollectionsScreenCode == 0) {
+			Object[][] enemySprite = Globals.getCollectionManager().getEnemySprite();
+            for (Object[] objects : enemySprite) {
+                SpriteType enemy = (SpriteType) objects[0];
+                int xPosition = (int) objects[2];
+                int yPosition = (int) objects[3];
+                drawRightedRegularString(screen, (String)objects[1], 200, yPosition + 12);
+                drawSprite(enemy, xPosition, yPosition, Color.WHITE);
+            }
+			for (Statistics statistics : collectionsStatistics) {
+				int[] enemiesArray = statistics.getEnemiesArray();
+				String[] Instance = new String[enemiesArray.length];
+
+				for (int i = 0; i < enemiesArray.length; i++) {
+					Instance[i] = String.format("%d", enemiesArray[i]);
+				}
+				for(int k = 0; k < enemiesArray.length; k++){
+					int yPosition = (int) enemySprite[k][3];
+					drawRightedRegularString(screen, Instance[k], 500, yPosition + 12);
+				}
+			}
+		}
+		else if(CollectionsScreenCode == 1){
+			Object[][] itemSprite = Globals.getCollectionManager().getItemSprite();
+			for (Object[] objects : itemSprite) {
+				SpriteType item = (SpriteType) objects[0];
+				int xPosition = (int) objects[2];
+				int yPosition = (int) objects[3];
+				drawRightedRegularString(screen, (String)objects[1], 200, yPosition + 12);
+				drawSprite(item, xPosition, yPosition, Color.WHITE);
+			}
+			for (Statistics statistics : collectionsStatistics) {
+				int[] itemsArray = statistics.getItemsArray();
+				String[] Instance = new String[itemsArray.length];
+
+				for (int i = 0; i < itemsArray.length; i++) {
+					Instance[i] = String.format("%d", itemsArray[i]);
+				}
+				for(int k = 0; k < itemsArray.length; k++){
+					int yPosition = (int) itemSprite[k][3];
+					drawRightedRegularString(screen, Instance[k], 500, yPosition + 12);
+				}
+			}
+		}
+		else if(CollectionsScreenCode >= 2 && CollectionsScreenCode <= 7){
+			Object[][] AchievementSet = switch (CollectionsScreenCode) {
+                case 2 -> Globals.getCollectionManager().getAchievementSet_1();
+                case 3 -> Globals.getCollectionManager().getAchievementSet_2();
+                case 4 -> Globals.getCollectionManager().getAchievementSet_3();
+                case 5 -> Globals.getCollectionManager().getAchievementSet_4();
+                case 6 -> Globals.getCollectionManager().getAchievementSet_5();
+                case 7 -> Globals.getCollectionManager().getAchievementSet_6();
+                default -> null;
+            };
+			int startIndex = switch (CollectionsScreenCode) {
+				case 2 -> 0;
+				case 3 -> 5;
+				case 4 -> 8;
+				case 5 -> 11;
+				case 6 -> 14;
+				case 7 -> 17;
+				default -> 0;
+			};
+            for (Object[] objects : AchievementSet) {
+				int xPosition = (int) objects[2];
+				int yPosition = (int) objects[3];
+				//TODO: Set the condition to be checked only if the achievement has been completed at least once.
+				boolean show = false;
+				if(show){
+					drawRightedRegularString(screen, (String)objects[1], xPosition, yPosition + 30);
+				}
+				else{
+					drawRightedRegularString(screen, "???", xPosition, yPosition + 30);
+				}
+
+				drawRightedBigString(screen, (String)objects[0], xPosition, yPosition);
+			}
+
+
+
+			for (Statistics statistics : collectionsStatistics) {
+				int[] AchievementsArray = statistics.getAchievementsArray();
+				String[] Instance = new String[AchievementSet.length];
+
+				for (int i = 0; i < Instance.length; i++) {
+					Instance[i] = String.format("%d", AchievementsArray[startIndex + i]);
+				}
+
+				for (int k = 0; k < Instance.length; k++) {
+					int yPosition = (int) AchievementSet[k][3];
+					drawRightedRegularString(screen, Instance[k], 500, yPosition);
+				}
+			}
+		}
+	}
+
+	public static void drawSprite(final SpriteType spriteType, final int positionX, final int positionY, Color color) {
+		try {
+			boolean[][] image = spriteMap.get(spriteType);
+
+			backBufferGraphics.setColor(color);
+
+			for (int i = 0; i < image.length; i++) {
+				for (int j = 0; j < image[i].length; j++) {
+					if (image[i][j]) {
+						backBufferGraphics.fillRect(positionX + i * 2, positionY + j * 2, 2, 2);
+					}
+				}
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			System.exit(1);
+		}
+	}
+
 
 	/**
 	 * Draws a righted string on regular font
@@ -714,6 +878,12 @@ public class DrawManager {
 	public void drawRightedRegularString(final Screen screen,
 										 final String string, final int width, final int height) {
 		backBufferGraphics.setFont(fontRegular);
+		backBufferGraphics.drawString(string, width, height);
+	}
+
+	public void drawRightedBigString(final Screen screen,
+										 final String string, final int width, final int height) {
+		backBufferGraphics.setFont(fontBig);
 		backBufferGraphics.drawString(string, width, height);
 	}
 

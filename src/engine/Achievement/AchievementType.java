@@ -8,5 +8,6 @@ public enum AchievementType {
     STAGE,
     TRIALS,
     FASTKILL,
+    ACCURACY,
     ALL, SCORE
 }

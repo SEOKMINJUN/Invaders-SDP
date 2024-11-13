@@ -65,6 +65,8 @@ public final class Core {
 			statistics.resetStatistics();
 			LOGGER.info("Reset Player Statistics");
 
+			Globals.getCollectionManager();
+
 		} catch (Exception e) {
 			// TODO handle exception
 			e.printStackTrace();
@@ -97,7 +99,7 @@ public final class Core {
 			// Add hitCount parameter - Ctrl S
 			// Add coinItemsCollected parameter - Ctrl S
 			gameState = new GameState(1, 0
-					, Globals.MAX_LIVES, Globals.MAX_LIVES,0, 0, 0, 0, 0, 0, 0);
+					, Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0);
 			switch (returnCode) {
 			case 1:
 				// Main menu.
@@ -139,6 +141,7 @@ public final class Core {
 							gameState.getLivesTwoRemaining(),
 							gameState.getBulletsShot(),
 							gameState.getShipsDestroyed(),
+							gameState.getAccuracy(),
 							gameState.getTime(),
 							gameState.getCoin() + roundState.getRoundCoin(),
 							gameState.getGem(),
@@ -210,7 +213,6 @@ public final class Core {
 
 					GameState prevState = gameState;
 
-					// TwoPlayerMode의 생성자를 호출할 때 필요한 매개변수를 모두 전달
 					currentScreen = new TwoPlayerGameScreen(gameState, currentGameSettings, bonusLife, width, height, fps);
 					Statistics statistics = new Statistics(); //Clove
 
@@ -231,6 +233,7 @@ public final class Core {
 							gameState.getLivesTwoRemaining(),
 							gameState.getBulletsShot(),
 							gameState.getShipsDestroyed(),
+							gameState.getAccuracy(),
 							gameState.getTime(),
 							gameState.getCoin() + roundState.getRoundCoin(),
 							gameState.getGem(),
@@ -284,6 +287,13 @@ public final class Core {
 						+ " recent record screen at " + Globals.FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
 				LOGGER.info("Closing recent record screen.");
+				break;
+			case 6:
+				currentScreen = new CollectionsScreen(width, height, Globals.FPS);
+				LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
+						+ " collection screen at " + Globals.FPS + " fps.");
+				returnCode = frame.setScreen(currentScreen);
+				LOGGER.info("Closing collection screen.");
 				break;
 			default:
 				break;

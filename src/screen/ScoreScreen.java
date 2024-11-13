@@ -2,8 +2,10 @@ package screen;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
 import engine.Statistics; //Team Clove
 import engine.*;
@@ -57,6 +59,9 @@ public class ScoreScreen extends Screen {
 	private final boolean isRecentScore = true; // Team Clove
 
 	private Statistics statistics; //Team Clove
+
+	private Statistics collections;
+	private List<Statistics> collectionsList = new ArrayList<>();
 
 	private long playTime; //Team Clove
 
@@ -113,6 +118,14 @@ public class ScoreScreen extends Screen {
 		} catch (IOException e) {
 			logger.warning("Couldn't load recent scores!");
 		}
+
+		try {
+			this.collections = Globals.getFileManager().loadCollections();
+			collectionsList.add(this.collections);
+		}catch (IOException ex) {
+			Logger.getLogger("Couldn't load Collection!");
+		}
+
 	}
 
 	/**
@@ -146,6 +159,7 @@ public class ScoreScreen extends Screen {
 				saveCoin(); // Team-Ctrl-S(Currency)
 				saveStatistics(); //Team Clove
 				saveRecentScore(); // Team Clove
+				saveCollections();
 			} else if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 				// Play again.
 				this.returnCode = 2;
@@ -159,6 +173,7 @@ public class ScoreScreen extends Screen {
 				saveCoin(); // Team-Ctrl-S(Currency)
 				saveStatistics(); //Team Clove
 				saveRecentScore(); // Team Clove
+				saveCollections();
 			}
 
 			if (this.isNewRecord && this.selectionCooldown.checkFinished()) {
@@ -228,11 +243,21 @@ public class ScoreScreen extends Screen {
 
 	private void saveStatistics(){
 		try{
+			statistics.checkAndUpdateStreak();
 			statistics.comShipsDestructionStreak(0);
-			statistics.addPlayedGameNumber(1);
+			statistics.addShipsDestroyed(0);
+			statistics.addPlayedGameNumber(0);
 			statistics.comClearAchievementNumber(0);
 		} catch (IOException e) {
 			logger.warning("Couldn't load Statistics!");
+		}
+	}
+
+	private void saveCollections(){
+		try{
+			Globals.getFileManager().saveCollections(Globals.getCollectionManager().getCollectionList());
+		} catch (IOException e) {
+			logger.warning("Couldn't load Collections!");
 		}
 	}
 
