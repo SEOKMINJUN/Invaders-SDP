@@ -29,5 +29,9 @@ public class AchievementList {
     Achievement ACHIEVEMENT_STAGE_MAX       = (new Achievement("Home Sweet Home","Cleared Final Stage", NUM_LEVELS, AchievementType.STAGE, 5));
     Achievement ACHIEVEMENT_ALL             = (new Achievement("Medal of Honor", "Complete all achievements", 0, AchievementType.ALL, 10));
 
+    Achievement ACHIEVEMENT_DISTANCE_5     = (new Achievement("Beginner","Moved 5km",5000, AchievementType.DISTANCE, 1));
+    Achievement ACHIEVEMENT_DISTANCE_20     = (new Achievement("Explorer","Moved 20km",20000, AchievementType.DISTANCE, 3));
+    Achievement ACHIEVEMENT_DISTANCE_42     = (new Achievement("Marathon Runner","Moved 42km",42000, AchievementType.DISTANCE, 5));
+
     private static final int ACHIEVEMENT_FAST_KILL_TIME = 5;
 }
