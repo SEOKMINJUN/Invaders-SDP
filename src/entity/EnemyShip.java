@@ -187,14 +187,6 @@ public class EnemyShip extends Entity {
 	public final void update() {
 		if(isDestroyed() && explosionCooldown.checkFinished()){
 			remove();
-			if(this.shipType == 0){
-				GameScreen screen = (GameScreen) Globals.getCurrentScreen();
-				EnemyShipFormation enemyShipFormation = screen.getEnemyShipFormation();
-				List<EnemyShip> column = enemyShipFormation.getEnemyShips().get(this.x);
-				if(!column.remove(this)){
-					Globals.getLogger().warning("EnemyShip from "+ this.x + " " + this.y + " is already removed");
-				}
-			}
 		}
 		if (this.shipType == 0 && this.animationCooldown.checkFinished()) {
 			this.animationCooldown.reset();
@@ -263,7 +255,16 @@ public class EnemyShip extends Entity {
 			enemyShipFormation.setNextShooterByDestroyedShip(this);
 			enemyShipFormation.shipCount--;
 		}
-
+		if(this.shipType == 0){
+			EnemyShipFormation enemyShipFormation = screen.getEnemyShipFormation();
+			List<List<EnemyShip>> enemyShips = enemyShipFormation.getEnemyShips();
+			if(enemyShips.size() > this.x) {
+				List<EnemyShip> column = enemyShips.get(this.x);
+				if (!column.remove(this)) {
+					Globals.getLogger().warning("EnemyShip from " + this.x + " " + this.y + " is already removed");
+				}
+			}
+		}
 		//Check point to add
 		int point = this.getPointValue();
 		if(screen.getFeverTimeItem().isActive())
