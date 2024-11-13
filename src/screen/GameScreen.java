@@ -228,7 +228,7 @@ public class GameScreen extends Screen {
 	@Override
 	protected boolean update() {
 		boolean gameProgress = inputDelay.checkFinished() && !isLevelFinished();
-		ship1.setCanMove(gameProgress && ship1.getHealth() > 0);
+		ship1.setCanMove(gameProgress && ship1.getHealth() > 0 && ship1.getDestructionCooldown().checkFinished());
 
 		super.update();
 

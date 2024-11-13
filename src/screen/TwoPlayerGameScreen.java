@@ -51,7 +51,7 @@ public class TwoPlayerGameScreen extends GameScreen {
     @Override
     protected boolean update() {
         boolean gameProgress = inputDelay.checkFinished() && !isLevelFinished();
-        ship2.setCanMove(gameProgress && ship2.getHealth() > 0);
+        ship2.setCanMove(gameProgress && ship2.getHealth() > 0  && ship2.getDestructionCooldown().checkFinished());
 
         super.update();
         if (this.isLevelFinished() && this.screenFinishedCooldown.checkFinished()) {
