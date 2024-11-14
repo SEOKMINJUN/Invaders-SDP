@@ -129,6 +129,10 @@ public class Ship extends Entity {
 	/** Ship health */
 	@Getter @Setter
 	private int health;
+	@Getter
+	private int x;
+	@Getter
+	private int y;
 
 
 	//TODO : Move health to ship from GameScreen, and Add immunity time
@@ -178,6 +182,10 @@ public class Ship extends Entity {
 		this.positionX -= growth.getMoveSpeed(); // Use PlayerGrowth for movement speed
 	} //Edit by Enemy
 
+	public void setPosition(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 
 
 	public final void moveUP() {
