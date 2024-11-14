@@ -42,6 +42,10 @@ public class GameScreen extends Screen {
 	/** Time from finishing the level to screen change. */
     protected Cooldown screenFinishedCooldown;
     // Team Inventory(Item)
+	private int playerDistance = 0;
+	private int lastPlaterX;
+	private int lastPlaterY;
+	private int totalDistance = 0;
     @Getter
     private FeverTimeItem feverTimeItem;
 	/** Speed item */
@@ -107,6 +111,7 @@ public class GameScreen extends Screen {
 
 	/** CtrlS: Count the number of coin collected in game */
     public int coinItemsCollected;
+	private DrawManagerImpl drawManagerImpl;
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -183,6 +188,10 @@ public class GameScreen extends Screen {
 		this.statistics = new Statistics();
 		/** initialize background **/
 		drawManager.loadBackground(this.level);
+
+		this.lastPlaterX = this.ship1.getX();
+		this.lastPlaterY = this.ship1.getY();
+		this.playerDistance = 0;
 
 		enemyShipFormation = new EnemyShipFormation(this.gameSettings);
 		enemyShipFormation.attach(this);
@@ -273,6 +282,8 @@ public class GameScreen extends Screen {
 
 			this.enemyShipFormation.update();
 			this.enemyShipFormation.shoot();
+			updatePlayerDistance();
+			drawManagerImpl.drawPlayerDistance(this, getPlayerDistance());
 
 			int currentRemainingEnemies = getRemainingEnemies();
 			int destroyedEnemies = previousRemainingEnemies - currentRemainingEnemies;
@@ -340,10 +351,25 @@ public class GameScreen extends Screen {
 		if ((getRemainingEnemies() == 0 || ship1.getHealth() == 0)
 				&& !this.levelFinished
 				&& waveCounter == this.gameSettings.getWavesNumber()) {
+			totalDistance += playerDistance;
+			playerDistance = 0;
 			this.levelFinished = true;
 			this.screenFinishedCooldown.reset();
 		}
 	}
+
+	public void updatePlayerDistance() {
+		int currentX = this.ship1.getPositionX();
+		int currentY = this.ship1.getPositionY();
+
+		double distance = Math.sqrt(Math.pow(currentX - lastPlaterX, 2) + Math.pow(currentY - lastPlaterY, 2));
+		playerDistance += distance;
+
+		lastPlaterX = currentX;
+		lastPlaterY = currentY;
+	}
+
+	public int getPlayerDistance() { return playerDistance; }
 
 	/**
 	 * Draws the elements associated with the screen.

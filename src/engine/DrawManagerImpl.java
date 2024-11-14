@@ -2,7 +2,8 @@ package engine;
 
 import screen.Screen;
 import entity.Entity;
-import java.awt.Color;
+
+import java.awt.*;
 
 public class DrawManagerImpl extends DrawManager {
 
@@ -204,6 +205,17 @@ public class DrawManagerImpl extends DrawManager {
 
         for (int i = 0; i < livestwo; i++)
             drawEntity(heart, startingXPosition + 30 * i, 10);
+    }
+
+    public static void drawPlayerDistance(Screen screen, int playerDistance) {
+        backBufferGraphics.setFont(fontRegular);
+        backBufferGraphics.setColor(Color.WHITE);
+
+        String playerDistanceString = "Distance: " + (int)(playerDistance - 689) + " km";
+        int xPosition = screen.getWidth() - fontRegularMetrics.stringWidth(playerDistanceString) - 20;
+        int yPosition = screen.getHeight() - 25;
+
+        backBufferGraphics.drawString(playerDistanceString, xPosition, yPosition);
     }
 
     /**

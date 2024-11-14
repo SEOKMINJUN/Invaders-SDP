@@ -1,10 +1,11 @@
 plugins {
-    id "java"
+    id "application"
     id "edu.sc.seis.launch4j" version "3.0.6"
 }
 
 group 'org.invaders-sdp'
 version '0.0'
+mainClassName = 'engine.Core'
 
 repositories {
     mavenCentral()
@@ -25,6 +26,7 @@ sourceSets {
     }
 }
 dependencies {
+    implementation 'com.tagtraum:ffsampledsp-complete:0.9.53'
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
     compileOnly 'org.projectlombok:lombok:1.18.34'
