@@ -250,10 +250,8 @@ public class Ship extends Entity {
 	 */
 	@Override
 	public final void update() {
-		if (!this.destructionCooldown.checkFinished())
-			this.spriteType = SpriteType.ShipDestroyed;
-		else
-			this.spriteType = SpriteType.Ship;
+		//Update sprite type based on destruction state
+		this.spriteType = this.destructionCooldown.checkFinished() ? SpriteType.Ship : SpriteType.ShipDestroyed;
 
 		if(!isPlayDestroyAnimation() && isDestroyed()){
 			// Do not draw when ship destroyed
@@ -277,6 +275,16 @@ public class Ship extends Entity {
                     < screen.getHeight() * 0.6;
 			boolean isBottomBorder = getPositionY() + this.getHeight() + this.getSpeed()
 					> screen.getHeight() - 63;
+
+			if (inputManager.isKeyDown(KEY_RIGHT) && !isRightBorder) {
+				this.positionX = screen.getWidth() - this.getWidth();
+				Globals.getLogger().info("Double Tap detected! Ship teleported to the right edge.");
+			}
+
+			if (inputManager.isKeyDown(KEY_LEFT) && !isLeftBorder) {
+				this.positionX = 0;
+				Globals.getLogger().info("Double Tap detected! Ship teleported to the left edge.");
+			}
 
 			if (moveRight && !isRightBorder) {
 				this.moveRight();

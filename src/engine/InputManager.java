@@ -2,6 +2,8 @@ package engine;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Manages keyboard input for the provided screen.
@@ -17,6 +19,12 @@ public final class InputManager implements KeyListener {
 	private static boolean[] keys;
 	/** Singleton instance of the class. */
 	private static InputManager instance;
+
+	/**
+	 * The threshold time (in milliseconds) to detect a double-tap event
+	 */
+	private Map<Integer, Long> lastKeyPress = new HashMap<>();
+	private static final int DOUBLE_TAP_THRESHOLD = 300;
 
 	/**
 	 * Private constructor.
@@ -69,6 +77,20 @@ public final class InputManager implements KeyListener {
 	public void keyReleased(final KeyEvent key) {
 		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS)
 			keys[key.getKeyCode()] = false;
+	}
+
+	/**
+	 * Checks if a given key code has been double-tapped within the defined threshold.
+	 *
+	 * @param keyCode The key code to check for a double-tap.
+	 * @return True if the key was double-tapped, false otherwise.
+	 */
+	public boolean isDoubleTap(int keyCode) {
+		long currentTime = System.currentTimeMillis();
+		long lastPressTime = lastKeyPress.getOrDefault(keyCode, 0L);
+		boolean isDoubleTap = (currentTime - lastPressTime) <= DOUBLE_TAP_THRESHOLD;
+		lastKeyPress.put(keyCode, currentTime);
+		return isDoubleTap;
 	}
 
 	/**
