@@ -5,12 +5,12 @@ import java.text.DecimalFormat;
 import java.util.Properties;
 import java.util.logging.Logger;
 
-import entity.ShipStatus;
+import entity.ShipUpgradeStatus;
 
-public final class UpgradeManager {
+public final class ShipUpgradeManager {
 
     /** Singleton instance of the class. */
-    private static UpgradeManager instance;
+    private static ShipUpgradeManager instance;
     /** Application logger. */
     private static Logger logger;
     private static FileManager fileManager;
@@ -27,7 +27,7 @@ public final class UpgradeManager {
     private static final String Coin_Count = "Coin_LevelCount";
     private static final String Bullet_Count = "bullet_LevelCount";
     // load stat increase data
-    private static ShipStatus shipStatus;
+    private static ShipUpgradeStatus shipUpgradeStatus;
 
 
     /** Decimal format to ensure values have one decimal place. */
@@ -36,16 +36,16 @@ public final class UpgradeManager {
     /**
      * private constructor.
      */
-    private UpgradeManager() {
+    private ShipUpgradeManager() {
         try{
             Globals.getFileManager().saveUpgradeStatus(Globals.getFileManager().loadUpgradeStatus());
         } catch (IOException e){
             throw new RuntimeException(e);
         }
         // load stat increase data
-        shipStatus = new ShipStatus();
-        shipStatus.loadStatus();
-        shipStatus.loadPrice();
+        shipUpgradeStatus = new ShipUpgradeStatus();
+        shipUpgradeStatus.loadStatus();
+        shipUpgradeStatus.loadPrice();
         fileManager = Globals.getFileManager();
         logger = Globals.getLogger();
     }
@@ -55,9 +55,9 @@ public final class UpgradeManager {
      *
      * @return Shared instance of UpgradeManager.
      */
-    public static UpgradeManager getInstance() {
+    public static ShipUpgradeManager getInstance() {
         if (instance == null)
-            instance = new UpgradeManager();
+            instance = new ShipUpgradeManager();
         return instance;
     }
 
@@ -82,7 +82,7 @@ public final class UpgradeManager {
      */
     public void addCoinAcquisitionMultiplier() throws IOException {
         double currentValue = getCoinAcquisitionMultiplier();
-        currentValue += shipStatus.getCoinIn();
+        currentValue += shipUpgradeStatus.getCoinIn();
 
         // Format the value to one decimal place
         String formattedValue = decimalFormat.format(currentValue);
@@ -113,7 +113,7 @@ public final class UpgradeManager {
      */
     public void addAttackSpeed() throws IOException {
         int currentValue = getAttackSpeed();
-        currentValue += shipStatus.getSuootingInIn();
+        currentValue += shipUpgradeStatus.getSuootingInIn();
         Properties properties = fileManager.loadUpgradeStatus();
         properties.setProperty(ATTACK_SPEED, Integer.toString(currentValue));
         fileManager.saveUpgradeStatus(properties);
@@ -140,7 +140,7 @@ public final class UpgradeManager {
      */
     public void addMovementSpeed() throws IOException {
         double currentValue = getMovementSpeed();
-        currentValue += shipStatus.getSpeedIn();
+        currentValue += shipUpgradeStatus.getSpeedIn();
         Properties properties = fileManager.loadUpgradeStatus();
         properties.setProperty(MOVEMENT_SPEED, Double.toString(currentValue));
         fileManager.saveUpgradeStatus(properties);
@@ -226,7 +226,7 @@ public final class UpgradeManager {
             switch (i) {
                 case 1:  // bullet price
                     if (getBulletCount() % 2 != 0){
-                        return shipStatus.getBullet_price() * getBulletCount();
+                        return shipUpgradeStatus.getBullet_price() * getBulletCount();
                     }
                     else {
                         return (getBulletCount() + 1) * 10;
@@ -234,7 +234,7 @@ public final class UpgradeManager {
 
                 case 2:  // speed price
                     if (getSpeedCount() % 4 != 0){
-                        return PriceCalculation(shipStatus.getSpeed_price(), getSpeedCount());
+                        return PriceCalculation(shipUpgradeStatus.getSpeed_price(), getSpeedCount());
                     }
                     else {
                         return getSpeedCount() / 4 * 5;
@@ -242,7 +242,7 @@ public final class UpgradeManager {
 
                 case 3:  // attack price
                     if (getAttackCount() % 4 != 0){
-                        return PriceCalculation(shipStatus.getAttack_price(), getAttackCount());
+                        return PriceCalculation(shipUpgradeStatus.getAttack_price(), getAttackCount());
                     }
                     else {
                         return getAttackCount() / 4 * 5;
@@ -250,7 +250,7 @@ public final class UpgradeManager {
 
                 case 4:  // CoinBonus price
                     if (getCoinCount() % 4 != 0){
-                        return PriceCalculation(shipStatus.getCoinBonus_price(), getCoinCount());
+                        return PriceCalculation(shipUpgradeStatus.getCoinBonus_price(), getCoinCount());
                     }
                     else {
                         return getCoinCount() / 4 * 5;

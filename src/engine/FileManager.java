@@ -589,7 +589,7 @@ public final class FileManager {
 
             File staticsFile = new File(staticsPath);
 
-			logger.info("Saving Player Statistic.");
+			logger.info(" Saving Player Statistic.");
 
             if (!staticsFile.exists())
 				staticsFile.createNewFile();
@@ -643,8 +643,14 @@ public final class FileManager {
 			File staticsFile = new File(staticsPath);
 
 			inputStream = new FileInputStream(staticsFile);
+			if(inputStream == null){
+				logger.warning("Failed to load Statistic.properties inputStream.");
+			}
 			properties.load(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
 
+			if(properties.getProperty("highestLevel") == null){
+				logger.warning("Failed to load highestLevel." + properties.toString());
+			}
 			//logger.info("Loading Player Statistic.");
 
 			int highestLevel = Integer.parseInt(properties.getProperty("highestLevel"));
@@ -810,7 +816,11 @@ public final class FileManager {
 			logger.info("Loading user's coin.");
 			String amount = bufferedReader.readLine();
 			//coin = Integer.parseInt(EncryptionSupport.decrypt(amount));
-			coin = Integer.parseInt(amount);
+
+			if(amount == null)
+				coin = 0;
+			else
+				coin = Integer.parseInt(amount);
 		}
 
 		return coin;
@@ -916,7 +926,10 @@ public final class FileManager {
 			bufferedReader.readLine(); // Ignore first(coin) line
 			String amount = bufferedReader.readLine();
 			//gem = Integer.parseInt(EncryptionSupport.decrypt(amount));
-			gem = Integer.parseInt(amount);
+			if(amount == null)
+				gem = 0;
+			else
+				gem = Integer.parseInt(amount);
 		}
 
 		return gem;

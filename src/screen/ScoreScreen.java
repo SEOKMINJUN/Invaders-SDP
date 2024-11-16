@@ -69,8 +69,6 @@ public class ScoreScreen extends Screen {
 
 	private boolean isGameClear; // CtrlS
 
-	private NumberOfBullet numberOfBullet = new NumberOfBullet();
-
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -202,7 +200,7 @@ public class ScoreScreen extends Screen {
 					this.selectionCooldown.reset();
 				}
 			}
-			numberOfBullet.ResetPierceLevel();
+			NumberOfBullet.ResetPierceLevel();
 		}
 		return true;
 	}

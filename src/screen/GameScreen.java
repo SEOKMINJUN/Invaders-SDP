@@ -39,14 +39,8 @@ public class GameScreen extends Screen {
     public EnemyShip enemyShipSpecial;
 	/** Minimum time between bonus ship1 appearances. */
 	private Cooldown enemyShipSpecialCooldown;
-	/** Time until bonus ship1 explosion disappears. */
-    public Cooldown enemyShipSpecialExplosionCooldown;
 	/** Time from finishing the level to screen change. */
     protected Cooldown screenFinishedCooldown;
-    // Team Inventory(Item)
-    /** Shield item */
-	@Getter
-    private ItemBarrierAndHeart item;	// team Inventory
     // Team Inventory(Item)
 	private int playerDistance = 0;
 	private int lastPlaterX;
@@ -113,9 +107,6 @@ public class GameScreen extends Screen {
 	/** Set of fire_id **/
 	public Set<Integer> processedFireBullet;
 
-	/** Score calculation. */
-    protected ScoreManager scoreManager;    //clove
-
 	Statistics statistics; //Team Clove
 
 	/** CtrlS: Count the number of coin collected in game */
@@ -150,7 +141,6 @@ public class GameScreen extends Screen {
 		this.bulletsShot = gameState.getBulletsShot();
 		this.shipsDestroyed = gameState.getShipsDestroyed();
 		this.accuracy = gameState.getAccuracy();
-		this.item = new ItemBarrierAndHeart();   // team Inventory
 		this.feverTimeItem = new FeverTimeItem(); // team Inventory
 		this.speedItem = new SpeedItem();   // team Inventory
 		this.coin = gameState.getCoin(); // Team-Ctrl-S(Currency)
@@ -168,7 +158,6 @@ public class GameScreen extends Screen {
 
 		// Soomin Lee / TeamHUD
 		this.playTime = gameState.getTime();
-		this.scoreManager = new ScoreManager(level, score); //Team Clove
 		this.statistics = new Statistics(); //Team Clove
 		this.coinItemsCollected = gameState.getCoinItemsCollected(); // CtrlS
 
@@ -211,8 +200,6 @@ public class GameScreen extends Screen {
 		this.enemyShipSpecialCooldown = Core.getVariableCooldown(
 				Globals.GAME_SCREEN_BONUS_SHIP_INTERVAL, Globals.GAME_SCREEN_BONUS_SHIP_VARIANCE);
 		this.enemyShipSpecialCooldown.reset();
-		this.enemyShipSpecialExplosionCooldown = Core
-				.getCooldown(Globals.GAME_SCREEN_BONUS_SHIP_EXPLOSION);
 		this.screenFinishedCooldown = Core.getCooldown(Globals.GAME_SCREEN_SCREEN_CHANGE_INTERVAL);
 
 		// Special input delay / countdown.
@@ -239,7 +226,7 @@ public class GameScreen extends Screen {
 		super.run();
 
 		this.score += Globals.GAME_SCREEN_LIFE_SCORE * (this.lives - 1);
-		this.logger.info("Screen cleared with a score of " + this.scoreManager.getAccumulatedScore());
+		this.logger.info("Screen cleared with a score of " + this.score);
 
 		return this.returnCode;
 	}
@@ -250,7 +237,7 @@ public class GameScreen extends Screen {
 	@Override
 	protected boolean update() {
 		boolean gameProgress = inputDelay.checkFinished() && !isLevelFinished();
-		ship1.setCanMove(gameProgress && ship1.getHealth() > 0);
+		ship1.setCanMove(gameProgress && ship1.getHealth() > 0 && ship1.getDestructionCooldown().checkFinished());
 
 		super.update();
 
@@ -269,7 +256,7 @@ public class GameScreen extends Screen {
 			if (this.enemyShipSpecial != null) {
 				if (!this.enemyShipSpecial.isDestroyed())
 					this.enemyShipSpecial.move(2, 0);
-				else if (this.enemyShipSpecialExplosionCooldown.checkFinished())
+				else if (!this.enemyShipSpecial.isEnabled())
 					this.enemyShipSpecial = null;
 
 			}
@@ -288,7 +275,6 @@ public class GameScreen extends Screen {
 				this.logger.info("The special ship1 has escaped");
 			}
 
-			this.item.updateBarrierAndShip(this.ship1);   // team Inventory
 			this.speedItem.update();         // team Inventory
 			this.feverTimeItem.update();
 
@@ -398,21 +384,14 @@ public class GameScreen extends Screen {
 		DrawManagerImpl.drawRect(0, 0, this.width, Globals.GAME_SCREEN_SEPARATION_LINE_HEIGHT, Color.BLACK);
 		DrawManagerImpl.drawRect(0, this.height - 70, this.width, 70, Color.BLACK); // by Saeum Jung - TeamHUD
 
-		if (this.enemyShipSpecial != null)
-			drawManager.drawEntity(this.enemyShipSpecial,
-					this.enemyShipSpecial.getPositionX(),
-					this.enemyShipSpecial.getPositionY());
-
-		enemyShipFormation.draw();
-
 		DrawManagerImpl.drawSpeed(this, ship1.getSpeed()); // Ko jesung / HUD team
 		DrawManagerImpl.drawSeparatorLine(this,  this.height-65); // Ko jesung / HUD team
 
 
 		// Interface.
-//		drawManager.drawScore(this, this.scoreManager.getAccumulatedScore());    //clove -> edit by jesung ko - TeamHUD(to udjust score)
+//		drawManager.drawScore(this, this.score);    //clove -> edit by jesung ko - TeamHUD(to udjust score)
 //		drawManager.drawScore(this, this.score); // by jesung ko - TeamHUD
-        DrawManagerImpl.drawScore2(this, scoreManager.getAccumulatedScore()); // by jesung ko - TeamHUD
+        DrawManagerImpl.drawScore2(this, this.score); // by jesung ko - TeamHUD
 		drawManager.drawLives(this, ship1.getHealth());
 		drawManager.drawHorizontalLine(this, Globals.GAME_SCREEN_SEPARATION_LINE_HEIGHT - 1);
 		DrawManagerImpl.drawRemainingEnemies(this, getRemainingEnemies()); // by HUD team SeungYun
@@ -490,7 +469,7 @@ public class GameScreen extends Screen {
 	 * @return Current game state.
 	 */
 	public GameState getGameState() {
-		return new GameState(this.level, this.scoreManager.getAccumulatedScore(), ship1.getHealth(), 0,
+		return new GameState(this.level, this.score, ship1.getHealth(), 0,
 				this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
 	}
 
@@ -509,4 +488,10 @@ public class GameScreen extends Screen {
 		}
 		return remainingEnemies;
 	} // by HUD team SeungYun
+
+	public void addScore(int score) { this.score += score; }
+
+	public void addEnemyShipDestroyScore(int score){
+		this.addScore(score * this.level);
+	}
 }

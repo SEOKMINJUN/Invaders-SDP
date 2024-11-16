@@ -1,6 +1,5 @@
 package entity;
 
-import engine.DrawManager;
 import engine.Globals;
 import engine.SoundManager;
 import lombok.Getter;
@@ -11,22 +10,10 @@ import screen.GameScreen;
  * The PiercingBullet class extends the Bullet class to implement a bullet
  * that can pierce through multiple enemies based solely on piercing count.
  */
-//TODO : Merge PiercingBullet and Bullet
 @Setter
 @Getter
 public class PiercingBullet extends Bullet {
 
-    /**
-     * -- GETTER --
-     *  Getter for the number of remaining piercings.
-     *
-     *
-     * -- SETTER --
-     *  Setter for the piercing count.
-     *
-     @return The remaining piercings.
-      * @param piercingCount The new number of piercings the bullet can perform.
-     */
     // Variable to track how many enemies the bullet can pierce.
     private int piercingCount;
 
@@ -47,10 +34,8 @@ public class PiercingBullet extends Bullet {
     /**
      * Handles the logic when the bullet collides with an entity.
      * Reduces the piercing count and destroys the bullet when piercing is exhausted.
-     *
-     * @param entity The entity the bullet collided with.
      */
-    public void onCollision(Entity entity) {
+    public void onCollision() {
         Globals.getStatistics().setShipDestroyed();
         this.piercingCount--;
         if (this.piercingCount <= 0) {
@@ -62,7 +47,8 @@ public class PiercingBullet extends Bullet {
      * Destroys the ship, causing an explosion.
      */
     public void destroy() {
-        this.spriteType = DrawManager.SpriteType.Explosion;
+        this.setEnabled(false);
+        PiercingBulletPool.recycle(this);
     }
 
     public void testRemoveCondition(){
@@ -71,11 +57,7 @@ public class PiercingBullet extends Bullet {
         // Remove when out of screen
         if (getPositionY() < Globals.GAME_SCREEN_SEPARATION_LINE_HEIGHT
                 || getPositionY() > screen.getHeight()-70) // ko jesung / HUD team
-        {
-            //Ctrl-S : set true of CheckCount if the bullet is planned to recycle.
-            setCheckCount(true);
             remove();
-        }
     }
 
     public void testCollision(){
@@ -86,127 +68,39 @@ public class PiercingBullet extends Bullet {
             while((ship = (Ship)screen.findEntityByClassname(ship, "Ship")) != null){
                 if (checkCollision(ship) && !screen.isLevelFinished()) {
                     remove();
-                    if (!ship.isDestroyed() && !ship.isPlayDestroyAnimation() && !screen.getItem().isbarrierActive()) {	// team Inventory
-                        ship.playDestroyAnimation();
-                        int health = ship.getHealth()-1;
-                        ship.setHealth(health);
-                        Globals.getLogger().info("Hit on player ship, " + health
-                                + " lives remaining.");
-
-                        // Sound Operator
-                        if (health == 0){
-                            SoundManager.playShipDieSounds();
-                        }
+                    if (!ship.isDestroyed() && !ship.isPlayDestroyAnimation() && !ship.isBarrierActive()) {	// team Inventory
+                        ship.subtractHealth();
                     }
                     return;
                 }
             }
         } else {
-            //Player Bullet
-            // CtrlS - set fire_id of bullet.
-            setFire_id(fire_id);
-            EnemyShipFormation enemyShipFormation = screen.getEnemyShipFormation();
-            for (EnemyShip enemyShip : enemyShipFormation) {
-                if (!enemyShip.isDestroyed()
-                        && checkCollision(enemyShip)) {
-                    ScoreManager.addScore(enemyShip.getPointValue());
-                    int[] CntAndPnt = enemyShipFormation._destroy(this, enemyShip, false);
-                    screen.shipsDestroyed += CntAndPnt[0];
-                    int feverScore = 0;
-
-                    if(enemyShip.getHp() <= 0) {
-                        //inventory_f fever time is activated, the score is doubled.
-                        if(screen.getFeverTimeItem().isActive()) {
-                            feverScore = feverScore * 10;
-                        }
-                        screen.shipsDestroyed++;
-                    }
-
-                    ScoreManager.addScore(feverScore); //clove
-                    screen.score += CntAndPnt[1];
-
-                    // CtrlS - If collision occur then check the bullet can process
-                    if (!screen.processedFireBullet.contains(this.getFire_id())) {
-                        // CtrlS - increase hitCount if the bullet can count
-                        if (this.isCheckCount()) {
-                            screen.hitCount++;
-                            this.setCheckCount(false);
-
-                            Globals.getLogger().info("Hit count!");
-                            screen.processedFireBullet.add(this.getFire_id()); // mark this bullet_id is processed.
-                        }
-                    }
-
-                    this.onCollision(enemyShip); // Handle bullet collision with enemy ship
-
-                    // Check PiercingBullet piercing count and add to recyclable if necessary
-                    if (this.getPiercingCount() <= 0) {
-                        //Ctrl-S : set true of CheckCount if the bullet is planned to recycle.
-                        this.setCheckCount(true);
-                        remove();
-                    }
-                }
-                // Added by team Enemy.
-                // Enemy killed by Explosive enemy gives points too
-                if (enemyShip.isChainExploded()) {
-                    screen.score += enemyShip.getPointValue();
-                    screen.shipsDestroyed++;
-                    enemyShip.setChainExploded(false); // resets enemy's chain explosion state.
+            EnemyShip enemyShip = null;
+            while((enemyShip = (EnemyShip)screen.findEntityByClassname(enemyShip, "EnemyShip")) != null){
+                if (!enemyShip.isDestroyed() && checkCollision(enemyShip)) {
+                    enemyShip.subtractHP();
+                    this.onCollision();
+                    break;
                 }
             }
-            if (screen.enemyShipSpecial != null
-                    && !screen.enemyShipSpecial.isDestroyed()
-                    && checkCollision(screen.enemyShipSpecial)) {
-                int feverSpecialScore = screen.enemyShipSpecial.getPointValue();
-                // inventory - Score bonus when acquiring fever items
-                if (screen.getFeverTimeItem().isActive()) {
-                    feverSpecialScore *= 10;
-                    ScoreManager.addScore(feverSpecialScore);
-                } //TEAM CLOVE //Team inventory
-
-                // CtrlS - If collision occur then check the bullet can process
-                if (!screen.processedFireBullet.contains(this.getFire_id())) {
-                    // CtrlS - If collision occur then increase hitCount and checkCount
-                    if (this.isCheckCount()) {
-                        screen.hitCount++;
-                        this.setCheckCount(false);
-                        Globals.getLogger().info("Hit count!");
-                    }
-
-                }
-                ScoreManager.addScore(feverSpecialScore); //clove
-                screen.shipsDestroyed++;
-                screen.enemyShipSpecial.destroy();
-                screen.enemyShipSpecialExplosionCooldown.reset();
-
-                this.onCollision(screen.enemyShipSpecial); // Handle bullet collision with special enemy
-
-                // Check PiercingBullet piercing count for special enemy and add to recyclable if necessary
-                if (this.getPiercingCount() <= 0) {
-                    //Ctrl-S : set true of CheckCount if the bullet is planned to recycle.
-                    this.setCheckCount(true);
-                    remove();
-                }
-            }
-
             Obstacle obstacle = null;
             while((obstacle = (Obstacle) screen.findEntityByClassname(obstacle, "Obstacle")) != null){
                 if (!obstacle.isDestroyed() && checkCollision(obstacle)) {
                     obstacle.destroy();  // Destroy obstacle
-                    remove();
+                    this.onCollision();
                     SoundManager.playES("obstacle_explosion");
                 }
             }
         }
+
     }
 
     @Override
     public void update(){
+        testRemoveCondition();
         if(!this.isEnabled()) return;
 
         this.positionY += this.getSpeed();
-
-        testRemoveCondition();
         testCollision();
     }
 }

@@ -37,15 +37,11 @@ public class NumberOfBullet{
 
     /**
      *
-     * @return
+     * @return bullets
      */
-    public Set<PiercingBullet> addBullet(int positionX, int positionY, int speed, boolean canShootBomb) {
+    public Set<PiercingBullet> addBullet(int positionX, int positionY, int speed) {
         Set<PiercingBullet> bullets = new HashSet<>();
 
-        if (canShootBomb) {
-            bullets.add(PiercingBulletPool.getPiercingBullet(positionX, positionY, speed, 1));
-            return bullets;
-        }
 
         switch (bulletLevel) {
             case 1:
@@ -66,13 +62,13 @@ public class NumberOfBullet{
 
     }
 
-    public static void pierceup() {
+    public void pierceup() {
         if (piercingbulletLevel < PierceMax){
             piercingbulletLevel += 1;
         }
     }
 
-    public void ResetPierceLevel(){
+    public static void ResetPierceLevel(){
         piercingbulletLevel = 1;
     }
 }

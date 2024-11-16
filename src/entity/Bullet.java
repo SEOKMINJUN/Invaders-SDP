@@ -1,9 +1,7 @@
 package entity;
 
 import java.awt.Color;
-import java.io.IOException;
 
-import engine.Statistics;
 import engine.DrawManager.SpriteType;
 
 /**
@@ -56,16 +54,10 @@ public class Bullet extends Entity {
 	/**
 	 * Sets correct sprite for the bullet, based on speed.
 	 */
-	public final void setSprite() {
+	public void setSprite() {
 
-		if (speed < 0) {
-			if(Bomb.getIsBomb() && Bomb.getCanShoot())
-				this.spriteType = SpriteType.ItemBomb;
-			else
-				this.spriteType = SpriteType.Bullet;
-		}
-		else
-			this.spriteType = SpriteType.EnemyBullet;
+		if (speed < 0) this.spriteType = SpriteType.Bullet;
+		else this.spriteType = SpriteType.EnemyBullet;
 	}
 
 	/**
@@ -115,4 +107,5 @@ public class Bullet extends Entity {
 	 * 	          New fire_id of the bullet.
 	 */
 	public final void setFire_id(final int id) { this.fire_id = id; }
+
 }

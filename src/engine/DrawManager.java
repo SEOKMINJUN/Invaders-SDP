@@ -1,7 +1,6 @@
 package engine;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,17 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import engine.Achievement.AchievementHud;
-import engine.Achievement.AchievementList;
-import engine.RoundState;
-import entity.Gem;
-import entity.AddSign;
-import entity.Coin;
-import entity.Bomb;
+import entity.*;
+import screen.GameScreen;
 import screen.Screen;
-import entity.Entity;
-
-import engine.Background;
 
 import javax.imageio.ImageIO;
 
@@ -1119,8 +1110,8 @@ public class DrawManager {
 
 		};
 		itemBomb.setSpriteType(DrawManager.SpriteType.ItemBomb);
-
-		if(Bomb.getIsBomb() && Bomb.getCanShoot()){
+		Ship ship = ((GameScreen)Globals.getCurrentScreen()).getShip1();
+		if(ship.isBombBullet()){
 			drawEntity(itemBomb, screen.getWidth() / 5, screen.getHeight() - 50);
 		}
 	}

@@ -1,7 +1,6 @@
 package engine;
 
 import engine.Achievement.AchievementManager;
-import entity.ScoreManager;
 import lombok.Getter;
 import lombok.Setter;
 import screen.Screen;
@@ -57,17 +56,12 @@ public class Globals {
     public static final int GAME_SCREEN_SCREEN_CHANGE_INTERVAL = 1500;
     /** Height of the interface separation line. */
     public static final int GAME_SCREEN_SEPARATION_LINE_HEIGHT = 40;
+    public static final int barrier_DURATION = 3000;
 
     public static int currentMaxEntityIndex;
-    @Getter @Setter
-    public static ScoreManager scoreManager;
 
     @Getter @Setter
     private static Screen currentScreen;
-
-    public void Initialize(){
-        scoreManager = null;
-    }
 
     /**
      * Controls access to the drawing manager.
@@ -98,7 +92,7 @@ public class Globals {
 
     public static CurrencyManager getCurrencyManager() { return CurrencyManager.getInstance(); }
 
-    public static UpgradeManager getUpgradeManager() { return UpgradeManager.getInstance(); }
+    public static ShipUpgradeManager getUpgradeManager() { return ShipUpgradeManager.getInstance(); }
 
     public static AchievementManager getAchievementManager() { return AchievementManager.getInstance(); }
 

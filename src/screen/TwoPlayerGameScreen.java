@@ -44,17 +44,16 @@ public class TwoPlayerGameScreen extends GameScreen {
 
     @Override
     public GameState getGameState() {
-        return new GameState(this.getLevel(), this.scoreManager.getAccumulatedScore(), getShip1().getHealth(), ship2.getHealth(),
+        return new GameState(this.getLevel(), this.score, getShip1().getHealth(), ship2.getHealth(),
                 this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
     }
 
     @Override
     protected boolean update() {
         boolean gameProgress = inputDelay.checkFinished() && !isLevelFinished();
-        ship2.setCanMove(gameProgress && ship2.getHealth() > 0);
+        ship2.setCanMove(gameProgress && ship2.getHealth() > 0  && ship2.getDestructionCooldown().checkFinished());
 
         super.update();
-        this.getItem().updateBarrierAndShip(ship2);
         if (this.isLevelFinished() && this.screenFinishedCooldown.checkFinished()) {
             //this.logger.info("Final Playtime: " + playTime + " seconds");    //clove
             if(this.getLevel() == Globals.NUM_LEVELS){
