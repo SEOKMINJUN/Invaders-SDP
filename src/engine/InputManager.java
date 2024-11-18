@@ -3,13 +3,15 @@ package engine;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Manages keyboard input for the provided screen.
- * 
+ *
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
- * 
+ *
  */
 public final class InputManager implements KeyListener {
 
@@ -25,7 +27,9 @@ public final class InputManager implements KeyListener {
 	 */
 	private Map<Integer, Long> lastKeyPress = new HashMap<>();
 	private static final int DOUBLE_TAP_THRESHOLD = 300;
-
+	private Set<Integer> pressedKeys = new HashSet<>();
+	private static final int DOUBLE_TAP_COOLDOWN = 500;
+	private long lastDoubleTapTime = 0;
 	/**
 	 * Private constructor.
 	 */
@@ -35,7 +39,7 @@ public final class InputManager implements KeyListener {
 
 	/**
 	 * Returns shared instance of InputManager.
-	 * 
+	 *
 	 * @return Shared instance of InputManager.
 	 */
 	protected static InputManager getInstance() {
@@ -46,7 +50,7 @@ public final class InputManager implements KeyListener {
 
 	/**
 	 * Returns true if the provided key is currently pressed.
-	 * 
+	 *
 	 * @param keyCode
 	 *            Key number to check.
 	 * @return Key state.
@@ -57,26 +61,37 @@ public final class InputManager implements KeyListener {
 
 	/**
 	 * Changes the state of the key to pressed.
-	 * 
+	 *
 	 * @param key
 	 *            Key pressed.
 	 */
 	@Override
 	public void keyPressed(final KeyEvent key) {
-		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS)
+		int keyCode = key.getKeyCode();
+		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS){
 			keys[key.getKeyCode()] = true;
+			pressedKeys.add(keyCode);
+
+			long currentTime = System.currentTimeMillis();
+			long lastTime = lastKeyPress.getOrDefault(keyCode, 0L);
+
+			boolean isDoubleTap = (currentTime - lastTime) > DOUBLE_TAP_THRESHOLD;
+			lastKeyPress.put(keyCode, currentTime);
+		}
 	}
 
 	/**
 	 * Changes the state of the key to not pressed.
-	 * 
+	 *
 	 * @param key
 	 *            Key released.
 	 */
 	@Override
 	public void keyReleased(final KeyEvent key) {
+		int keyCode = key.getKeyCode();
 		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS)
 			keys[key.getKeyCode()] = false;
+		pressedKeys.remove(keyCode);
 	}
 
 	/**
@@ -86,16 +101,21 @@ public final class InputManager implements KeyListener {
 	 * @return True if the key was double-tapped, false otherwise.
 	 */
 	public boolean isDoubleTap(int keyCode) {
+		if (keyCode != KeyEvent.VK_LEFT && keyCode != KeyEvent.VK_RIGHT) { return false; }
 		long currentTime = System.currentTimeMillis();
 		long lastPressTime = lastKeyPress.getOrDefault(keyCode, 0L);
-		boolean isDoubleTap = (currentTime - lastPressTime) <= DOUBLE_TAP_THRESHOLD;
-		lastKeyPress.put(keyCode, currentTime);
+		boolean isDoubleTap = (currentTime - lastDoubleTapTime > DOUBLE_TAP_COOLDOWN) &&
+				(currentTime - lastPressTime > 0) &&
+				(currentTime - lastPressTime <= DOUBLE_TAP_THRESHOLD);
+		if (isDoubleTap){ lastDoubleTapTime = currentTime; }
+		else { lastKeyPress.put(keyCode, currentTime); }
+
 		return isDoubleTap;
 	}
 
 	/**
 	 * Does nothing.
-	 * 
+	 *
 	 * @param key
 	 *            Key typed.
 	 */

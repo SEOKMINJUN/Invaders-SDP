@@ -272,16 +272,16 @@ public class Ship extends Entity {
 			boolean isLeftBorder = getPositionX()
 					- this.getSpeed() < 1;
 			boolean isTopBorder = (getPositionY() - this.getSpeed())
-                    < screen.getHeight() * 0.6;
+					< screen.getHeight() * 0.6;
 			boolean isBottomBorder = getPositionY() + this.getHeight() + this.getSpeed()
 					> screen.getHeight() - 63;
 
-			if (inputManager.isKeyDown(KEY_RIGHT) && !isRightBorder) {
+			if (inputManager.isDoubleTap(KEY_RIGHT) && !isRightBorder) {
 				this.positionX = screen.getWidth() - this.getWidth();
 				Globals.getLogger().info("Double Tap detected! Ship teleported to the right edge.");
 			}
 
-			if (inputManager.isKeyDown(KEY_LEFT) && !isLeftBorder) {
+			if (inputManager.isDoubleTap(KEY_LEFT) && !isLeftBorder) {
 				this.positionX = 0;
 				Globals.getLogger().info("Double Tap detected! Ship teleported to the left edge.");
 			}
@@ -379,7 +379,7 @@ public class Ship extends Entity {
 	public final double getSpeed() {
 		return growth.getMoveSpeed();
 	}
-	
+
 	/**
 	 * Calculates and returns the bullet speed in Pixels per frame.
 	 *
