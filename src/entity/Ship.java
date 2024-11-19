@@ -1,19 +1,18 @@
 package entity;
 
-import java.awt.Color;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.util.Set;
-
 import engine.*;
 import engine.DrawManager.SpriteType;
-// Import NumberOfBullet class
-// Import ShipStatus class
 import lombok.Getter;
 import lombok.Setter;
 import screen.GameScreen;
 
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.util.Set;
+
 import static engine.Globals.barrier_DURATION;
+import static engine.Globals.getLogger;
 
 class PlayerGrowth {
 
@@ -250,7 +249,6 @@ public class Ship extends Entity {
 	 */
 	@Override
 	public final void update() {
-		//Update sprite type based on destruction state
 		this.spriteType = this.destructionCooldown.checkFinished() ? SpriteType.Ship : SpriteType.ShipDestroyed;
 
 		if(!isPlayDestroyAnimation() && isDestroyed()){
@@ -276,17 +274,7 @@ public class Ship extends Entity {
 			boolean isBottomBorder = getPositionY() + this.getHeight() + this.getSpeed()
 					> screen.getHeight() - 63;
 
-			if (inputManager.isDoubleTap(KEY_RIGHT) && !isRightBorder) {
-				this.positionX = screen.getWidth() - this.getWidth();
-				Globals.getLogger().info("Double Tap detected! Ship teleported to the right edge.");
-			}
-
-			if (inputManager.isDoubleTap(KEY_LEFT) && !isLeftBorder) {
-				this.positionX = 0;
-				Globals.getLogger().info("Double Tap detected! Ship teleported to the left edge.");
-			}
-
-			if (moveRight && !isRightBorder) {
+			 if (moveRight && !isRightBorder) {
 				this.moveRight();
 				screen.backgroundMoveRight = true;
 			}
@@ -417,6 +405,17 @@ public class Ship extends Entity {
 				this.setSpriteType(DrawManager.SpriteType.Ship);
 				deactivatebarrier();    // deactive barrier
 			}
+		}
+	}
+
+	public void detectedDoubleTab(boolean isDoubleTabRight, boolean isDoubleTabLeft, int screenWidth) {
+		if (isDoubleTabRight) {
+			getLogger().info("Detected double tab");
+			this.setPosition(screenWidth - this.getWidth(), this.getPositionY());
+		}
+		else if (isDoubleTabLeft) {
+			getLogger().info("Detected double tab");
+			this.setPosition(0, this.getPositionY());
 		}
 	}
 

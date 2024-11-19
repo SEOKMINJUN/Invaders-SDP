@@ -238,10 +238,15 @@ public class GameScreen extends Screen {
 	protected boolean update() {
 		boolean gameProgress = inputDelay.checkFinished() && !isLevelFinished();
 		ship1.setCanMove(gameProgress && ship1.getHealth() > 0 && ship1.getDestructionCooldown().checkFinished());
+		InputManager inputManager = Globals.getInputManager();
 
 		super.update();
 
 		if (gameProgress) {
+			boolean isDoubleTapRight = inputManager.isDoubleTab(KeyEvent.VK_RIGHT);
+			boolean isDoubleTapLeft = inputManager.isDoubleTab(KeyEvent.VK_LEFT);
+
+			ship1.detectedDoubleTab(isDoubleTapRight, isDoubleTapLeft, this.width);
 			// --- OBSTACLES
 			if (this.obstacleSpawnCooldown.checkFinished()) {
 				// Adjust spawn amount based on the level
