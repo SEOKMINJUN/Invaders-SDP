@@ -113,6 +113,8 @@ public class GameScreen extends Screen {
     public int coinItemsCollected;
 	private DrawManagerImpl drawManagerImpl;
 
+	public static boolean isPaused = false;
+
 	/**
 	 * Constructor, establishes the properties of the screen.
 	 *
@@ -240,6 +242,10 @@ public class GameScreen extends Screen {
 		ship1.setCanMove(gameProgress && ship1.getHealth() > 0 && ship1.getDestructionCooldown().checkFinished());
 
 		super.update();
+
+		if(inputManager.isKeyJustPressed(KeyEvent.VK_ESCAPE)){
+			isPaused = !isPaused;
+		}
 
 		if (gameProgress) {
 			// --- OBSTACLES
@@ -433,7 +439,12 @@ public class GameScreen extends Screen {
 			playTime = (int) ((System.currentTimeMillis() - playStartTime) / 1000) + playTimePre;
 		}
 
-		super.draw();
+		if(isPaused){
+			drawManager.drawPauseMenu(this);
+		}
+		else{
+			super.draw();
+		}
 	}
 
 

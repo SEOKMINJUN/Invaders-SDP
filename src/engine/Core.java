@@ -61,8 +61,7 @@ public final class Core {
 			Globals.getUpgradeManager();
 
 			//Clove. Reset Player Statistics After the Game Starts
-			Statistics statistics = new Statistics();
-			statistics.resetStatistics();
+			Globals.getStatistics().resetStatistics();
 			LOGGER.info("Reset Player Statistics");
 
 			Globals.getCollectionManager();

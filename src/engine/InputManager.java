@@ -15,6 +15,7 @@ public final class InputManager implements KeyListener {
 	private static final int NUM_KEYS = 256;
 	/** Array with the jeys marked as pressed or not. */
 	private static boolean[] keys;
+	private static boolean[] keysPressed;
 	/** Singleton instance of the class. */
 	private static InputManager instance;
 
@@ -23,6 +24,7 @@ public final class InputManager implements KeyListener {
 	 */
 	private InputManager() {
 		keys = new boolean[NUM_KEYS];
+		keysPressed = new boolean[NUM_KEYS];
 	}
 
 	/**
@@ -45,6 +47,17 @@ public final class InputManager implements KeyListener {
 	 */
 	public boolean isKeyDown(final int keyCode) {
 		return keys[keyCode];
+	}
+
+	public boolean isKeyJustPressed(final int keyCode) {
+		if (keys[keyCode] && !keysPressed[keyCode]) {
+			keysPressed[keyCode] = true;
+			return true;
+		}
+		if (!keys[keyCode]) {
+			keysPressed[keyCode] = false;
+		}
+		return false;
 	}
 
 	/**

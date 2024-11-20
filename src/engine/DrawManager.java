@@ -663,6 +663,12 @@ public class DrawManager {
 				screen.getHeight() / 5);
 	}
 
+	public void drawPauseMenu(final Screen screen){
+		String pauseString = "Pause";
+		backBufferGraphics.setColor(Color.GREEN);
+		drawCenteredBigString(screen, pauseString, screen.getHeight() / 8);
+	}
+
 	/**
 	 * Draws high scores.
 	 *
