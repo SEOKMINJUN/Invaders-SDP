@@ -241,13 +241,14 @@ public class GameScreen extends Screen {
 		boolean gameProgress = inputDelay.checkFinished() && !isLevelFinished();
 		ship1.setCanMove(gameProgress && ship1.getHealth() > 0 && ship1.getDestructionCooldown().checkFinished());
 
-		super.update();
-
 		if(inputManager.isKeyJustPressed(KeyEvent.VK_ESCAPE)){
 			isPaused = !isPaused;
 		}
+		if(!isPaused){
+			super.update();
+		}
 
-		if (gameProgress) {
+		if (gameProgress && !isPaused) {
 			// --- OBSTACLES
 			if (this.obstacleSpawnCooldown.checkFinished()) {
 				// Adjust spawn amount based on the level
