@@ -218,17 +218,24 @@ public class DrawManagerImpl extends DrawManager {
         backBufferGraphics.drawString(playerDistanceString, xPosition, yPosition);
     }
 
-    public static void drawCooldownCircle(Screen screen, final int centerX, final int centerY, float percentage) {
+    public static void drawCooldownCircle(Screen screen, final int centerX, final int centerY, float percentage, int remainingSeconds) {
         int radius = 20;
         int angle = (int) (360 * percentage);
 
-        backBufferGraphics.setColor(Color.BLACK);
-        backBufferGraphics.fillArc(centerX - radius, centerY - radius, 2 * radius, 2 * radius, 90, -360);
         backBufferGraphics.setColor(Color.GREEN);
-        backBufferGraphics.fillArc(centerX-radius, centerY-radius, 2 * radius, 2 * radius, 90, -angle);
+        backBufferGraphics.fillArc(centerX - radius, 0, 2 * radius, 2 * radius, 90, -360);
+        backBufferGraphics.setColor(Color.BLACK);
+        backBufferGraphics.fillArc(centerX-radius, 0, 2 * radius, 2 * radius, 90, -angle);
         backBufferGraphics.setColor(Color.WHITE);
-        backBufferGraphics.drawArc(centerX - radius, centerY - radius, 2 * radius, 2 * radius, 90, -360);
+        backBufferGraphics.drawArc(centerX - radius, 0, 2 * radius, 2 * radius, 90, -360);
         backBufferGraphics.setFont(fontRegular);
+        String timeText = String.valueOf(remainingSeconds/1000);
+        backBufferGraphics.setFont(fontRegular);
+        int textWidth = fontRegularMetrics.stringWidth(timeText);
+        backBufferGraphics.drawString(timeText, centerX - textWidth / 2, 25);
+
+        String cooldownLabel = "Cooldown: ";
+        backBufferGraphics.drawString(cooldownLabel,centerX - radius - fontRegularMetrics.stringWidth(cooldownLabel) - 10, 25);
     }
 
     /**

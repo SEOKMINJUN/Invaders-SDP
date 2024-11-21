@@ -82,7 +82,7 @@ public class GameScreen extends Screen {
     public boolean backgroundMoveLeft = false;
 	public boolean backgroundMoveRight = false;
 
-	private Cooldown doubleTapCooldown = new Cooldown(3000);
+	private Cooldown doubleTapCooldown = new Cooldown(3500);
 
 	// --- OBSTACLES
 	private Cooldown obstacleSpawnCooldown; //control obstacle spawn speed
@@ -389,6 +389,7 @@ public class GameScreen extends Screen {
 		float cooldownPercentage = doubleTapCooldown.getTotalDuration() > 0
 				? (float) doubleTapCooldown.getRemainingTime() / doubleTapCooldown.getTotalDuration()
 				: 0;
+		int remainingSeconds = (int)Math.ceil((float) doubleTapCooldown.getRemainingTime());
 		/** ### TEAM INTERNATIONAL ### */
 		drawManager.drawBackground(backgroundMoveRight, backgroundMoveLeft);
 		this.backgroundMoveRight = false;
@@ -414,7 +415,7 @@ public class GameScreen extends Screen {
 		DrawManagerImpl.drawTime(this, this.playTime);
 		// Call the method in DrawManagerImpl - Soomin Lee / TeamHUD
 		drawManager.drawItem(this); // HUD team - Jo Minseo
-		DrawManagerImpl.drawCooldownCircle(this, this.getWidth() - 30, 60, cooldownPercentage);
+		DrawManagerImpl.drawCooldownCircle(this, this.getWidth() - 30, 60, cooldownPercentage, remainingSeconds);
 
 
 
