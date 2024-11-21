@@ -243,10 +243,24 @@ public class GameScreen extends Screen {
 		ship1.setCanMove(gameProgress && ship1.getHealth() > 0 && ship1.getDestructionCooldown().checkFinished());
 
 		if(inputManager.isKeyJustPressed(KeyEvent.VK_ESCAPE)){
+			option = 1;
 			isPaused = !isPaused;
 		}
 		if(!isPaused){
 			super.update();
+		}
+
+		if(option == 0){
+			option = 2;
+		}
+		else if(option == 3){
+			option = 1;
+		}
+		if(isPaused && inputManager.isKeyJustPressed(KeyEvent.VK_DOWN)){
+			option += 1;
+		}
+		else if(isPaused && inputManager.isKeyJustPressed(KeyEvent.VK_UP)){
+			option -= 1;
 		}
 
 		if (gameProgress && !isPaused) {

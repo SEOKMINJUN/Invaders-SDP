@@ -670,11 +670,22 @@ public class DrawManager {
 		backBufferGraphics.setColor(Color.GREEN);
 		drawCenteredBigString(screen, pauseString, screen.getHeight() / 8);
 
-		backBufferGraphics.setColor(Color.WHITE);
-		drawCenteredBigString(screen, resumeString, screen.getHeight() / 3);
-
-		backBufferGraphics.setColor(Color.WHITE);
-		drawCenteredBigString(screen, gototitleString, screen.getHeight() / 2);
+		if(option == 1){
+			backBufferGraphics.setColor(Color.GREEN);
+			drawCenteredBigString(screen, resumeString, screen.getHeight() / 3);
+		}
+		else{
+			backBufferGraphics.setColor(Color.WHITE);
+			drawCenteredBigString(screen, resumeString, screen.getHeight() / 3);
+		}
+		if(option == 2){
+			backBufferGraphics.setColor(Color.GREEN);
+			drawCenteredBigString(screen, gototitleString, screen.getHeight() / 2);
+		}
+		else{
+			backBufferGraphics.setColor(Color.WHITE);
+			drawCenteredBigString(screen, gototitleString, screen.getHeight() / 2);
+		}
 	}
 
 	/**
