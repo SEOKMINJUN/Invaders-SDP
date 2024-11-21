@@ -663,10 +663,18 @@ public class DrawManager {
 				screen.getHeight() / 5);
 	}
 
-	public void drawPauseMenu(final Screen screen){
+	public void drawPauseMenu(final Screen screen, final int option) {
 		String pauseString = "Pause";
+		String resumeString = "Resume";
+		String gototitleString = "Go To Title";
 		backBufferGraphics.setColor(Color.GREEN);
 		drawCenteredBigString(screen, pauseString, screen.getHeight() / 8);
+
+		backBufferGraphics.setColor(Color.WHITE);
+		drawCenteredBigString(screen, resumeString, screen.getHeight() / 3);
+
+		backBufferGraphics.setColor(Color.WHITE);
+		drawCenteredBigString(screen, gototitleString, screen.getHeight() / 2);
 	}
 
 	/**

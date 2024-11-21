@@ -114,6 +114,7 @@ public class GameScreen extends Screen {
 	private DrawManagerImpl drawManagerImpl;
 
 	public static boolean isPaused = false;
+	private int option;
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -441,7 +442,7 @@ public class GameScreen extends Screen {
 		}
 
 		if(isPaused){
-			drawManager.drawPauseMenu(this);
+			drawManager.drawPauseMenu(this, option);
 		}
 		else{
 			super.draw();
