@@ -82,7 +82,7 @@ public class GameScreen extends Screen {
     public boolean backgroundMoveLeft = false;
 	public boolean backgroundMoveRight = false;
 
-
+	private Cooldown doubleTapCooldown = new Cooldown(3000);
 
 	// --- OBSTACLES
 	private Cooldown obstacleSpawnCooldown; //control obstacle spawn speed
@@ -238,15 +238,21 @@ public class GameScreen extends Screen {
 	protected boolean update() {
 		boolean gameProgress = inputDelay.checkFinished() && !isLevelFinished();
 		ship1.setCanMove(gameProgress && ship1.getHealth() > 0 && ship1.getDestructionCooldown().checkFinished());
-		InputManager inputManager = Globals.getInputManager();
 
 		super.update();
 
 		if (gameProgress) {
-			boolean isDoubleTapRight = inputManager.isDoubleTab(KeyEvent.VK_RIGHT);
-			boolean isDoubleTapLeft = inputManager.isDoubleTab(KeyEvent.VK_LEFT);
+			if (Globals.getInputManager().isDoubleTab(KeyEvent.VK_RIGHT) && doubleTapCooldown.getRemainingTime() == 0 ) {
+				ship1.moveToEdgeLeft(true);
+				Globals.getLogger().info("Detected Double Tab Right");
+				doubleTapCooldown.reset();
+			}
+			if (Globals.getInputManager().isDoubleTab(KeyEvent.VK_LEFT) && doubleTapCooldown.getRemainingTime() == 0) {
+				ship1.moveToEdgeRight(true);
+				Globals.getLogger().info("Detected Double Tab Left");
+				doubleTapCooldown.reset();
+			}
 
-			ship1.detectedDoubleTab(isDoubleTapRight, isDoubleTapLeft, this.width);
 			// --- OBSTACLES
 			if (this.obstacleSpawnCooldown.checkFinished()) {
 				// Adjust spawn amount based on the level
@@ -380,7 +386,9 @@ public class GameScreen extends Screen {
 	 * Draws the elements associated with the screen.
 	 */
 	public void draw() {
-
+		float cooldownPercentage = doubleTapCooldown.getTotalDuration() > 0
+				? (float) doubleTapCooldown.getRemainingTime() / doubleTapCooldown.getTotalDuration()
+				: 0;
 		/** ### TEAM INTERNATIONAL ### */
 		drawManager.drawBackground(backgroundMoveRight, backgroundMoveLeft);
 		this.backgroundMoveRight = false;
@@ -406,6 +414,7 @@ public class GameScreen extends Screen {
 		DrawManagerImpl.drawTime(this, this.playTime);
 		// Call the method in DrawManagerImpl - Soomin Lee / TeamHUD
 		drawManager.drawItem(this); // HUD team - Jo Minseo
+		DrawManagerImpl.drawCooldownCircle(this, this.getWidth() - 30, 60, cooldownPercentage);
 
 
 

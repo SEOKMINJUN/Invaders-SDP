@@ -218,6 +218,19 @@ public class DrawManagerImpl extends DrawManager {
         backBufferGraphics.drawString(playerDistanceString, xPosition, yPosition);
     }
 
+    public static void drawCooldownCircle(Screen screen, final int centerX, final int centerY, float percentage) {
+        int radius = 20;
+        int angle = (int) (360 * percentage);
+
+        backBufferGraphics.setColor(Color.BLACK);
+        backBufferGraphics.fillArc(centerX - radius, centerY - radius, 2 * radius, 2 * radius, 90, -360);
+        backBufferGraphics.setColor(Color.GREEN);
+        backBufferGraphics.fillArc(centerX-radius, centerY-radius, 2 * radius, 2 * radius, 90, -angle);
+        backBufferGraphics.setColor(Color.WHITE);
+        backBufferGraphics.drawArc(centerX - radius, centerY - radius, 2 * radius, 2 * radius, 90, -360);
+        backBufferGraphics.setFont(fontRegular);
+    }
+
     /**
      * Draws 2P's bulletSpeed on screen.
      *

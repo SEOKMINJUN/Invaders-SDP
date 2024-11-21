@@ -11,8 +11,7 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.Set;
 
-import static engine.Globals.barrier_DURATION;
-import static engine.Globals.getLogger;
+import static engine.Globals.*;
 
 class PlayerGrowth {
 
@@ -144,7 +143,6 @@ public class Ship extends Entity {
 	@Getter @Setter
 	private long barrierActivationTime;
 
-
 	//TODO : Move health to ship from GameScreen, and Add immunity time
 
 	/**
@@ -224,7 +222,7 @@ public class Ship extends Entity {
 
 			if(isBombBullet()) {
 				BombBullet bombBullet = new BombBullet(positionX, positionY, growth.getBulletSpeed());
-				Globals.getCurrentScreen().addEntity(bombBullet);
+				getCurrentScreen().addEntity(bombBullet);
 				this.setBombBullet(false);
 			}
 			else{
@@ -256,9 +254,9 @@ public class Ship extends Entity {
 			this.setEnabled(false);
 		}
 
-		GameScreen screen = (GameScreen) Globals.getCurrentScreen();
+		GameScreen screen = (GameScreen) getCurrentScreen();
 		if (!isDestroyed() && this.canMove) {
-			InputManager inputManager = Globals.getInputManager();
+			InputManager inputManager = getInputManager();
 
 			boolean moveRight = inputManager.isKeyDown(KEY_RIGHT);
 			boolean moveLeft = inputManager.isKeyDown(KEY_LEFT);
@@ -276,11 +274,11 @@ public class Ship extends Entity {
 
 			 if (moveRight && !isRightBorder) {
 				this.moveRight();
-				screen.backgroundMoveRight = true;
+				screen.backgroundMoveRight = false;
 			}
 			if (moveLeft && !isLeftBorder) {
 				this.moveLeft();
-				screen.backgroundMoveLeft = true;
+				screen.backgroundMoveLeft = false;
 			}
 			if (moveUp && !isTopBorder) {
 				this.moveUP();
@@ -292,7 +290,7 @@ public class Ship extends Entity {
 				if (this.shoot()) {
 					screen.bulletsShot++;
 					screen.fire_id++;
-					Globals.getLogger().fine("Bullet's fire_id is " + screen.fire_id);
+					getLogger().fine("Bullet's fire_id is " + screen.fire_id);
 				}
 		}
 
@@ -385,7 +383,7 @@ public class Ship extends Entity {
 	public void subtractHealth(){
 		this.playDestroyAnimation();
 		this.health -= 1;
-		Globals.getLogger().info("Hit on player ship, " + this.health
+		getLogger().info("Hit on player ship, " + this.health
 				+ " lives remaining.");
 
 		// Sound Operator
@@ -397,26 +395,22 @@ public class Ship extends Entity {
 	//barrier item stuffs
 	public void updateBarrier() {
 		if (this.barrierActive) {
-			this.setSpriteType(DrawManager.SpriteType.ShipBarrierStatus);
+			this.setSpriteType(SpriteType.ShipBarrierStatus);
 
 			long currentTime = System.currentTimeMillis();
 
 			if (currentTime - this.barrierActivationTime >= barrier_DURATION) {
-				this.setSpriteType(DrawManager.SpriteType.Ship);
+				this.setSpriteType(SpriteType.Ship);
 				deactivatebarrier();    // deactive barrier
 			}
 		}
 	}
 
-	public void detectedDoubleTab(boolean isDoubleTabRight, boolean isDoubleTabLeft, int screenWidth) {
-		if (isDoubleTabRight) {
-			getLogger().info("Detected double tab");
-			this.setPosition(screenWidth - this.getWidth(), this.getPositionY());
-		}
-		else if (isDoubleTabLeft) {
-			getLogger().info("Detected double tab");
-			this.setPosition(0, this.getPositionY());
-		}
+	public void moveToEdgeLeft(boolean isLeft) {
+			if (isLeft) { this.positionX = getCurrentScreen().getWidth()-this.width; }
+	}
+	public void moveToEdgeRight(boolean isRight) {
+			if (isRight) { this.positionX = 0; }
 	}
 
 	public void activatebarrier() {
@@ -426,6 +420,6 @@ public class Ship extends Entity {
 
 	public void deactivatebarrier() {
 		this.barrierActive = false;
-		Globals.getLogger().info("barrier effect ends");
+		getLogger().info("barrier effect ends");
 	}
 }

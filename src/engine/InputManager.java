@@ -2,8 +2,6 @@ package engine;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Manages keyboard input for the provided screen.
@@ -20,12 +18,12 @@ public final class InputManager implements KeyListener {
 	/** Singleton instance of the class. */
 	private static InputManager instance;
 
-	private static final int DOUBLE_TAB_THRESHOLD = 1000;
-	private static final int DOUBLE_TAB_COOLDOWN = 5000;
-
-	private Map<Integer, Long> PressedTimes = new HashMap<>();
-	private Map<Integer, Long> ReleasedTimes = new HashMap<>();
-
+	private long lastRightTapTime = 0;
+	private long lastLeftTapTime = 0;
+	private boolean isRightKeyReleased = true;
+	private boolean isLeftKeyReleased = true;
+	private long isRightKeyPressed = 0;
+	private long isLeftKeyPressed = 0;
 	/**
 	 * Private constructor.
 	 */
@@ -63,11 +61,9 @@ public final class InputManager implements KeyListener {
 	 */
 	@Override
 	public void keyPressed(final KeyEvent key) {
-		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS) {
-			keys[key.getKeyCode()] = true;
-			long currentTime = System.currentTimeMillis();
-			PressedTimes.put(key.getKeyCode(), currentTime);
-		}
+		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS) { keys[key.getKeyCode()] = true; }
+		if (key.getKeyCode() == KeyEvent.VK_RIGHT) { isRightKeyPressed = System.currentTimeMillis(); }
+		if (key.getKeyCode() == KeyEvent.VK_LEFT) { isLeftKeyPressed = System.currentTimeMillis(); }
 	}
 
 	/**
@@ -78,38 +74,35 @@ public final class InputManager implements KeyListener {
 	 */
 	@Override
 	public void keyReleased(final KeyEvent key) {
-		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS) {
-			keys[key.getKeyCode()] = false;
-			long currentTime = System.currentTimeMillis();
-			ReleasedTimes.put(key.getKeyCode(), currentTime);
-		}
+		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS) { keys[key.getKeyCode()] = false; }
+		if (key.getKeyCode() == KeyEvent.VK_RIGHT) { isRightKeyReleased = true; }
+		if (key.getKeyCode() == KeyEvent.VK_LEFT) { isLeftKeyReleased = true; }
 	}
 
+	public boolean isDoubleTab(int keyCode) {
+		long currentTime = System.currentTimeMillis();
 
-	public boolean isDoubleTab(final int keyCode) {
-		if (keyCode >= 0 && keyCode < NUM_KEYS) {
-			long currentTime = System.currentTimeMillis();
-
-			if (ReleasedTimes.containsKey(keyCode) && PressedTimes.containsKey(keyCode)) {
-				long timeSinceLastRelease = currentTime - ReleasedTimes.get(keyCode);
-				long timeSinceLastPress = currentTime - PressedTimes.get(keyCode);
-
-				// Double Tap 조건: Released -> Pressed 사이의 시간 간격
-				if (timeSinceLastRelease <= DOUBLE_TAB_THRESHOLD && timeSinceLastPress >= DOUBLE_TAB_COOLDOWN) {
-					// Double Tap 감지 후 상태 초기화
-					ReleasedTimes.put(keyCode, currentTime);
-					return true;
-				}
+		if (keyCode == KeyEvent.VK_RIGHT) {
+			if (!isRightKeyReleased || currentTime - isRightKeyPressed > 500) { return false; }
+			isRightKeyReleased = false;
+			if(currentTime - lastRightTapTime < 500) {
+				lastRightTapTime = 0;
+				isRightKeyReleased = true;
+				return true;
 			}
+			lastRightTapTime = currentTime;
+		}
+		if (keyCode == KeyEvent.VK_LEFT) {
+			if (!isLeftKeyReleased || currentTime - isLeftKeyPressed > 500) { return false; }
+			isLeftKeyReleased = false;
+			if(currentTime - lastLeftTapTime < 500) {
+				lastLeftTapTime = 0;
+				isLeftKeyReleased = true;
+				return true;
+			}
+			lastLeftTapTime = currentTime;
 		}
 		return false;
-	}
-
-	public void resetDoubleTab(final int keyCode) {
-		if (keyCode >= 0 && keyCode < NUM_KEYS) {
-			ReleasedTimes.remove(keyCode);
-			PressedTimes.remove(keyCode);
-		}
 	}
 
 	/**
