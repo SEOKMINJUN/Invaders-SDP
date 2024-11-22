@@ -17,13 +17,6 @@ public final class InputManager implements KeyListener {
 	private static boolean[] keys;
 	/** Singleton instance of the class. */
 	private static InputManager instance;
-
-	private long lastRightTapTime = 0;
-	private long lastLeftTapTime = 0;
-	private boolean isRightKeyReleased = true;
-	private boolean isLeftKeyReleased = true;
-	private long isRightKeyPressed = 0;
-	private long isLeftKeyPressed = 0;
 	/**
 	 * Private constructor.
 	 */
@@ -62,8 +55,6 @@ public final class InputManager implements KeyListener {
 	@Override
 	public void keyPressed(final KeyEvent key) {
 		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS) { keys[key.getKeyCode()] = true; }
-		if (key.getKeyCode() == KeyEvent.VK_RIGHT) { isRightKeyPressed = System.currentTimeMillis(); }
-		if (key.getKeyCode() == KeyEvent.VK_LEFT) { isLeftKeyPressed = System.currentTimeMillis(); }
 	}
 
 	/**
@@ -75,34 +66,6 @@ public final class InputManager implements KeyListener {
 	@Override
 	public void keyReleased(final KeyEvent key) {
 		if (key.getKeyCode() >= 0 && key.getKeyCode() < NUM_KEYS) { keys[key.getKeyCode()] = false; }
-		if (key.getKeyCode() == KeyEvent.VK_RIGHT) { isRightKeyReleased = true; }
-		if (key.getKeyCode() == KeyEvent.VK_LEFT) { isLeftKeyReleased = true; }
-	}
-
-	public boolean isDoubleTab(int keyCode) {
-		long currentTime = System.currentTimeMillis();
-
-		if (keyCode == KeyEvent.VK_RIGHT) {
-			if (!isRightKeyReleased || currentTime - isRightKeyPressed > 500) { return false; }
-			isRightKeyReleased = false;
-			if(currentTime - lastRightTapTime < 500) {
-				lastRightTapTime = 0;
-				isRightKeyReleased = true;
-				return true;
-			}
-			lastRightTapTime = currentTime;
-		}
-		if (keyCode == KeyEvent.VK_LEFT) {
-			if (!isLeftKeyReleased || currentTime - isLeftKeyPressed > 500) { return false; }
-			isLeftKeyReleased = false;
-			if(currentTime - lastLeftTapTime < 500) {
-				lastLeftTapTime = 0;
-				isLeftKeyReleased = true;
-				return true;
-			}
-			lastLeftTapTime = currentTime;
-		}
-		return false;
 	}
 
 	/**

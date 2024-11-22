@@ -240,7 +240,6 @@ public class GameScreen extends Screen {
 		super.update();
 
 		if (gameProgress) {
-			ship1.detectedDoubleTap();
 			// --- OBSTACLES
 			if (this.obstacleSpawnCooldown.checkFinished()) {
 				// Adjust spawn amount based on the level

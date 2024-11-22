@@ -143,7 +143,13 @@ public class Ship extends Entity {
 	@Getter @Setter
 	private long barrierActivationTime;
 	@Getter
-	private Cooldown doubleTapCooldown = new Cooldown(3500);
+	private Cooldown doubleTapCooldown = Core.getCooldown(3500);
+	private long leftPressedTime = 0;
+	private long leftPressedTimeOld = 0;
+	private boolean isLeftPressed = false;
+	private long rightPressedTime = 0;
+	private long rightPressedTimeOld = 0;
+	private boolean isRightPressed = false;
 
 	//TODO : Move health to ship from GameScreen, and Add immunity time
 
@@ -288,6 +294,9 @@ public class Ship extends Entity {
 			if (moveDown && !isBottomBorder) {
 				this.moveDown();
 			}
+
+			this.detectedDoubleTap(moveLeft, moveRight);
+
 			if (inputManager.isKeyDown(KEY_SHOOT))
 				if (this.shoot()) {
 					screen.bulletsShot++;
@@ -408,29 +417,45 @@ public class Ship extends Entity {
 		}
 	}
 
-	public void moveToEdgeLeft(boolean isLeft) {
-			if (isLeft) { this.positionX = getCurrentScreen().getWidth()-this.width; }
+	public void moveToEdgeLeft() {
+		this.positionX = 0;
 	}
-	public void moveToEdgeRight(boolean isRight) {
-			if (isRight) { this.positionX = 0; }
+	public void moveToEdgeRight() {
+		this.positionX = getCurrentScreen().getWidth()-this.width;
 	}
 
-	public void detectedDoubleTap(){
-		InputManager inputManager = Globals.getInputManager();
+	public void detectedDoubleTap(boolean isPressLeft, boolean isPressRight){
+		long currentTime = System.currentTimeMillis();
+		if(isLeftPressed && !isPressLeft){
+			isLeftPressed = false;
+			if(currentTime - leftPressedTimeOld < 500){
+				if(doubleTapCooldown.getRemainingTime() == 0){
+					moveToEdgeLeft();
+					Globals.getLogger().info("Detected Double Tab Left");
+					doubleTapCooldown.reset();
+				}
+			}
+		}
+		else if(!isLeftPressed && isPressLeft){
+			isLeftPressed = true;
+			leftPressedTimeOld = leftPressedTime;
+			leftPressedTime = currentTime;
+		}
 
-		boolean currentKeyPressed = !(inputManager.isKeyDown(KEY_UP) || inputManager.isKeyDown(KEY_DOWN)
-									|| inputManager.isKeyDown(KEY_LEFT) || inputManager.isKeyDown(KEY_RIGHT));
-		if (currentKeyPressed) {
-			if (Globals.getInputManager().isDoubleTab(KeyEvent.VK_RIGHT) && doubleTapCooldown.getRemainingTime() == 0) {
-				moveToEdgeLeft(true);
-				Globals.getLogger().info("Detected Double Tab Right");
-				doubleTapCooldown.reset();
+		if(isRightPressed && !isPressRight){
+			isRightPressed = false;
+			if(currentTime - rightPressedTimeOld < 500){
+				if(doubleTapCooldown.getRemainingTime() == 0){
+					moveToEdgeRight();
+					Globals.getLogger().info("Detected Double Tab Right");
+					doubleTapCooldown.reset();
+				}
 			}
-			if (Globals.getInputManager().isDoubleTab(KeyEvent.VK_LEFT) && doubleTapCooldown.getRemainingTime() == 0) {
-				moveToEdgeRight(true);
-				Globals.getLogger().info("Detected Double Tab Left");
-				doubleTapCooldown.reset();
-			}
+		}
+		else if(!isRightPressed && isPressRight){
+			isRightPressed = true;
+			rightPressedTimeOld = rightPressedTime;
+			rightPressedTime = currentTime;
 		}
 	}
 	public void activatebarrier() {
