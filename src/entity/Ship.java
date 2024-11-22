@@ -416,15 +416,21 @@ public class Ship extends Entity {
 	}
 
 	public void detectedDoubleTap(){
-		if (Globals.getInputManager().isDoubleTab(KeyEvent.VK_RIGHT) && doubleTapCooldown.getRemainingTime() == 0 ) {
-			moveToEdgeLeft(true);
-			Globals.getLogger().info("Detected Double Tab Right");
-			doubleTapCooldown.reset();
-		}
-		if (Globals.getInputManager().isDoubleTab(KeyEvent.VK_LEFT) && doubleTapCooldown.getRemainingTime() == 0) {
-			moveToEdgeRight(true);
-			Globals.getLogger().info("Detected Double Tab Left");
-			doubleTapCooldown.reset();
+		InputManager inputManager = Globals.getInputManager();
+
+		boolean currentKeyPressed = !(inputManager.isKeyDown(KEY_UP) || inputManager.isKeyDown(KEY_DOWN)
+									|| inputManager.isKeyDown(KEY_LEFT) || inputManager.isKeyDown(KEY_RIGHT));
+		if (currentKeyPressed) {
+			if (Globals.getInputManager().isDoubleTab(KeyEvent.VK_RIGHT) && doubleTapCooldown.getRemainingTime() == 0) {
+				moveToEdgeLeft(true);
+				Globals.getLogger().info("Detected Double Tab Right");
+				doubleTapCooldown.reset();
+			}
+			if (Globals.getInputManager().isDoubleTab(KeyEvent.VK_LEFT) && doubleTapCooldown.getRemainingTime() == 0) {
+				moveToEdgeRight(true);
+				Globals.getLogger().info("Detected Double Tab Left");
+				doubleTapCooldown.reset();
+			}
 		}
 	}
 	public void activatebarrier() {
