@@ -142,6 +142,8 @@ public class Ship extends Entity {
 	/**	Store barrier acivated time */
 	@Getter @Setter
 	private long barrierActivationTime;
+	@Getter
+	private Cooldown doubleTapCooldown = new Cooldown(3500);
 
 	//TODO : Move health to ship from GameScreen, and Add immunity time
 
@@ -413,6 +415,18 @@ public class Ship extends Entity {
 			if (isRight) { this.positionX = 0; }
 	}
 
+	public void detectedDoubleTap(){
+		if (Globals.getInputManager().isDoubleTab(KeyEvent.VK_RIGHT) && doubleTapCooldown.getRemainingTime() == 0 ) {
+			moveToEdgeLeft(true);
+			Globals.getLogger().info("Detected Double Tab Right");
+			doubleTapCooldown.reset();
+		}
+		if (Globals.getInputManager().isDoubleTab(KeyEvent.VK_LEFT) && doubleTapCooldown.getRemainingTime() == 0) {
+			moveToEdgeRight(true);
+			Globals.getLogger().info("Detected Double Tab Left");
+			doubleTapCooldown.reset();
+		}
+	}
 	public void activatebarrier() {
 		this.barrierActive = true;
 		this.barrierActivationTime = System.currentTimeMillis();

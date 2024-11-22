@@ -82,8 +82,6 @@ public class GameScreen extends Screen {
     public boolean backgroundMoveLeft = false;
 	public boolean backgroundMoveRight = false;
 
-	private Cooldown doubleTapCooldown = new Cooldown(3500);
-
 	// --- OBSTACLES
 	private Cooldown obstacleSpawnCooldown; //control obstacle spawn speed
 
@@ -242,17 +240,7 @@ public class GameScreen extends Screen {
 		super.update();
 
 		if (gameProgress) {
-			if (Globals.getInputManager().isDoubleTab(KeyEvent.VK_RIGHT) && doubleTapCooldown.getRemainingTime() == 0 ) {
-				ship1.moveToEdgeLeft(true);
-				Globals.getLogger().info("Detected Double Tab Right");
-				doubleTapCooldown.reset();
-			}
-			if (Globals.getInputManager().isDoubleTab(KeyEvent.VK_LEFT) && doubleTapCooldown.getRemainingTime() == 0) {
-				ship1.moveToEdgeRight(true);
-				Globals.getLogger().info("Detected Double Tab Left");
-				doubleTapCooldown.reset();
-			}
-
+			ship1.detectedDoubleTap();
 			// --- OBSTACLES
 			if (this.obstacleSpawnCooldown.checkFinished()) {
 				// Adjust spawn amount based on the level
@@ -294,7 +282,6 @@ public class GameScreen extends Screen {
 			this.enemyShipFormation.update();
 			this.enemyShipFormation.shoot();
 			updatePlayerDistance();
-			drawManagerImpl.drawPlayerDistance(this, getPlayerDistance());
 
 			int currentRemainingEnemies = getRemainingEnemies();
 			int destroyedEnemies = previousRemainingEnemies - currentRemainingEnemies;
@@ -386,10 +373,10 @@ public class GameScreen extends Screen {
 	 * Draws the elements associated with the screen.
 	 */
 	public void draw() {
-		float cooldownPercentage = doubleTapCooldown.getTotalDuration() > 0
-				? (float) doubleTapCooldown.getRemainingTime() / doubleTapCooldown.getTotalDuration()
+		float cooldownPercentage = ship1.getDoubleTapCooldown().getTotalDuration() > 0
+				? (float) ship1.getDoubleTapCooldown().getRemainingTime() / ship1.getDoubleTapCooldown().getTotalDuration()
 				: 0;
-		int remainingSeconds = (int)Math.ceil((float) doubleTapCooldown.getRemainingTime());
+		int remainingSeconds = (int)Math.ceil((float) ship1.getDoubleTapCooldown().getRemainingTime());
 		/** ### TEAM INTERNATIONAL ### */
 		drawManager.drawBackground(backgroundMoveRight, backgroundMoveLeft);
 		this.backgroundMoveRight = false;
@@ -416,7 +403,7 @@ public class GameScreen extends Screen {
 		// Call the method in DrawManagerImpl - Soomin Lee / TeamHUD
 		drawManager.drawItem(this); // HUD team - Jo Minseo
 		DrawManagerImpl.drawCooldownCircle(this, this.getWidth() - 30, 60, cooldownPercentage, remainingSeconds);
-
+		drawManagerImpl.drawPlayerDistance(this, getPlayerDistance());
 
 
 		// Countdown to game start.
