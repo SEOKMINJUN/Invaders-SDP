@@ -114,7 +114,9 @@ public class GameScreen extends Screen {
 	private DrawManagerImpl drawManagerImpl;
 
 	public static boolean isPaused = false;
+	public static boolean goToTitle = false;
 	private int option;
+	private int currentTime;
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -151,6 +153,8 @@ public class GameScreen extends Screen {
 		this.hitCount = gameState.getHitCount(); //CtrlS
 		this.fire_id = 0; //CtrlS - fire_id means the id of bullet that shoot already. It starts from 0.
 		this.processedFireBullet = new HashSet<>(); //CtrlS - initialized the processedFireBullet
+		goToTitle = false;
+		isPaused = false;
 
 		/**
 		* Added by the Level Design team
@@ -249,18 +253,28 @@ public class GameScreen extends Screen {
 		if(!isPaused){
 			super.update();
 		}
+		if(isPaused){
+			if(inputManager.isKeyJustPressed(KeyEvent.VK_DOWN)){
+				option += 1;
+				if(option >= 3){
+					option = 1;
+				}
+			}
+			else if(inputManager.isKeyJustPressed(KeyEvent.VK_UP)){
+				option -= 1;
+				if(option <= 0){
+					option = 2;
+				}
+			}
 
-		if(option == 0){
-			option = 2;
-		}
-		else if(option == 3){
-			option = 1;
-		}
-		if(isPaused && inputManager.isKeyJustPressed(KeyEvent.VK_DOWN)){
-			option += 1;
-		}
-		else if(isPaused && inputManager.isKeyJustPressed(KeyEvent.VK_UP)){
-			option -= 1;
+			if(option == 1 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE)){
+				isPaused = !isPaused;
+			}
+			else if(option == 2 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE)){
+				goToTitle = true;
+				this.returnCode = 1;
+				this.isRunning = false;
+			}
 		}
 
 		if (gameProgress && !isPaused) {
@@ -372,7 +386,8 @@ public class GameScreen extends Screen {
 		 * **/
 		if ((getRemainingEnemies() == 0 || ship1.getHealth() == 0)
 				&& !this.levelFinished
-				&& waveCounter == this.gameSettings.getWavesNumber()) {
+				&& waveCounter == this.gameSettings.getWavesNumber()
+				&& !goToTitle) {
 			totalDistance += playerDistance;
 			playerDistance = 0;
 			this.levelFinished = true;
@@ -427,7 +442,7 @@ public class GameScreen extends Screen {
 
 
 		// Countdown to game start.
-		if (!this.inputDelay.checkFinished()) {
+		if (!this.inputDelay.checkFinished() && !isPaused) {
 			int countdown = (int) ((Globals.GAME_SCREEN_INPUT_DELAY
 			- (System.currentTimeMillis()
 			- this.gameStartTime)) / 1000);
@@ -452,7 +467,12 @@ public class GameScreen extends Screen {
 
 		// Soomin Lee / TeamHUD
 		if (this.inputDelay.checkFinished()) {
-			playTime = (int) ((System.currentTimeMillis() - playStartTime) / 1000) + playTimePre;
+			if (!isPaused) {
+				playTime = (int) ((System.currentTimeMillis() - playStartTime) / 1000) + playTimePre;
+				currentTime = playTime;
+			} else {
+				playStartTime = System.currentTimeMillis() - (currentTime * 1000L);
+			}
 		}
 
 		if(isPaused){
