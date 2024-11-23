@@ -1,37 +1,18 @@
+package entity;
+
 import engine.DrawManager;
 import engine.GameState;
 import engine.Globals;
-import entity.*;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import screen.GameScreen;
 
-import java.awt.*;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class EntityTest {
-
+class BombBulletTest {
     @Test
-    public void ShipTest() {
-        int x = 125;
-        int y = 300;
-        Ship ship = new Ship(x, y+50, Color.BLUE);
-
-        assertNotNull(ship);
-        assertEquals(x, ship.getPositionX());
-        assertEquals(y, ship.getPositionY());
-        assertEquals("Ship", ship.getClassName());
-
-        // Is ship destroyed when health been below 0
-        int health = ship.getHealth();
-        for(int i = 0;i < health; i++){
-            ship.subtractHealth();
-        }
-        assertTrue(ship.isDestroyed());
-    }
-
-    @Test
-    public void BombTest(){
+    @DisplayName("Create BombBullet object")
+    public void createTest(){
         int x = 10;
         int y = 300;
         int radius = 100;
@@ -41,6 +22,15 @@ public class EntityTest {
         assertEquals(x, bombBullet.getPositionX());
         assertEquals(y, bombBullet.getPositionY());
         assertEquals("BombBullet", bombBullet.getClassName());
+    }
+
+    @Test
+    @DisplayName("explosion radius")
+    public void explosionTest(){
+        int x = 10;
+        int y = 300;
+        int radius = 100;
+        BombBullet bombBullet = new BombBullet(x, y, -3);
 
         GameState gamestate = new GameState(1, 0
                 , Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0);
