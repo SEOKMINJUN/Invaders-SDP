@@ -663,28 +663,60 @@ public class DrawManager {
 				screen.getHeight() / 5);
 	}
 
-	public void drawPauseMenu(final Screen screen, final int option) {
+	public void drawPauseMenu(final Screen screen, final int option, final boolean isDrawWaining) {
 		String pauseString = "Pause";
 		String resumeString = "Resume";
 		String gototitleString = "Go To Title";
 		backBufferGraphics.setColor(Color.GREEN);
 		drawCenteredBigString(screen, pauseString, screen.getHeight() / 8);
 
+		if(!isDrawWaining) {
+			if (option == 1) {
+				backBufferGraphics.setColor(Color.GREEN);
+				drawCenteredBigString(screen, resumeString, screen.getHeight() / 3);
+			} else {
+				backBufferGraphics.setColor(Color.WHITE);
+				drawCenteredBigString(screen, resumeString, screen.getHeight() / 3);
+			}
+			if (option == 2) {
+				backBufferGraphics.setColor(Color.GREEN);
+				drawCenteredBigString(screen, gototitleString, screen.getHeight() / 2);
+			} else {
+				backBufferGraphics.setColor(Color.WHITE);
+				drawCenteredBigString(screen, gototitleString, screen.getHeight() / 2);
+			}
+		}
+	}
+
+	public void drawCheckForSure(final Screen screen, final int option) {
+		int width = screen.getWidth() / 2 + 20;
+		int height = screen.getHeight() / 3 + 20;
+		int rectX = (screen.getWidth() - width) / 2;
+		int rectY = (screen.getHeight() - height) / 2;
+
+		String yes = "Yes";
+		String no = "No";
+		int fontWidth1 = fontRegularMetrics.stringWidth(yes);
+		int fontWidth2 = fontRegularMetrics.stringWidth(no);
+		int text1X = rectX + (width - fontWidth1) - 40;
+		int text2X = rectX + (width - fontWidth2) / 6;
+		int textY = rectY + height / 2 + fontRegularMetrics.getAscent() + 50;
+
 		if(option == 1){
 			backBufferGraphics.setColor(Color.GREEN);
-			drawCenteredBigString(screen, resumeString, screen.getHeight() / 3);
+			drawRightedRegularString(screen, no, text1X, textY);
 		}
 		else{
 			backBufferGraphics.setColor(Color.WHITE);
-			drawCenteredBigString(screen, resumeString, screen.getHeight() / 3);
+			drawRightedRegularString(screen, no, text1X, textY);
 		}
 		if(option == 2){
 			backBufferGraphics.setColor(Color.GREEN);
-			drawCenteredBigString(screen, gototitleString, screen.getHeight() / 2);
+			drawRightedRegularString(screen, yes, text2X, textY);
 		}
 		else{
 			backBufferGraphics.setColor(Color.WHITE);
-			drawCenteredBigString(screen, gototitleString, screen.getHeight() / 2);
+			drawRightedRegularString(screen, yes, text2X, textY);
 		}
 	}
 

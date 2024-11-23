@@ -115,6 +115,7 @@ public class GameScreen extends Screen {
 
 	public static boolean isPaused = false;
 	public static boolean goToTitle = false;
+	public boolean isDrawWarning = false;
 	private int option;
 	private int currentTime;
 
@@ -254,26 +255,33 @@ public class GameScreen extends Screen {
 			super.update();
 		}
 		if(isPaused){
-			if(inputManager.isKeyJustPressed(KeyEvent.VK_DOWN)){
-				option += 1;
-				if(option >= 3){
-					option = 1;
-				}
-			}
-			else if(inputManager.isKeyJustPressed(KeyEvent.VK_UP)){
-				option -= 1;
-				if(option <= 0){
-					option = 2;
-				}
-			}
+			option = (option <= 0) ? 2 : (option >= 3) ? 1 : option;
 
-			if(option == 1 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE)){
-				isPaused = !isPaused;
+			if(inputManager.isKeyJustPressed(KeyEvent.VK_DOWN) && !isDrawWarning ||
+				inputManager.isKeyJustPressed(KeyEvent.VK_RIGHT) && isDrawWarning){
+				option += 1;
 			}
-			else if(option == 2 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE)){
-				goToTitle = true;
-				this.returnCode = 1;
-				this.isRunning = false;
+			else if(inputManager.isKeyJustPressed(KeyEvent.VK_UP) && !isDrawWarning ||
+					inputManager.isKeyJustPressed(KeyEvent.VK_LEFT) && isDrawWarning){
+				option -= 1;
+			}
+			if(!isDrawWarning){
+				if(option == 1 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE)){
+					isPaused = !isPaused;
+				}
+				else if(option == 2 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE)){
+					isDrawWarning = true;
+				}
+			}
+			else{
+				if(option == 2 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE) && isDrawWarning){
+					goToTitle = true;
+					this.returnCode = 1;
+					this.isRunning = false;
+				}
+				else if(option == 1 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE) && isDrawWarning){
+					isDrawWarning = false;
+				}
 			}
 		}
 
@@ -476,7 +484,13 @@ public class GameScreen extends Screen {
 		}
 
 		if(isPaused){
-			drawManager.drawPauseMenu(this, option);
+			if(isDrawWarning){
+				DrawManagerImpl.drawGoToTitleWarning(this);
+				drawManager.drawCheckForSure(this, option);
+			}
+			else{
+				drawManager.drawPauseMenu(this, option, isDrawWarning);
+			}
 		}
 		else{
 			super.draw();

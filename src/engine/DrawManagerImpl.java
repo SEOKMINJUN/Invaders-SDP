@@ -144,6 +144,36 @@ public class DrawManagerImpl extends DrawManager {
         backBufferGraphics.drawString(remainingEnemiesString, x, y);
     } // by SeungYun
 
+    public static void drawGoToTitleWarning(final Screen screen) {
+        int width = screen.getWidth() / 2 + 20;
+        int height = screen.getHeight() / 3 + 20;
+        int rectX = (screen.getWidth() - width) / 2;
+        int rectY = (screen.getHeight() - height) / 2;
+
+        String warningString1 = "Current progress will be lost.";
+        String warningString2 = "Are you sure?";
+        int fontWidth1 = fontRegularMetrics.stringWidth(warningString1);
+        int fontWidth2 = fontRegularMetrics.stringWidth(warningString2);
+        int textX1 = rectX + (width - fontWidth1) / 2;
+        int textX2 = rectX + (width - fontWidth2) / 2;
+        int text1Y = rectY + height / 8 + fontRegularMetrics.getAscent();
+        int text2Y = rectY + height / 4 + fontRegularMetrics.getAscent();
+
+        backBufferGraphics.setColor(Color.black);
+        backBufferGraphics.fillRect(rectX, rectY, width, height);
+
+        backBufferGraphics.setColor(Color.WHITE);
+        backBufferGraphics.drawRect(rectX, rectY, width, height);
+
+        backBufferGraphics.setColor(Color.white);
+        backBufferGraphics.setFont(fontRegular);
+
+        backBufferGraphics.setColor(Color.white);
+        backBufferGraphics.drawString(warningString1, textX1, text1Y);
+        backBufferGraphics.drawString(warningString2, textX2, text2Y);
+
+    }
+
 
 
     /**
