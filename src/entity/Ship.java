@@ -1,19 +1,17 @@
 package entity;
 
-import java.awt.Color;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
-import java.util.Set;
-
 import engine.*;
 import engine.DrawManager.SpriteType;
-// Import NumberOfBullet class
-// Import ShipStatus class
 import lombok.Getter;
 import lombok.Setter;
 import screen.GameScreen;
 
-import static engine.Globals.barrier_DURATION;
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
+import java.util.Set;
+
+import static engine.Globals.*;
 
 class PlayerGrowth {
 
@@ -144,7 +142,14 @@ public class Ship extends Entity {
 	/**	Store barrier acivated time */
 	@Getter @Setter
 	private long barrierActivationTime;
-
+	@Getter
+	private Cooldown doubleTapCooldown = Core.getCooldown(3500);
+	private long leftPressedTime = 0;
+	private long leftPressedTimeOld = 0;
+	private boolean isLeftPressed = false;
+	private long rightPressedTime = 0;
+	private long rightPressedTimeOld = 0;
+	private boolean isRightPressed = false;
 
 	//TODO : Move health to ship from GameScreen, and Add immunity time
 
@@ -225,7 +230,7 @@ public class Ship extends Entity {
 
 			if(isBombBullet()) {
 				BombBullet bombBullet = new BombBullet(positionX, positionY, growth.getBulletSpeed());
-				Globals.getCurrentScreen().addEntity(bombBullet);
+				getCurrentScreen().addEntity(bombBullet);
 				this.setBombBullet(false);
 			}
 			else{
@@ -250,19 +255,16 @@ public class Ship extends Entity {
 	 */
 	@Override
 	public final void update() {
-		if (!this.destructionCooldown.checkFinished())
-			this.spriteType = SpriteType.ShipDestroyed;
-		else
-			this.spriteType = SpriteType.Ship;
+		this.spriteType = this.destructionCooldown.checkFinished() ? SpriteType.Ship : SpriteType.ShipDestroyed;
 
 		if(!isPlayDestroyAnimation() && isDestroyed()){
 			// Do not draw when ship destroyed
 			this.setEnabled(false);
 		}
 
-		GameScreen screen = (GameScreen) Globals.getCurrentScreen();
+		GameScreen screen = (GameScreen) getCurrentScreen();
 		if (!isDestroyed() && this.canMove) {
-			InputManager inputManager = Globals.getInputManager();
+			InputManager inputManager = getInputManager();
 
 			boolean moveRight = inputManager.isKeyDown(KEY_RIGHT);
 			boolean moveLeft = inputManager.isKeyDown(KEY_LEFT);
@@ -274,17 +276,17 @@ public class Ship extends Entity {
 			boolean isLeftBorder = getPositionX()
 					- this.getSpeed() < 1;
 			boolean isTopBorder = (getPositionY() - this.getSpeed())
-                    < screen.getHeight() * 0.6;
+					< screen.getHeight() * 0.6;
 			boolean isBottomBorder = getPositionY() + this.getHeight() + this.getSpeed()
 					> screen.getHeight() - 63;
 
-			if (moveRight && !isRightBorder) {
+			 if (moveRight && !isRightBorder) {
 				this.moveRight();
-				screen.backgroundMoveRight = true;
+				screen.backgroundMoveRight = false;
 			}
 			if (moveLeft && !isLeftBorder) {
 				this.moveLeft();
-				screen.backgroundMoveLeft = true;
+				screen.backgroundMoveLeft = false;
 			}
 			if (moveUp && !isTopBorder) {
 				this.moveUP();
@@ -292,11 +294,14 @@ public class Ship extends Entity {
 			if (moveDown && !isBottomBorder) {
 				this.moveDown();
 			}
+
+			this.detectedDoubleTap(moveLeft, moveRight);
+
 			if (inputManager.isKeyDown(KEY_SHOOT))
 				if (this.shoot()) {
 					screen.bulletsShot++;
 					screen.fire_id++;
-					Globals.getLogger().fine("Bullet's fire_id is " + screen.fire_id);
+					getLogger().fine("Bullet's fire_id is " + screen.fire_id);
 				}
 		}
 
@@ -371,7 +376,7 @@ public class Ship extends Entity {
 	public final double getSpeed() {
 		return growth.getMoveSpeed();
 	}
-	
+
 	/**
 	 * Calculates and returns the bullet speed in Pixels per frame.
 	 *
@@ -389,7 +394,7 @@ public class Ship extends Entity {
 	public void subtractHealth(){
 		this.playDestroyAnimation();
 		this.health -= 1;
-		Globals.getLogger().info("Hit on player ship, " + this.health
+		getLogger().info("Hit on player ship, " + this.health
 				+ " lives remaining.");
 
 		// Sound Operator
@@ -401,17 +406,58 @@ public class Ship extends Entity {
 	//barrier item stuffs
 	public void updateBarrier() {
 		if (this.barrierActive) {
-			this.setSpriteType(DrawManager.SpriteType.ShipBarrierStatus);
+			this.setSpriteType(SpriteType.ShipBarrierStatus);
 
 			long currentTime = System.currentTimeMillis();
 
 			if (currentTime - this.barrierActivationTime >= barrier_DURATION) {
-				this.setSpriteType(DrawManager.SpriteType.Ship);
+				this.setSpriteType(SpriteType.Ship);
 				deactivatebarrier();    // deactive barrier
 			}
 		}
 	}
 
+	public void moveToEdgeLeft() {
+		this.positionX = 0;
+	}
+	public void moveToEdgeRight() {
+		this.positionX = getCurrentScreen().getWidth()-this.width;
+	}
+
+	public void detectedDoubleTap(boolean isPressLeft, boolean isPressRight){
+		long currentTime = System.currentTimeMillis();
+		if(isLeftPressed && !isPressLeft){
+			isLeftPressed = false;
+			if(currentTime - leftPressedTimeOld < 500){
+				if(doubleTapCooldown.getRemainingTime() == 0){
+					moveToEdgeLeft();
+					Globals.getLogger().info("Detected Double Tab Left");
+					doubleTapCooldown.reset();
+				}
+			}
+		}
+		else if(!isLeftPressed && isPressLeft){
+			isLeftPressed = true;
+			leftPressedTimeOld = leftPressedTime;
+			leftPressedTime = currentTime;
+		}
+
+		if(isRightPressed && !isPressRight){
+			isRightPressed = false;
+			if(currentTime - rightPressedTimeOld < 500){
+				if(doubleTapCooldown.getRemainingTime() == 0){
+					moveToEdgeRight();
+					Globals.getLogger().info("Detected Double Tab Right");
+					doubleTapCooldown.reset();
+				}
+			}
+		}
+		else if(!isRightPressed && isPressRight){
+			isRightPressed = true;
+			rightPressedTimeOld = rightPressedTime;
+			rightPressedTime = currentTime;
+		}
+	}
 	public void activatebarrier() {
 		this.barrierActive = true;
 		this.barrierActivationTime = System.currentTimeMillis();
@@ -419,6 +465,6 @@ public class Ship extends Entity {
 
 	public void deactivatebarrier() {
 		this.barrierActive = false;
-		Globals.getLogger().info("barrier effect ends");
+		getLogger().info("barrier effect ends");
 	}
 }

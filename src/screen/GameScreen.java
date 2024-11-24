@@ -82,8 +82,6 @@ public class GameScreen extends Screen {
     public boolean backgroundMoveLeft = false;
 	public boolean backgroundMoveRight = false;
 
-
-
 	// --- OBSTACLES
 	private Cooldown obstacleSpawnCooldown; //control obstacle spawn speed
 
@@ -283,7 +281,6 @@ public class GameScreen extends Screen {
 			this.enemyShipFormation.update();
 			this.enemyShipFormation.shoot();
 			updatePlayerDistance();
-			drawManagerImpl.drawPlayerDistance(this, getPlayerDistance());
 
 			int currentRemainingEnemies = getRemainingEnemies();
 			int destroyedEnemies = previousRemainingEnemies - currentRemainingEnemies;
@@ -375,7 +372,10 @@ public class GameScreen extends Screen {
 	 * Draws the elements associated with the screen.
 	 */
 	public void draw() {
-
+		float cooldownPercentage = ship1.getDoubleTapCooldown().getTotalDuration() > 0
+				? (float) ship1.getDoubleTapCooldown().getRemainingTime() / ship1.getDoubleTapCooldown().getTotalDuration()
+				: 0;
+		int remainingSeconds = (int)Math.ceil((float) ship1.getDoubleTapCooldown().getRemainingTime());
 		/** ### TEAM INTERNATIONAL ### */
 		drawManager.drawBackground(backgroundMoveRight, backgroundMoveLeft);
 		this.backgroundMoveRight = false;
@@ -401,7 +401,8 @@ public class GameScreen extends Screen {
 		DrawManagerImpl.drawTime(this, this.playTime);
 		// Call the method in DrawManagerImpl - Soomin Lee / TeamHUD
 		drawManager.drawItem(this); // HUD team - Jo Minseo
-
+		DrawManagerImpl.drawCooldownCircle(this, this.getWidth() - 30, 60, cooldownPercentage, remainingSeconds);
+		drawManagerImpl.drawPlayerDistance(this, getPlayerDistance());
 
 
 		// Countdown to game start.
