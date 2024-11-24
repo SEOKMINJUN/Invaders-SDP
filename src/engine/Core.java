@@ -14,6 +14,8 @@ import engine.Achievement.AchievementManager;
 import screen.*;
 import screen.TwoPlayerGameScreen;
 
+import static screen.GameScreen.goToTitle;
+
 /**
  * Implements core game logic.
  * 
@@ -61,8 +63,7 @@ public final class Core {
 			Globals.getUpgradeManager();
 
 			//Clove. Reset Player Statistics After the Game Starts
-			Statistics statistics = new Statistics();
-			statistics.resetStatistics();
+			Globals.getStatistics().resetStatistics();
 			LOGGER.info("Reset Player Statistics");
 
 			Globals.getCollectionManager();
@@ -128,67 +129,71 @@ public final class Core {
 					frame.setScreen(currentScreen);
 					LOGGER.info("Closing game screen.");
 
+					if(!goToTitle){
 					Statistics statistics = new Statistics(); //Clove
 
 					gameState = ((GameScreen) currentScreen).getGameState();
 
 					roundState = new RoundState(prevState, gameState);
 
-					// Add playtime parameter - Soomin Lee / TeamHUD
-					gameState = new GameState(gameState.getLevel() + 1,
-							gameState.getScore(),
-							gameState.getLivesRemaining(),
-							gameState.getLivesTwoRemaining(),
-							gameState.getBulletsShot(),
-							gameState.getShipsDestroyed(),
-							gameState.getAccuracy(),
-							gameState.getTime(),
-							gameState.getCoin() + roundState.getRoundCoin(),
-							gameState.getGem(),
-							gameState.getHitCount(),
-							gameState.getCoinItemsCollected());
-          			LOGGER.info("Round Coin: " + roundState.getRoundCoin());
-					LOGGER.info("Round Hit Rate: " + roundState.getRoundHitRate());
-					LOGGER.info("Round Time: " + roundState.getRoundTime());
+						// Add playtime parameter - Soomin Lee / TeamHUD
+						gameState = new GameState(gameState.getLevel() + 1,
+								gameState.getScore(),
+								gameState.getLivesRemaining(),
+								gameState.getLivesTwoRemaining(),
+								gameState.getBulletsShot(),
+								gameState.getShipsDestroyed(),
+								gameState.getAccuracy(),
+								gameState.getTime(),
+								gameState.getCoin() + roundState.getRoundCoin(),
+								gameState.getGem(),
+								gameState.getHitCount(),
+								gameState.getCoinItemsCollected());
+						LOGGER.info("Round Coin: " + roundState.getRoundCoin());
+						LOGGER.info("Round Hit Rate: " + roundState.getRoundHitRate());
+						LOGGER.info("Round Time: " + roundState.getRoundTime());
 
-					try { //Clove
-						statistics.addTotalPlayTime(roundState.getRoundTime());
-						LOGGER.info("RoundTime Saving");
-					} catch (IOException e){
-						LOGGER.info("Failed to Save RoundTime");
+						try { //Clove
+							statistics.addTotalPlayTime(roundState.getRoundTime());
+							LOGGER.info("RoundTime Saving");
+						} catch (IOException e){
+							LOGGER.info("Failed to Save RoundTime");
+						}
+
+						// Show receiptScreen
+						// If it is not the last round and the game is not over
+						// Ctrl-S
+						if (gameState.getLevel() <= 7 && gameState.getLivesRemaining() > 0) {
+							LOGGER.info("loading receiptScreen");
+							currentScreen = new ReceiptScreen(width, height, Globals.FPS, roundState, gameState);
+
+							LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
+									+ " receipt screen at " + Globals.FPS + " fps.");
+							frame.setScreen(currentScreen);
+							LOGGER.info("Closing receiptScreen.");
+						}
 					}
-
-					// Show receiptScreen
-					// If it is not the last round and the game is not over
-					// Ctrl-S
-					if (gameState.getLevel() <= 7 && gameState.getLivesRemaining() > 0) {
-						LOGGER.info("loading receiptScreen");
-						currentScreen = new ReceiptScreen(width, height, Globals.FPS, roundState, gameState);
-
-						LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
-								+ " receipt screen at " + Globals.FPS + " fps.");
-						frame.setScreen(currentScreen);
-						LOGGER.info("Closing receiptScreen.");
-					}
-
-
-
 				} while (gameState.getLivesRemaining() > 0
-						&& gameState.getLevel() <= Globals.NUM_LEVELS);
+						&& gameState.getLevel() <= Globals.NUM_LEVELS
+						&& !goToTitle);
 
 				LOGGER.info("Stop InGameBGM");
 				// Sound Operator
 				Globals.getSoundManager().stopAllBGM();
-
-				LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
-						+ " score screen at " + Globals.FPS + " fps, with a score of "
-						+ gameState.getScore() + ", "
-						+ gameState.getLivesRemaining() + " lives remaining, "
-						+ gameState.getBulletsShot() + " bullets shot and "
-						+ gameState.getShipsDestroyed() + " ships destroyed.");
-				currentScreen = new ScoreScreen(width, height, Globals.FPS, gameState);
-				returnCode = frame.setScreen(currentScreen);
-				LOGGER.info("Closing score screen.");
+				if(!goToTitle){
+					LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
+							+ " score screen at " + Globals.FPS + " fps, with a score of "
+							+ gameState.getScore() + ", "
+							+ gameState.getLivesRemaining() + " lives remaining, "
+							+ gameState.getBulletsShot() + " bullets shot and "
+							+ gameState.getShipsDestroyed() + " ships destroyed.");
+					currentScreen = new ScoreScreen(width, height, Globals.FPS, gameState);
+					returnCode = frame.setScreen(currentScreen);
+					LOGGER.info("Closing score screen.");
+				}
+				else{
+					returnCode = 1;
+				}
 				break;
 			case 3:
 				// High scores.
@@ -222,63 +227,71 @@ public final class Core {
 					frame.setScreen(currentScreen);
 					LOGGER.info("Closing game screen.");
 
-					gameState = ((TwoPlayerGameScreen) currentScreen).getGameState();
+					if(!goToTitle) {
+						gameState = ((TwoPlayerGameScreen) currentScreen).getGameState();
 
-					roundState = new RoundState(prevState, gameState);
+						roundState = new RoundState(prevState, gameState);
 
-					// Add playtime parameter - Soomin Lee / TeamHUD
-					gameState = new GameState(gameState.getLevel() + 1,
-							gameState.getScore(),
-							gameState.getLivesRemaining(),
-							gameState.getLivesTwoRemaining(),
-							gameState.getBulletsShot(),
-							gameState.getShipsDestroyed(),
-							gameState.getAccuracy(),
-							gameState.getTime(),
-							gameState.getCoin() + roundState.getRoundCoin(),
-							gameState.getGem(),
-							gameState.getHitCount(),
-							gameState.getCoinItemsCollected());
-					LOGGER.info("Round Coin: " + roundState.getRoundCoin());
-					LOGGER.info("Round Hit Rate: " + roundState.getRoundHitRate());
-					LOGGER.info("Round Time: " + roundState.getRoundTime());
+						// Add playtime parameter - Soomin Lee / TeamHUD
+						gameState = new GameState(gameState.getLevel() + 1,
+								gameState.getScore(),
+								gameState.getLivesRemaining(),
+								gameState.getLivesTwoRemaining(),
+								gameState.getBulletsShot(),
+								gameState.getShipsDestroyed(),
+								gameState.getAccuracy(),
+								gameState.getTime(),
+								gameState.getCoin() + roundState.getRoundCoin(),
+								gameState.getGem(),
+								gameState.getHitCount(),
+								gameState.getCoinItemsCollected());
+						LOGGER.info("Round Coin: " + roundState.getRoundCoin());
+						LOGGER.info("Round Hit Rate: " + roundState.getRoundHitRate());
+						LOGGER.info("Round Time: " + roundState.getRoundTime());
 
-					try { //Clove
-						statistics.addTotalPlayTime(roundState.getRoundTime());
-						LOGGER.info("RoundTime Saving");
-					} catch (IOException e){
-						LOGGER.info("Failed to Save RoundTime");
+						try { //Clove
+							statistics.addTotalPlayTime(roundState.getRoundTime());
+							LOGGER.info("RoundTime Saving");
+						} catch (IOException e) {
+							LOGGER.info("Failed to Save RoundTime");
+						}
+
+						// Show receiptScreen
+						// If it is not the last round and the game is not over
+						// Ctrl-S
+						if (gameState.getLevel() <= 7 && gameState.getLivesRemaining() > 0) {
+							LOGGER.info("loading receiptScreen");
+							currentScreen = new ReceiptScreen(width, height, Globals.FPS, roundState, gameState);
+
+							LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
+									+ " receipt screen at " + Globals.FPS + " fps.");
+							frame.setScreen(currentScreen);
+							LOGGER.info("Closing receiptScreen.");
+						}
 					}
-
-					// Show receiptScreen
-					// If it is not the last round and the game is not over
-					// Ctrl-S
-					if (gameState.getLevel() <= 7 && gameState.getLivesRemaining() > 0) {
-						LOGGER.info("loading receiptScreen");
-						currentScreen = new ReceiptScreen(width, height, Globals.FPS, roundState, gameState);
-
-						LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
-								+ " receipt screen at " + Globals.FPS + " fps.");
-						frame.setScreen(currentScreen);
-						LOGGER.info("Closing receiptScreen.");
-					}
-
-				} while ((gameState.getLivesRemaining() > 0 || gameState.getLivesTwoRemaining() > 0) && gameState.getLevel() <= Globals.NUM_LEVELS);
+				} while ((gameState.getLivesRemaining() > 0 || gameState.getLivesTwoRemaining() > 0)
+						&& gameState.getLevel() <= Globals.NUM_LEVELS
+				 		&& !goToTitle);
 
 				LOGGER.info("Stop InGameBGM");
 				// Sound Operator
 				Globals.getSoundManager().stopAllBGM();
 
-				LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
-						+ " score screen at " + Globals.FPS + " fps, with a score of "
-						+ gameState.getScore() + ", "
-						+ gameState.getLivesRemaining() + " lives remaining, "
-						+ gameState.getBulletsShot() + " bullets shot and "
-						+ gameState.getShipsDestroyed() + " ships destroyed.");
-				currentScreen = new ScoreScreen(width, height, Globals.FPS, gameState);
-				returnCode = frame.setScreen(currentScreen);
-				if(returnCode == 2) returnCode = 4;
-				LOGGER.info("Closing score screen.");
+				if(!goToTitle){
+					LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
+							+ " score screen at " + Globals.FPS + " fps, with a score of "
+							+ gameState.getScore() + ", "
+							+ gameState.getLivesRemaining() + " lives remaining, "
+							+ gameState.getBulletsShot() + " bullets shot and "
+							+ gameState.getShipsDestroyed() + " ships destroyed.");
+					currentScreen = new ScoreScreen(width, height, Globals.FPS, gameState);
+					returnCode = frame.setScreen(currentScreen);
+					if(returnCode == 2) returnCode = 4;
+					LOGGER.info("Closing score screen.");
+				}
+				else{
+					returnCode = 1;
+				}
 				break;
 			case 5: // 7 -> 5 replaced by Starter
 				// Recent Records.

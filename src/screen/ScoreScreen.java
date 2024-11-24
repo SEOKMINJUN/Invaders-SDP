@@ -11,6 +11,8 @@ import engine.Statistics; //Team Clove
 import engine.*;
 import entity.NumberOfBullet;
 
+import static screen.GameScreen.goToTitle;
+
 /**
  * Implements the score screen.
  * 

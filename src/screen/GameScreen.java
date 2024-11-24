@@ -111,6 +111,12 @@ public class GameScreen extends Screen {
     public int coinItemsCollected;
 	private DrawManagerImpl drawManagerImpl;
 
+	public static boolean isPaused = false;
+	public static boolean goToTitle = false;
+	public boolean isDrawWarning = false;
+	private int option;
+	private int currentTime;
+
 	/**
 	 * Constructor, establishes the properties of the screen.
 	 *
@@ -146,6 +152,8 @@ public class GameScreen extends Screen {
 		this.hitCount = gameState.getHitCount(); //CtrlS
 		this.fire_id = 0; //CtrlS - fire_id means the id of bullet that shoot already. It starts from 0.
 		this.processedFireBullet = new HashSet<>(); //CtrlS - initialized the processedFireBullet
+		goToTitle = false;
+		isPaused = false;
 
 		/**
 		* Added by the Level Design team
@@ -237,9 +245,45 @@ public class GameScreen extends Screen {
 		boolean gameProgress = inputDelay.checkFinished() && !isLevelFinished();
 		ship1.setCanMove(gameProgress && ship1.getHealth() > 0 && ship1.getDestructionCooldown().checkFinished());
 
-		super.update();
+		if(inputManager.isKeyJustPressed(KeyEvent.VK_ESCAPE)){
+			option = 1;
+			isPaused = !isPaused;
+		}
+		if(!isPaused){
+			super.update();
+		}
+		if(isPaused){
+			option = (option <= 0) ? 2 : (option >= 3) ? 1 : option;
 
-		if (gameProgress) {
+			if(inputManager.isKeyJustPressed(KeyEvent.VK_DOWN) && !isDrawWarning ||
+				inputManager.isKeyJustPressed(KeyEvent.VK_RIGHT) && isDrawWarning){
+				option += 1;
+			}
+			else if(inputManager.isKeyJustPressed(KeyEvent.VK_UP) && !isDrawWarning ||
+					inputManager.isKeyJustPressed(KeyEvent.VK_LEFT) && isDrawWarning){
+				option -= 1;
+			}
+			if(!isDrawWarning){
+				if(option == 1 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE)){
+					isPaused = !isPaused;
+				}
+				else if(option == 2 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE)){
+					isDrawWarning = true;
+				}
+			}
+			else{
+				if(option == 2 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE) && isDrawWarning){
+					goToTitle = true;
+					this.returnCode = 1;
+					this.isRunning = false;
+				}
+				else if(option == 1 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE) && isDrawWarning){
+					isDrawWarning = false;
+				}
+			}
+		}
+
+		if (gameProgress && !isPaused) {
 			// --- OBSTACLES
 			if (this.obstacleSpawnCooldown.checkFinished()) {
 				// Adjust spawn amount based on the level
@@ -347,7 +391,8 @@ public class GameScreen extends Screen {
 		 * **/
 		if ((getRemainingEnemies() == 0 || ship1.getHealth() == 0)
 				&& !this.levelFinished
-				&& waveCounter == this.gameSettings.getWavesNumber()) {
+				&& waveCounter == this.gameSettings.getWavesNumber()
+				&& !goToTitle) {
 			totalDistance += playerDistance;
 			playerDistance = 0;
 			this.levelFinished = true;
@@ -406,7 +451,7 @@ public class GameScreen extends Screen {
 
 
 		// Countdown to game start.
-		if (!this.inputDelay.checkFinished()) {
+		if (!this.inputDelay.checkFinished() && !isPaused) {
 			int countdown = (int) ((Globals.GAME_SCREEN_INPUT_DELAY
 			- (System.currentTimeMillis()
 			- this.gameStartTime)) / 1000);
@@ -431,10 +476,26 @@ public class GameScreen extends Screen {
 
 		// Soomin Lee / TeamHUD
 		if (this.inputDelay.checkFinished()) {
-			playTime = (int) ((System.currentTimeMillis() - playStartTime) / 1000) + playTimePre;
+			if (!isPaused) {
+				playTime = (int) ((System.currentTimeMillis() - playStartTime) / 1000) + playTimePre;
+				currentTime = playTime;
+			} else {
+				playStartTime = System.currentTimeMillis() - (currentTime * 1000L);
+			}
 		}
 
-		super.draw();
+		if(isPaused){
+			if(isDrawWarning){
+				DrawManagerImpl.drawGoToTitleWarning(this);
+				drawManager.drawCheckForSure(this, option);
+			}
+			else{
+				drawManager.drawPauseMenu(this, option, isDrawWarning);
+			}
+		}
+		else{
+			super.draw();
+		}
 	}
 
 
