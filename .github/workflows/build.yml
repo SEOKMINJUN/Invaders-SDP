@@ -27,5 +27,5 @@ jobs:
       id: upload_unsigned_v4
       with:
         name: Invaders-SDP
-        path: build/launch4j/Invaders-SDP.exe
+        path: build/launch4j/*
       continue-on-error: true
