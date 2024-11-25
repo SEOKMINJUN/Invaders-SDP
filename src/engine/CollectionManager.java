@@ -62,44 +62,43 @@ public class CollectionManager {
      * 2 - xPosition
      * 3 - yPosition
      */
-    AchievementList achievementList = new AchievementList();
     private final int XPosition = 60;
     @Getter
     private Object[][] AchievementSet_1 = {
-            {achievementList.getACHIEVEMENT_LIVE().getName(), achievementList.getACHIEVEMENT_LIVE().getDescription(), XPosition, 180},
-            {achievementList.getACHIEVEMENT_KILL_25().getName(), achievementList.getACHIEVEMENT_KILL_25().getDescription(), XPosition, 280},
-            {achievementList.getACHIEVEMENT_KILL_100().getName(), achievementList.getACHIEVEMENT_KILL_100().getDescription(), XPosition, 380},
-            {achievementList.getACHIEVEMENT_KILL_500().getName(), achievementList.getACHIEVEMENT_KILL_500().getDescription(), XPosition, 580},
-            {achievementList.getACHIEVEMENT_KILL_1000().getName(), achievementList.getACHIEVEMENT_KILL_1000().getDescription(), XPosition, 480},
+            {AchievementList.getACHIEVEMENT_LIVE().getName(), AchievementList.getACHIEVEMENT_LIVE().getDescription(), XPosition, 180},
+            {AchievementList.getACHIEVEMENT_KILL_25().getName(), AchievementList.getACHIEVEMENT_KILL_25().getDescription(), XPosition, 280},
+            {AchievementList.getACHIEVEMENT_KILL_100().getName(), AchievementList.getACHIEVEMENT_KILL_100().getDescription(), XPosition, 380},
+            {AchievementList.getACHIEVEMENT_KILL_500().getName(), AchievementList.getACHIEVEMENT_KILL_500().getDescription(), XPosition, 580},
+            {AchievementList.getACHIEVEMENT_KILL_1000().getName(), AchievementList.getACHIEVEMENT_KILL_1000().getDescription(), XPosition, 480},
     };
     @Getter
     private Object[][] AchievementSet_2 = {
-            {achievementList.getACHIEVEMENT_TRIALS_1().getName(), achievementList.getACHIEVEMENT_TRIALS_1().getDescription(), XPosition, 180},
-            {achievementList.getACHIEVEMENT_TRIALS_10().getName(), achievementList.getACHIEVEMENT_TRIALS_10().getDescription(), XPosition, 380},
-            {achievementList.getACHIEVEMENT_TRIALS_50().getName(), achievementList.getACHIEVEMENT_TRIALS_50().getDescription(), XPosition, 580},
+            {AchievementList.getACHIEVEMENT_TRIALS_1().getName(), AchievementList.getACHIEVEMENT_TRIALS_1().getDescription(), XPosition, 180},
+            {AchievementList.getACHIEVEMENT_TRIALS_10().getName(), AchievementList.getACHIEVEMENT_TRIALS_10().getDescription(), XPosition, 380},
+            {AchievementList.getACHIEVEMENT_TRIALS_50().getName(), AchievementList.getACHIEVEMENT_TRIALS_50().getDescription(), XPosition, 580},
     };
     @Getter
     private Object[][] AchievementSet_3 = {
-            {achievementList.getACHIEVEMENT_KILLSTREAKS_5().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_5().getDescription(), XPosition, 180},
-            {achievementList.getACHIEVEMENT_KILLSTREAKS_15().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_15().getDescription(), XPosition, 380},
-            {achievementList.getACHIEVEMENT_KILLSTREAKS_30().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_30().getDescription(), XPosition, 580},
+            {AchievementList.getACHIEVEMENT_KILLSTREAKS_5().getName(), AchievementList.getACHIEVEMENT_KILLSTREAKS_5().getDescription(), XPosition, 180},
+            {AchievementList.getACHIEVEMENT_KILLSTREAKS_15().getName(), AchievementList.getACHIEVEMENT_KILLSTREAKS_15().getDescription(), XPosition, 380},
+            {AchievementList.getACHIEVEMENT_KILLSTREAKS_30().getName(), AchievementList.getACHIEVEMENT_KILLSTREAKS_30().getDescription(), XPosition, 580},
     };
     @Getter
     private Object[][] AchievementSet_4 = {
-            {achievementList.getACHIEVEMENT_ACCURACY_60().getName(), achievementList.getACHIEVEMENT_ACCURACY_60().getDescription(), XPosition, 180},
-            {achievementList.getACHIEVEMENT_ACCURACY_75().getName(), achievementList.getACHIEVEMENT_ACCURACY_75().getDescription(), XPosition, 380},
-            {achievementList.getACHIEVEMENT_ACCURACY_85().getName(), achievementList.getACHIEVEMENT_ACCURACY_85().getDescription(), XPosition, 580},
+            {AchievementList.getACHIEVEMENT_ACCURACY_60().getName(), AchievementList.getACHIEVEMENT_ACCURACY_60().getDescription(), XPosition, 180},
+            {AchievementList.getACHIEVEMENT_ACCURACY_75().getName(), AchievementList.getACHIEVEMENT_ACCURACY_75().getDescription(), XPosition, 380},
+            {AchievementList.getACHIEVEMENT_ACCURACY_85().getName(), AchievementList.getACHIEVEMENT_ACCURACY_85().getDescription(), XPosition, 580},
     };
     @Getter
     private Object[][] AchievementSet_5 = {
-            {achievementList.getACHIEVEMENT_SCORE_6000().getName(), achievementList.getACHIEVEMENT_SCORE_6000().getDescription(), XPosition, 180},
-            {achievementList.getACHIEVEMENT_SCORE_15000().getName(), achievementList.getACHIEVEMENT_SCORE_15000().getDescription(), XPosition, 380},
-            {achievementList.getACHIEVEMENT_SCORE_30000().getName(), achievementList.getACHIEVEMENT_SCORE_30000().getDescription(), XPosition, 580},
+            {AchievementList.getACHIEVEMENT_SCORE_6000().getName(), AchievementList.getACHIEVEMENT_SCORE_6000().getDescription(), XPosition, 180},
+            {AchievementList.getACHIEVEMENT_SCORE_15000().getName(), AchievementList.getACHIEVEMENT_SCORE_15000().getDescription(), XPosition, 380},
+            {AchievementList.getACHIEVEMENT_SCORE_30000().getName(), AchievementList.getACHIEVEMENT_SCORE_30000().getDescription(), XPosition, 580},
     };
     @Getter
     private Object[][] AchievementSet_6 = {
-            {achievementList.getACHIEVEMENT_STAGE_MAX().getName(), achievementList.getACHIEVEMENT_STAGE_MAX().getDescription(), XPosition, 180},
-            {achievementList.getACHIEVEMENT_ALL().getName(), achievementList.getACHIEVEMENT_ALL().getDescription(), XPosition, 450},
+            {AchievementList.getACHIEVEMENT_STAGE_MAX().getName(), AchievementList.getACHIEVEMENT_STAGE_MAX().getDescription(), XPosition, 180},
+            {AchievementList.getACHIEVEMENT_ALL().getName(), AchievementList.getACHIEVEMENT_ALL().getDescription(), XPosition, 450},
     };
 
     /** Logger*/
@@ -217,38 +216,37 @@ public class CollectionManager {
     }
 
     public int getAchievementIndex(AchievementType type, int requiredValue) {
-        AchievementList list = new AchievementList();
         if (type == AchievementType.LIVES) {
-            if (requiredValue == list.getACHIEVEMENT_LIVE().getRequiredValue()) return 0;
+            if (requiredValue == AchievementList.getACHIEVEMENT_LIVE().getRequiredValue()) return 0;
         }  else if (type == AchievementType.KILLS) {
-            if (requiredValue == list.getACHIEVEMENT_KILL_25().getRequiredValue()) return 1;
-            if (requiredValue == list.getACHIEVEMENT_KILL_100().getRequiredValue()) return 2;
-            if (requiredValue == list.getACHIEVEMENT_KILL_500().getRequiredValue()) return 3;
-            if (requiredValue == list.getACHIEVEMENT_KILL_1000().getRequiredValue()) return 4;
+            if (requiredValue == AchievementList.getACHIEVEMENT_KILL_25().getRequiredValue()) return 1;
+            if (requiredValue == AchievementList.getACHIEVEMENT_KILL_100().getRequiredValue()) return 2;
+            if (requiredValue == AchievementList.getACHIEVEMENT_KILL_500().getRequiredValue()) return 3;
+            if (requiredValue == AchievementList.getACHIEVEMENT_KILL_1000().getRequiredValue()) return 4;
         } else if (type == AchievementType.TRIALS) {
-            if (requiredValue == list.getACHIEVEMENT_TRIALS_1().getRequiredValue()) return 5;
-            if (requiredValue == list.getACHIEVEMENT_TRIALS_10().getRequiredValue()) return 6;
-            if (requiredValue == list.getACHIEVEMENT_TRIALS_50().getRequiredValue()) return 7;
+            if (requiredValue == AchievementList.getACHIEVEMENT_TRIALS_1().getRequiredValue()) return 5;
+            if (requiredValue == AchievementList.getACHIEVEMENT_TRIALS_10().getRequiredValue()) return 6;
+            if (requiredValue == AchievementList.getACHIEVEMENT_TRIALS_50().getRequiredValue()) return 7;
         } else if (type == AchievementType.KILLSTREAKS) {
-            if (requiredValue == list.getACHIEVEMENT_KILLSTREAKS_5().getRequiredValue()) return 8;
-            if (requiredValue == list.getACHIEVEMENT_KILLSTREAKS_15().getRequiredValue()) return 9;
-            if (requiredValue == list.getACHIEVEMENT_KILLSTREAKS_30().getRequiredValue()) return 10;
+            if (requiredValue == AchievementList.getACHIEVEMENT_KILLSTREAKS_5().getRequiredValue()) return 8;
+            if (requiredValue == AchievementList.getACHIEVEMENT_KILLSTREAKS_15().getRequiredValue()) return 9;
+            if (requiredValue == AchievementList.getACHIEVEMENT_KILLSTREAKS_30().getRequiredValue()) return 10;
         } else if (type == AchievementType.ACCURACY) {
-            if (requiredValue == list.getACHIEVEMENT_ACCURACY_60().getRequiredValue()) return 11;
-            if (requiredValue == list.getACHIEVEMENT_ACCURACY_75().getRequiredValue()) return 12;
-            if (requiredValue == list.getACHIEVEMENT_ACCURACY_85().getRequiredValue()) return 13;
+            if (requiredValue == AchievementList.getACHIEVEMENT_ACCURACY_60().getRequiredValue()) return 11;
+            if (requiredValue == AchievementList.getACHIEVEMENT_ACCURACY_75().getRequiredValue()) return 12;
+            if (requiredValue == AchievementList.getACHIEVEMENT_ACCURACY_85().getRequiredValue()) return 13;
         } else if (type == AchievementType.SCORE) {
-            if (requiredValue == list.getACHIEVEMENT_SCORE_6000().getRequiredValue()) return 14;
-            if (requiredValue == list.getACHIEVEMENT_SCORE_15000().getRequiredValue()) return 15;
-            if (requiredValue == list.getACHIEVEMENT_SCORE_30000().getRequiredValue()) return 16;
+            if (requiredValue == AchievementList.getACHIEVEMENT_SCORE_6000().getRequiredValue()) return 14;
+            if (requiredValue == AchievementList.getACHIEVEMENT_SCORE_15000().getRequiredValue()) return 15;
+            if (requiredValue == AchievementList.getACHIEVEMENT_SCORE_30000().getRequiredValue()) return 16;
         } else if (type == AchievementType.DISTANCE) {
-            if (requiredValue == list.getACHIEVEMENT_DISTANCE_5().getRequiredValue()) return 17;
-            if (requiredValue == list. getACHIEVEMENT_DISTANCE_20().getRequiredValue()) return 18;
-            if (requiredValue == list.getACHIEVEMENT_DISTANCE_42().getRequiredValue()) return 19;
+            if (requiredValue == AchievementList.getACHIEVEMENT_DISTANCE_5().getRequiredValue()) return 17;
+            if (requiredValue == AchievementList. getACHIEVEMENT_DISTANCE_20().getRequiredValue()) return 18;
+            if (requiredValue == AchievementList.getACHIEVEMENT_DISTANCE_42().getRequiredValue()) return 19;
         } else if (type == AchievementType.STAGE) {
-            if (requiredValue == list.getACHIEVEMENT_STAGE_MAX().getRequiredValue()) return 20;
+            if (requiredValue == AchievementList.getACHIEVEMENT_STAGE_MAX().getRequiredValue()) return 20;
         } else if (type == AchievementType.ALL) {
-            if (requiredValue == list.getACHIEVEMENT_ALL().getRequiredValue()) return 21;
+            if (requiredValue == AchievementList.getACHIEVEMENT_ALL().getRequiredValue()) return 21;
         }
         return -1;
     }
