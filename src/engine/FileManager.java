@@ -17,6 +17,7 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import engine.DrawManager.SpriteType;
 
@@ -525,6 +526,8 @@ public final class FileManager {
 			int[] achievementArray = stringToArray(properties.getProperty("achievementArray"));
 			int[] enemiesArray = stringToArray(properties.getProperty("enemiesArray"));
 
+			Globals.getLogger().info("Loaded Achievements: " + Arrays.toString(achievementArray));
+
 			stat = new Statistics(itemsArray, achievementArray, enemiesArray);
 
 		} catch (FileNotFoundException e) {
@@ -553,6 +556,8 @@ public final class FileManager {
 			int[] itemsArray = stringToArray(properties.getProperty("itemsArray"));
 			int[] achievementArray = stringToArray(properties.getProperty("achievementArray"));
 			int[] enemiesArray = stringToArray(properties.getProperty("enemiesArray"));
+
+			Globals.getLogger().info("Default Achievements: " + Arrays.toString(achievementArray));
 
 			stat = new Statistics(itemsArray, achievementArray, enemiesArray);
 
@@ -1002,6 +1007,31 @@ public final class FileManager {
 			if (outputStream != null) {
 				outputStream.close();
 			}
+		}
+	}
+
+	public void saveCollections(Statistics collection) throws IOException {
+		Properties properties = new Properties();
+
+		String achievements = Arrays.stream(collection.getAchievementsArray())
+				.mapToObj(String::valueOf)
+				.collect(Collectors.joining(","));
+
+		String enemies = Arrays.stream(collection.getEnemiesArray())
+				.mapToObj(String::valueOf)
+				.collect(Collectors.joining(","));
+		String items = Arrays.stream(collection.getItemsArray())
+				.mapToObj(String::valueOf)
+				.collect(Collectors.joining(","));
+
+		properties.setProperty("achievementArray", achievements);
+		properties.setProperty("enemiesArray", enemies);
+		properties.setProperty("itemsArray", items);
+
+		Globals.getLogger().info("Before saving Collections - Achievements: " + achievements);
+
+		try (FileOutputStream out = new FileOutputStream("Collections.properties")) {
+			properties.store(out, "Collections");
 		}
 	}
 

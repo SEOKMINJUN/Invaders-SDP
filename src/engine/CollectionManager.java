@@ -1,6 +1,7 @@
 package engine;
 
 import engine.Achievement.AchievementList;
+import engine.Achievement.AchievementType;
 import engine.DrawManager.SpriteType;
 import lombok.Getter;
 
@@ -79,9 +80,9 @@ public class CollectionManager {
     };
     @Getter
     private Object[][] AchievementSet_3 = {
-            {achievementList.getACHIEVEMENT_KILLSTREAKS_3().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_3().getDescription(), XPosition, 180},
-            {achievementList.getACHIEVEMENT_KILLSTREAKS_5().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_5().getDescription(), XPosition, 380},
-            {achievementList.getACHIEVEMENT_KILLSTREAKS_7().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_7().getDescription(), XPosition, 580},
+            {achievementList.getACHIEVEMENT_KILLSTREAKS_5().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_5().getDescription(), XPosition, 180},
+            {achievementList.getACHIEVEMENT_KILLSTREAKS_15().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_15().getDescription(), XPosition, 380},
+            {achievementList.getACHIEVEMENT_KILLSTREAKS_30().getName(), achievementList.getACHIEVEMENT_KILLSTREAKS_30().getDescription(), XPosition, 580},
     };
     @Getter
     private Object[][] AchievementSet_4 = {
@@ -112,7 +113,7 @@ public class CollectionManager {
     private int[] enemyTypes = new int[8];
     /** Achievement Array*/
     @Getter
-    private int[] achievementTypes = new int[19];
+    public static int[] achievementTypes = new int[19];
 
     /** Statistics type variables that contain collections*/
     @Getter
@@ -200,13 +201,55 @@ public class CollectionManager {
      * Add Collection Player Achievement Cleared
      * @param i Player cleared Achievement Number
      */
-    public void AddCollectionAchievementTypes(int i) {
-        achievementTypes[i]++;
+    public void AddCollectionAchievementTypes(int i) throws IOException {
+        if (achievementTypes[i] < 1) { achievementTypes[i]++; }
         collection.setAchievementsArray(achievementTypes);
-        logger.info("Added achievement type " + i + " to collection : " + achievementTypes[i]);
+        Globals.getFileManager().saveCollections(collection);
+
+        /*
+        try {
+            Globals.getFileManager().saveCollections(collection);
+            logger.info("Collection achievements saved successfully.");
+        } catch (IOException e) {
+            logger.warning("Failed to save collections: " + e.getMessage());
+        }
+         */
     }
 
-
-
-
+    public int getAchievementIndex(AchievementType type, int requiredValue) {
+        AchievementList list = new AchievementList();
+        if (type == AchievementType.LIVES) {
+            if (requiredValue == list.getACHIEVEMENT_LIVE().getRequiredValue()) return 0;
+        }  else if (type == AchievementType.KILLS) {
+            if (requiredValue == list.getACHIEVEMENT_KILL_25().getRequiredValue()) return 1;
+            if (requiredValue == list.getACHIEVEMENT_KILL_100().getRequiredValue()) return 2;
+            if (requiredValue == list.getACHIEVEMENT_KILL_500().getRequiredValue()) return 3;
+            if (requiredValue == list.getACHIEVEMENT_KILL_1000().getRequiredValue()) return 4;
+        } else if (type == AchievementType.TRIALS) {
+            if (requiredValue == list.getACHIEVEMENT_TRIALS_1().getRequiredValue()) return 5;
+            if (requiredValue == list.getACHIEVEMENT_TRIALS_10().getRequiredValue()) return 6;
+            if (requiredValue == list.getACHIEVEMENT_TRIALS_50().getRequiredValue()) return 7;
+        } else if (type == AchievementType.KILLSTREAKS) {
+            if (requiredValue == list.getACHIEVEMENT_KILLSTREAKS_5().getRequiredValue()) return 8;
+            if (requiredValue == list.getACHIEVEMENT_KILLSTREAKS_15().getRequiredValue()) return 9;
+            if (requiredValue == list.getACHIEVEMENT_KILLSTREAKS_30().getRequiredValue()) return 10;
+        } else if (type == AchievementType.ACCURACY) {
+            if (requiredValue == list.getACHIEVEMENT_ACCURACY_60().getRequiredValue()) return 11;
+            if (requiredValue == list.getACHIEVEMENT_ACCURACY_75().getRequiredValue()) return 12;
+            if (requiredValue == list.getACHIEVEMENT_ACCURACY_85().getRequiredValue()) return 13;
+        } else if (type == AchievementType.SCORE) {
+            if (requiredValue == list.getACHIEVEMENT_SCORE_6000().getRequiredValue()) return 14;
+            if (requiredValue == list.getACHIEVEMENT_SCORE_15000().getRequiredValue()) return 15;
+            if (requiredValue == list.getACHIEVEMENT_SCORE_30000().getRequiredValue()) return 16;
+        } else if (type == AchievementType.DISTANCE) {
+            if (requiredValue == list.getACHIEVEMENT_DISTANCE_5().getRequiredValue()) return 17;
+            if (requiredValue == list. getACHIEVEMENT_DISTANCE_20().getRequiredValue()) return 18;
+            if (requiredValue == list.getACHIEVEMENT_DISTANCE_42().getRequiredValue()) return 19;
+        } else if (type == AchievementType.STAGE) {
+            if (requiredValue == list.getACHIEVEMENT_STAGE_MAX().getRequiredValue()) return 20;
+        } else if (type == AchievementType.ALL) {
+            if (requiredValue == list.getACHIEVEMENT_ALL().getRequiredValue()) return 21;
+        }
+        return -1;
+    }
 }

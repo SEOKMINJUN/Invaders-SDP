@@ -16,9 +16,9 @@ public class AchievementList {
     private final Achievement ACHIEVEMENT_TRIALS_10       = (new Achievement("Skilled Solider", "Finished 10th game", 10, AchievementType.TRIALS, 1));
     private final Achievement ACHIEVEMENT_TRIALS_50       = (new Achievement("Veteran Pilot", "Finished 50th game", 50, AchievementType.TRIALS, 1));
 
-    private final Achievement ACHIEVEMENT_KILLSTREAKS_3   = (new Achievement("Gunslinger", "Kill streak of 3", 3, AchievementType.KILLSTREAKS, 1));
-    private final Achievement ACHIEVEMENT_KILLSTREAKS_5   = (new Achievement("Fear the Enemy", "Kill streak of 5", 5, AchievementType.KILLSTREAKS, 5));
-    private final Achievement ACHIEVEMENT_KILLSTREAKS_7   = (new Achievement("Genocide","Kill streak of 7", 7, AchievementType.KILLSTREAKS, 10));
+    private final Achievement ACHIEVEMENT_KILLSTREAKS_5   = (new Achievement("Gunslinger", "Kill streak of 3", 5, AchievementType.KILLSTREAKS, 1));
+    private final Achievement ACHIEVEMENT_KILLSTREAKS_15   = (new Achievement("Fear the Enemy", "Kill streak of 5", 15, AchievementType.KILLSTREAKS, 5));
+    private final Achievement ACHIEVEMENT_KILLSTREAKS_30   = (new Achievement("Genocide","Kill streak of 7", 30, AchievementType.KILLSTREAKS, 10));
 
     private final Achievement ACHIEVEMENT_ACCURACY_60     = (new Achievement("Preheating","Accuracy of 60%", 60, AchievementType.ACCURACY,5));
     private final Achievement ACHIEVEMENT_ACCURACY_75     = (new Achievement("Overheating","Accuracy of 75%", 75, AchievementType.ACCURACY, 5));
