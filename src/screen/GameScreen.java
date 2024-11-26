@@ -45,7 +45,8 @@ public class GameScreen extends Screen {
 	private int playerDistance = 0;
 	private int lastPlaterX;
 	private int lastPlaterY;
-	private int totalDistance = 0;
+	@Getter
+	public int totalDistance;
     @Getter
     private FeverTimeItem feverTimeItem;
 	/** Speed item */
@@ -166,6 +167,7 @@ public class GameScreen extends Screen {
 		this.playTime = gameState.getTime();
 		this.statistics = new Statistics(); //Team Clove
 		this.coinItemsCollected = gameState.getCoinItemsCollected(); // CtrlS
+		this.totalDistance = gameState.getTotalDistance();
 
 		this.ship1 = new Ship(this.width / 2, this.height - 30, Color.RED); // add by team HUD
 		this.ship1.setKEY_LEFT(KeyEvent.VK_LEFT);
@@ -195,6 +197,7 @@ public class GameScreen extends Screen {
 		/** initialize background **/
 		drawManager.loadBackground(this.level);
 
+		ship1.setPosition(this.width / 2, this.height - 80);
 		this.lastPlaterX = this.ship1.getX();
 		this.lastPlaterY = this.ship1.getY();
 		this.playerDistance = 0;
@@ -376,7 +379,6 @@ public class GameScreen extends Screen {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-
 			this.isRunning = false;
 		}
 		return true;
@@ -404,9 +406,14 @@ public class GameScreen extends Screen {
 		int currentX = this.ship1.getPositionX();
 		int currentY = this.ship1.getPositionY();
 
+		if (ship1.getActiveDoubleTab()) {
+			lastPlaterX = currentX;
+			lastPlaterY = currentY;
+			ship1.setActiveDoubleTab(false);
+			return;
+		}
 		double distance = Math.sqrt(Math.pow(currentX - lastPlaterX, 2) + Math.pow(currentY - lastPlaterY, 2));
-		playerDistance += distance;
-
+		playerDistance += (int) distance;
 		lastPlaterX = currentX;
 		lastPlaterY = currentY;
 	}
@@ -447,7 +454,7 @@ public class GameScreen extends Screen {
 		// Call the method in DrawManagerImpl - Soomin Lee / TeamHUD
 		drawManager.drawItem(this); // HUD team - Jo Minseo
 		DrawManagerImpl.drawCooldownCircle(this, this.getWidth() - 30, 60, cooldownPercentage, remainingSeconds);
-		drawManagerImpl.drawPlayerDistance(this, getPlayerDistance());
+		DrawManagerImpl.drawPlayerDistance(this, getPlayerDistance());
 
 
 		// Countdown to game start.
@@ -532,7 +539,7 @@ public class GameScreen extends Screen {
 	 */
 	public GameState getGameState() {
 		return new GameState(this.level, this.score, ship1.getHealth(), 0,
-				this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
+				this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected, this.totalDistance); // Team-Ctrl-S(Currency)
 	}
 
     /**
@@ -550,6 +557,8 @@ public class GameScreen extends Screen {
 		}
 		return remainingEnemies;
 	} // by HUD team SeungYun
+
+	public void addDistance(int playerDistance) { this.totalDistance += playerDistance; }
 
 	public void addScore(int score) { this.score += score; }
 
