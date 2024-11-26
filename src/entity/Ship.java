@@ -151,6 +151,8 @@ public class Ship extends Entity {
 	private long rightPressedTimeOld = 0;
 	private boolean isRightPressed = false;
 
+	private boolean activeDoubleTab = false;
+
 	//TODO : Move health to ship from GameScreen, and Add immunity time
 
 	/**
@@ -304,7 +306,9 @@ public class Ship extends Entity {
 					getLogger().fine("Bullet's fire_id is " + screen.fire_id);
 				}
 		}
-
+		if(this.activeDoubleTab && doubleTapCooldown.checkFinished()){
+			this.activeDoubleTab = false;
+		}
 		updateBarrier();
 	}
 
@@ -431,6 +435,7 @@ public class Ship extends Entity {
 			if(currentTime - leftPressedTimeOld < 500){
 				if(doubleTapCooldown.getRemainingTime() == 0){
 					moveToEdgeLeft();
+					activeDoubleTab = true;
 					Globals.getLogger().info("Detected Double Tab Left");
 					doubleTapCooldown.reset();
 				}
@@ -447,6 +452,7 @@ public class Ship extends Entity {
 			if(currentTime - rightPressedTimeOld < 500){
 				if(doubleTapCooldown.getRemainingTime() == 0){
 					moveToEdgeRight();
+					activeDoubleTab = true;
 					Globals.getLogger().info("Detected Double Tab Right");
 					doubleTapCooldown.reset();
 				}
@@ -463,6 +469,8 @@ public class Ship extends Entity {
 		this.barrierActivationTime = System.currentTimeMillis();
 	}
 
+	public boolean getActiveDoubleTab() { return activeDoubleTab; }
+	public void setActiveDoubleTab(boolean activeDoubleTab) { this.activeDoubleTab = activeDoubleTab; }
 	public void deactivatebarrier() {
 		this.barrierActive = false;
 		getLogger().info("barrier effect ends");
