@@ -100,7 +100,7 @@ public final class Core {
 			// Add hitCount parameter - Ctrl S
 			// Add coinItemsCollected parameter - Ctrl S
 			gameState = new GameState(1, 0
-					, Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0);
+					, Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0, 0);
 			switch (returnCode) {
 			case 1:
 				// Main menu.
@@ -148,7 +148,8 @@ public final class Core {
 								gameState.getCoin() + roundState.getRoundCoin(),
 								gameState.getGem(),
 								gameState.getHitCount(),
-								gameState.getCoinItemsCollected());
+								gameState.getCoinItemsCollected(),
+								gameState.getTotalDistance());
 						LOGGER.info("Round Coin: " + roundState.getRoundCoin());
 						LOGGER.info("Round Hit Rate: " + roundState.getRoundHitRate());
 						LOGGER.info("Round Time: " + roundState.getRoundTime());
@@ -244,7 +245,8 @@ public final class Core {
 								gameState.getCoin() + roundState.getRoundCoin(),
 								gameState.getGem(),
 								gameState.getHitCount(),
-								gameState.getCoinItemsCollected());
+								gameState.getCoinItemsCollected(),
+								gameState.getTotalDistance());
 						LOGGER.info("Round Coin: " + roundState.getRoundCoin());
 						LOGGER.info("Round Hit Rate: " + roundState.getRoundHitRate());
 						LOGGER.info("Round Time: " + roundState.getRoundTime());

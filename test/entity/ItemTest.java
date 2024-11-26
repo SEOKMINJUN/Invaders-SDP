@@ -21,7 +21,7 @@ class ItemTest {
         item.spriteType = DrawManager.SpriteType.ItemBomb;
 
         GameState gameState = new GameState(1, 0
-                , Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0);
+                , Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         GameScreen gameScreen = new GameScreen(gameState, Globals.SETTINGS_LEVEL_1, false, 400, 500, 60);
 
         Ship ship = new Ship(x,y+50, Color.gray);
@@ -40,7 +40,7 @@ class ItemTest {
         item.spriteType = DrawManager.SpriteType.ItemHeart;
 
         GameState gameState = new GameState(1, 0
-                , Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0);
+                , Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         GameScreen gameScreen = new GameScreen(gameState, Globals.SETTINGS_LEVEL_1, false, 400, 500, 60);
 
         Ship ship = new Ship(x,y+50, Color.green);
@@ -63,7 +63,7 @@ class ItemTest {
         item.spriteType = DrawManager.SpriteType.ItemBarrier;
 
         GameState gameState = new GameState(1, 0
-                , Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0);
+                , Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         GameScreen gameScreen = new GameScreen(gameState, Globals.SETTINGS_LEVEL_1, false, 400, 500, 60);
 
         Ship ship = new Ship(x,y+50, Color.red);
@@ -83,7 +83,7 @@ class ItemTest {
         item.spriteType = DrawManager.SpriteType.ItemFeverTime;
 
         GameState gameState = new GameState(1, 0
-                , Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0);
+                , Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         GameScreen gameScreen = new GameScreen(gameState, Globals.SETTINGS_LEVEL_1, false, 400, 500, 60);
 
         Ship ship = new Ship(x,y+50, Color.yellow);

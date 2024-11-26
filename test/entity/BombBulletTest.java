@@ -33,7 +33,7 @@ class BombBulletTest {
         BombBullet bombBullet = new BombBullet(x, y, -3);
 
         GameState gamestate = new GameState(1, 0
-                , Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0);
+                , Globals.MAX_LIVES, Globals.MAX_LIVES, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         GameScreen gameScreen = new GameScreen(gamestate, Globals.SETTINGS_LEVEL_1, false, 400, 500, 60);
 
         EnemyShip enemyShip;
