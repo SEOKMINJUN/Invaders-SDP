@@ -71,6 +71,7 @@ public class ScoreScreen extends Screen {
 
 	private boolean isGameClear; // CtrlS
 
+	private int totalDistance;
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -102,6 +103,7 @@ public class ScoreScreen extends Screen {
 		this.level = gameState.getLevel(); //Team Clove
 		this.statistics = new Statistics(); //Team Clove
 		this.isGameClear = this.health > 0 && this.level > 7; // CtrlS
+		this.totalDistance = gameState.getTotalDistance();
 
 		try {
 			this.highScores = Globals.getFileManager().loadHighScores();
@@ -295,7 +297,7 @@ public class ScoreScreen extends Screen {
 		drawManager.drawGameEnd(this, this.inputDelay.checkFinished(), this.isGameClear); // CtrlS
 		drawManager.drawResults(this, this.score, this.health,
 				this.shipsDestroyed, (float) this.gameState.getHitCount()
-						/ this.bulletsShot, this.gameState);
+						/ this.bulletsShot, this.gameState, this.totalDistance);
 
 		if (this.isNewRecord)
 			drawManager.drawNameInput(this, this.name, this.nameCharSelected);

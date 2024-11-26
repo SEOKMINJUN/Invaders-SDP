@@ -35,6 +35,8 @@ public class GameState {
 	private int hitCount;
 	/** Current coinItemsCollected */
 	private int coinItemsCollected;
+	/** Player traveled total distance */
+	private int totalDistance;
 
 	/**
 	 * Constructor.
@@ -65,7 +67,7 @@ public class GameState {
 	 */
 	public GameState(final int level, final int score,
 					 final int livesRemaining, final int livestwoRemaining, final int bulletsShot,
-					 final int shipsDestroyed, final float accuracy, final int playTime, final int coin, final int gem, final int hitCount, final int coinItemsCollected) {
+					 final int shipsDestroyed, final float accuracy, final int playTime, final int coin, final int gem, final int hitCount, final int coinItemsCollected, final int playerDistance) {
 		this.level = level;
 		this.score = score;
 		this.livesRemaining = livesRemaining;
@@ -78,6 +80,7 @@ public class GameState {
 		this.gem = gem; // Team-Ctrl-S(Currency)
 		this.hitCount = hitCount; // Ctrl-S
 		this.coinItemsCollected = coinItemsCollected; // Ctrl-S
+		this.totalDistance += playerDistance;
 	}
 
 	/**
@@ -161,4 +164,6 @@ public class GameState {
 	 */
 	// Team-Ctrl-S(Currency)
 	public int getCoinItemsCollected() { return coinItemsCollected; }
+
+	public final int getTotalDistance() { return totalDistance; }
 }
