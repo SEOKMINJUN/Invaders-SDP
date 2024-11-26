@@ -89,9 +89,9 @@ public class Achievement extends AchievementBase{
                 result = currentValue >= requiredValue;
         }
         if (result && !completed) {
-            completed = true;
+            Globals.getAchievementManager().completeAchievement(this);
             Globals.getLogger().info("Achievement unlocked: " + getAchievementType() + ", Required: " + requiredValue + ", Current: " + currentValue);
-
+            AchievementHud.achieve(this.getName());
             try {
                 int achievementIndex = CollectionManager.getInstance()
                         .getAchievementIndex(getAchievementType(), requiredValue);

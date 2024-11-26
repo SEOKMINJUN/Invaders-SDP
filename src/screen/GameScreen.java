@@ -384,6 +384,8 @@ public class GameScreen extends Screen {
 		DrawManagerImpl.drawRect(0, 0, this.width, Globals.GAME_SCREEN_SEPARATION_LINE_HEIGHT, Color.BLACK);
 		DrawManagerImpl.drawRect(0, this.height - 70, this.width, 70, Color.BLACK); // by Saeum Jung - TeamHUD
 
+		super.draw();
+
 		DrawManagerImpl.drawSpeed(this, ship1.getSpeed()); // Ko jesung / HUD team
 		DrawManagerImpl.drawSeparatorLine(this,  this.height-65); // Ko jesung / HUD team
 
@@ -433,7 +435,7 @@ public class GameScreen extends Screen {
 			playTime = (int) ((System.currentTimeMillis() - playStartTime) / 1000) + playTimePre;
 		}
 
-		super.draw();
+		super.drawPost();
 	}
 
 
