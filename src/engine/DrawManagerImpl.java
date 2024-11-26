@@ -241,7 +241,7 @@ public class DrawManagerImpl extends DrawManager {
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
 
-        String playerDistanceString = "Distance: " + (int)(playerDistance - 689) + " km";
+        String playerDistanceString = "Distance: " + (int)(playerDistance) + " M";
         int xPosition = screen.getWidth() - fontRegularMetrics.stringWidth(playerDistanceString) - 20;
         int yPosition = screen.getHeight() - 25;
 
