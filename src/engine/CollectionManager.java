@@ -97,6 +97,12 @@ public class CollectionManager {
     };
     @Getter
     private Object[][] AchievementSet_6 = {
+            {AchievementList.getACHIEVEMENT_DISTANCE_5().getName(), AchievementList.getACHIEVEMENT_DISTANCE_5().getDescription(), XPosition, 180},
+            {AchievementList.getACHIEVEMENT_DISTANCE_20().getName(), AchievementList.getACHIEVEMENT_DISTANCE_20().getDescription(), XPosition, 380},
+            {AchievementList.getACHIEVEMENT_DISTANCE_42().getName(), AchievementList.getACHIEVEMENT_DISTANCE_42().getDescription(), XPosition, 580},
+    };
+    @Getter
+    private Object[][] AchievementSet_7 = {
             {AchievementList.getACHIEVEMENT_STAGE_MAX().getName(), AchievementList.getACHIEVEMENT_STAGE_MAX().getDescription(), XPosition, 180},
             {AchievementList.getACHIEVEMENT_ALL().getName(), AchievementList.getACHIEVEMENT_ALL().getDescription(), XPosition, 450},
     };
@@ -112,7 +118,7 @@ public class CollectionManager {
     private int[] enemyTypes = new int[8];
     /** Achievement Array*/
     @Getter
-    public static int[] achievementTypes = new int[19];
+    public static int[] achievementTypes = new int[20];
 
     /** Statistics type variables that contain collections*/
     @Getter

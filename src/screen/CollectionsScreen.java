@@ -61,13 +61,13 @@ public class CollectionsScreen extends Screen {
             this.isRunning = false;
         if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
                 && this.inputDelay.checkFinished() && !checkArrow) {
-            CollectionsScreenCode = (CollectionsScreenCode + 7) % 8;
+            CollectionsScreenCode = (CollectionsScreenCode + 8) % 9;
             //System.out.println("Activate LEFT" + CollectionsScreenCode);
             checkArrow = true;
         }
         else if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
                 && this.inputDelay.checkFinished() && !checkArrow) {
-            CollectionsScreenCode = (CollectionsScreenCode + 1) % 8;
+            CollectionsScreenCode = (CollectionsScreenCode + 1) % 9;
             //System.out.println("Activate RIGHT" + CollectionsScreenCode);
             checkArrow = true;
         }
