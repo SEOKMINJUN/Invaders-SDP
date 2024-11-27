@@ -43,7 +43,7 @@ public class Item extends Entity {
         loadProbability(); //Load only once
         double PierceP = pierce_probability;
         double HearthP = hearth_probability;
-        double bombP = 100.0;//bomb_probability;
+        double bombP = bomb_probability;
         double ShieldP = shield_probability;
         double FeverP = feverTime_probability;
         double SpeedUpP = speedUp_probability;
