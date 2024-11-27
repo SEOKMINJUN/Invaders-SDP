@@ -354,6 +354,16 @@ public class GameScreen extends Screen {
 		if (getRemainingEnemies() == 0 && waveCounter < this.gameSettings.getWavesNumber()) {
 
 			waveCounter++;
+			Entity entity = null;
+			while((entity = (Entity)findEntityByClassname(entity, "Bullet")) != null){
+				entity.remove();
+			}
+			while((entity = (Entity)findEntityByClassname(entity, "Obstacle")) != null){
+				entity.remove();
+			}
+			while((entity = (Entity)findEntityByClassname(entity, "Item")) != null){
+				entity.remove();
+			}
 			this.initialize();
 
 		}
@@ -457,29 +467,7 @@ public class GameScreen extends Screen {
 		DrawManagerImpl.drawPlayerDistance(this, getPlayerDistance());
 
 
-		// Countdown to game start.
-		if (!this.inputDelay.checkFinished() && !isPaused) {
-			int countdown = (int) ((Globals.GAME_SCREEN_INPUT_DELAY
-			- (System.currentTimeMillis()
-			- this.gameStartTime)) / 1000);
 
-			/**
-			* Wave counter condition added by the Level Design team
-			*
-			* Display the wave number instead of the level number
-			* **/
-			if (waveCounter != 1) {
-				drawManager.drawWave(this, waveCounter, countdown);
-			} else {
-				drawManager.drawCountDown(this, this.level, countdown,
-				this.bonusLife);
-			}
-
-			drawManager.drawHorizontalLine(this, this.height / 2 - this.height
-					/ 12);
-			drawManager.drawHorizontalLine(this, this.height / 2 + this.height
-					/ 12);
-		}
 
 		// Soomin Lee / TeamHUD
 		if (this.inputDelay.checkFinished()) {
@@ -502,6 +490,30 @@ public class GameScreen extends Screen {
 		}
 		else{
 			super.draw();
+		}
+
+		// Countdown to game start.
+		if (!this.inputDelay.checkFinished() && !isPaused) {
+			int countdown = (int) ((Globals.GAME_SCREEN_INPUT_DELAY
+					- (System.currentTimeMillis()
+					- this.gameStartTime)) / 1000);
+
+			/**
+			 * Wave counter condition added by the Level Design team
+			 *
+			 * Display the wave number instead of the level number
+			 * **/
+			if (waveCounter != 1) {
+				drawManager.drawWave(this, waveCounter, countdown);
+			} else {
+				drawManager.drawCountDown(this, this.level, countdown,
+						this.bonusLife);
+			}
+
+			drawManager.drawHorizontalLine(this, this.height / 2 - this.height
+					/ 12);
+			drawManager.drawHorizontalLine(this, this.height / 2 + this.height
+					/ 12);
 		}
 	}
 
