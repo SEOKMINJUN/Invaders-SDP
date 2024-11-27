@@ -144,6 +144,36 @@ public class DrawManagerImpl extends DrawManager {
         backBufferGraphics.drawString(remainingEnemiesString, x, y);
     } // by SeungYun
 
+    public static void drawGoToTitleWarning(final Screen screen) {
+        int width = screen.getWidth() / 2 + 20;
+        int height = screen.getHeight() / 3 + 20;
+        int rectX = (screen.getWidth() - width) / 2;
+        int rectY = (screen.getHeight() - height) / 2;
+
+        String warningString1 = "Current progress will be lost.";
+        String warningString2 = "Are you sure?";
+        int fontWidth1 = fontRegularMetrics.stringWidth(warningString1);
+        int fontWidth2 = fontRegularMetrics.stringWidth(warningString2);
+        int textX1 = rectX + (width - fontWidth1) / 2;
+        int textX2 = rectX + (width - fontWidth2) / 2;
+        int text1Y = rectY + height / 8 + fontRegularMetrics.getAscent();
+        int text2Y = rectY + height / 4 + fontRegularMetrics.getAscent();
+
+        backBufferGraphics.setColor(Color.black);
+        backBufferGraphics.fillRect(rectX, rectY, width, height);
+
+        backBufferGraphics.setColor(Color.WHITE);
+        backBufferGraphics.drawRect(rectX, rectY, width, height);
+
+        backBufferGraphics.setColor(Color.white);
+        backBufferGraphics.setFont(fontRegular);
+
+        backBufferGraphics.setColor(Color.white);
+        backBufferGraphics.drawString(warningString1, textX1, text1Y);
+        backBufferGraphics.drawString(warningString2, textX2, text2Y);
+
+    }
+
 
 
     /**
@@ -211,11 +241,31 @@ public class DrawManagerImpl extends DrawManager {
         backBufferGraphics.setFont(fontRegular);
         backBufferGraphics.setColor(Color.WHITE);
 
-        String playerDistanceString = "Distance: " + (int)(playerDistance - 689) + " km";
+        String playerDistanceString = "Distance: " + (int)(playerDistance) + " M";
         int xPosition = screen.getWidth() - fontRegularMetrics.stringWidth(playerDistanceString) - 20;
         int yPosition = screen.getHeight() - 25;
 
         backBufferGraphics.drawString(playerDistanceString, xPosition, yPosition);
+    }
+
+    public static void drawCooldownCircle(Screen screen, final int centerX, final int centerY, float percentage, int remainingSeconds) {
+        int radius = 20;
+        int angle = (int) (360 * percentage);
+
+        backBufferGraphics.setColor(Color.GREEN);
+        backBufferGraphics.fillArc(centerX - radius, 0, 2 * radius, 2 * radius, 90, -360);
+        backBufferGraphics.setColor(Color.BLACK);
+        backBufferGraphics.fillArc(centerX-radius, 0, 2 * radius, 2 * radius, 90, -angle);
+        backBufferGraphics.setColor(Color.WHITE);
+        backBufferGraphics.drawArc(centerX - radius, 0, 2 * radius, 2 * radius, 90, -360);
+        backBufferGraphics.setFont(fontRegular);
+        String timeText = String.valueOf(remainingSeconds/1000);
+        backBufferGraphics.setFont(fontRegular);
+        int textWidth = fontRegularMetrics.stringWidth(timeText);
+        backBufferGraphics.drawString(timeText, centerX - textWidth / 2, 25);
+
+        String cooldownLabel = "Cooldown: ";
+        backBufferGraphics.drawString(cooldownLabel,centerX - radius - fontRegularMetrics.stringWidth(cooldownLabel) - 10, 25);
     }
 
     /**

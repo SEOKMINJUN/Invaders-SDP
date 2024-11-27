@@ -45,7 +45,8 @@ public class GameScreen extends Screen {
 	private int playerDistance = 0;
 	private int lastPlaterX;
 	private int lastPlaterY;
-	private int totalDistance = 0;
+	@Getter
+	public int totalDistance;
     @Getter
     private FeverTimeItem feverTimeItem;
 	/** Speed item */
@@ -82,8 +83,6 @@ public class GameScreen extends Screen {
     public boolean backgroundMoveLeft = false;
 	public boolean backgroundMoveRight = false;
 
-
-
 	// --- OBSTACLES
 	private Cooldown obstacleSpawnCooldown; //control obstacle spawn speed
 
@@ -112,6 +111,12 @@ public class GameScreen extends Screen {
 	/** CtrlS: Count the number of coin collected in game */
     public int coinItemsCollected;
 	private DrawManagerImpl drawManagerImpl;
+
+	public static boolean isPaused = false;
+	public static boolean goToTitle = false;
+	public boolean isDrawWarning = false;
+	private int option;
+	private int currentTime;
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -148,6 +153,8 @@ public class GameScreen extends Screen {
 		this.hitCount = gameState.getHitCount(); //CtrlS
 		this.fire_id = 0; //CtrlS - fire_id means the id of bullet that shoot already. It starts from 0.
 		this.processedFireBullet = new HashSet<>(); //CtrlS - initialized the processedFireBullet
+		goToTitle = false;
+		isPaused = false;
 
 		/**
 		* Added by the Level Design team
@@ -160,6 +167,7 @@ public class GameScreen extends Screen {
 		this.playTime = gameState.getTime();
 		this.statistics = new Statistics(); //Team Clove
 		this.coinItemsCollected = gameState.getCoinItemsCollected(); // CtrlS
+		this.totalDistance = gameState.getTotalDistance();
 
 		this.ship1 = new Ship(this.width / 2, this.height - 30, Color.RED); // add by team HUD
 		this.ship1.setKEY_LEFT(KeyEvent.VK_LEFT);
@@ -189,6 +197,7 @@ public class GameScreen extends Screen {
 		/** initialize background **/
 		drawManager.loadBackground(this.level);
 
+		ship1.setPosition(this.width / 2, this.height - 80);
 		this.lastPlaterX = this.ship1.getX();
 		this.lastPlaterY = this.ship1.getY();
 		this.playerDistance = 0;
@@ -239,9 +248,45 @@ public class GameScreen extends Screen {
 		boolean gameProgress = inputDelay.checkFinished() && !isLevelFinished();
 		ship1.setCanMove(gameProgress && ship1.getHealth() > 0 && ship1.getDestructionCooldown().checkFinished());
 
-		super.update();
+		if(inputManager.isKeyJustPressed(KeyEvent.VK_ESCAPE)){
+			option = 1;
+			isPaused = !isPaused;
+		}
+		if(!isPaused){
+			super.update();
+		}
+		if(isPaused){
+			option = (option <= 0) ? 2 : (option >= 3) ? 1 : option;
 
-		if (gameProgress) {
+			if(inputManager.isKeyJustPressed(KeyEvent.VK_DOWN) && !isDrawWarning ||
+				inputManager.isKeyJustPressed(KeyEvent.VK_RIGHT) && isDrawWarning){
+				option += 1;
+			}
+			else if(inputManager.isKeyJustPressed(KeyEvent.VK_UP) && !isDrawWarning ||
+					inputManager.isKeyJustPressed(KeyEvent.VK_LEFT) && isDrawWarning){
+				option -= 1;
+			}
+			if(!isDrawWarning){
+				if(option == 1 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE)){
+					isPaused = !isPaused;
+				}
+				else if(option == 2 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE)){
+					isDrawWarning = true;
+				}
+			}
+			else{
+				if(option == 2 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE) && isDrawWarning){
+					goToTitle = true;
+					this.returnCode = 1;
+					this.isRunning = false;
+				}
+				else if(option == 1 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE) && isDrawWarning){
+					isDrawWarning = false;
+				}
+			}
+		}
+
+		if (gameProgress && !isPaused) {
 			// --- OBSTACLES
 			if (this.obstacleSpawnCooldown.checkFinished()) {
 				// Adjust spawn amount based on the level
@@ -283,7 +328,6 @@ public class GameScreen extends Screen {
 			this.enemyShipFormation.update();
 			this.enemyShipFormation.shoot();
 			updatePlayerDistance();
-			drawManagerImpl.drawPlayerDistance(this, getPlayerDistance());
 
 			int currentRemainingEnemies = getRemainingEnemies();
 			int destroyedEnemies = previousRemainingEnemies - currentRemainingEnemies;
@@ -335,7 +379,6 @@ public class GameScreen extends Screen {
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
-
 			this.isRunning = false;
 		}
 		return true;
@@ -350,7 +393,8 @@ public class GameScreen extends Screen {
 		 * **/
 		if ((getRemainingEnemies() == 0 || ship1.getHealth() == 0)
 				&& !this.levelFinished
-				&& waveCounter == this.gameSettings.getWavesNumber()) {
+				&& waveCounter == this.gameSettings.getWavesNumber()
+				&& !goToTitle) {
 			totalDistance += playerDistance;
 			playerDistance = 0;
 			this.levelFinished = true;
@@ -362,9 +406,14 @@ public class GameScreen extends Screen {
 		int currentX = this.ship1.getPositionX();
 		int currentY = this.ship1.getPositionY();
 
+		if (ship1.getActiveDoubleTab()) {
+			lastPlaterX = currentX;
+			lastPlaterY = currentY;
+			ship1.setActiveDoubleTab(false);
+			return;
+		}
 		double distance = Math.sqrt(Math.pow(currentX - lastPlaterX, 2) + Math.pow(currentY - lastPlaterY, 2));
-		playerDistance += distance;
-
+		playerDistance += (int) distance;
 		lastPlaterX = currentX;
 		lastPlaterY = currentY;
 	}
@@ -375,7 +424,10 @@ public class GameScreen extends Screen {
 	 * Draws the elements associated with the screen.
 	 */
 	public void draw() {
-
+		float cooldownPercentage = ship1.getDoubleTapCooldown().getTotalDuration() > 0
+				? (float) ship1.getDoubleTapCooldown().getRemainingTime() / ship1.getDoubleTapCooldown().getTotalDuration()
+				: 0;
+		int remainingSeconds = (int)Math.ceil((float) ship1.getDoubleTapCooldown().getRemainingTime());
 		/** ### TEAM INTERNATIONAL ### */
 		drawManager.drawBackground(backgroundMoveRight, backgroundMoveLeft);
 		this.backgroundMoveRight = false;
@@ -403,11 +455,12 @@ public class GameScreen extends Screen {
 		DrawManagerImpl.drawTime(this, this.playTime);
 		// Call the method in DrawManagerImpl - Soomin Lee / TeamHUD
 		drawManager.drawItem(this); // HUD team - Jo Minseo
-
+		DrawManagerImpl.drawCooldownCircle(this, this.getWidth() - 30, 60, cooldownPercentage, remainingSeconds);
+		DrawManagerImpl.drawPlayerDistance(this, getPlayerDistance());
 
 
 		// Countdown to game start.
-		if (!this.inputDelay.checkFinished()) {
+		if (!this.inputDelay.checkFinished() && !isPaused) {
 			int countdown = (int) ((Globals.GAME_SCREEN_INPUT_DELAY
 			- (System.currentTimeMillis()
 			- this.gameStartTime)) / 1000);
@@ -432,10 +485,26 @@ public class GameScreen extends Screen {
 
 		// Soomin Lee / TeamHUD
 		if (this.inputDelay.checkFinished()) {
-			playTime = (int) ((System.currentTimeMillis() - playStartTime) / 1000) + playTimePre;
+			if (!isPaused) {
+				playTime = (int) ((System.currentTimeMillis() - playStartTime) / 1000) + playTimePre;
+				currentTime = playTime;
+			} else {
+				playStartTime = System.currentTimeMillis() - (currentTime * 1000L);
+			}
 		}
 
-		super.drawPost();
+		if(isPaused){
+			if(isDrawWarning){
+				DrawManagerImpl.drawGoToTitleWarning(this);
+				drawManager.drawCheckForSure(this, option);
+			}
+			else{
+				drawManager.drawPauseMenu(this, option, isDrawWarning);
+			}
+		}
+		else{
+			super.drawPost();
+		}
 	}
 
 
@@ -472,7 +541,7 @@ public class GameScreen extends Screen {
 	 */
 	public GameState getGameState() {
 		return new GameState(this.level, this.score, ship1.getHealth(), 0,
-				this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
+				this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected, this.totalDistance); // Team-Ctrl-S(Currency)
 	}
 
     /**
@@ -490,6 +559,8 @@ public class GameScreen extends Screen {
 		}
 		return remainingEnemies;
 	} // by HUD team SeungYun
+
+	public void addDistance(int playerDistance) { this.totalDistance += playerDistance; }
 
 	public void addScore(int score) { this.score += score; }
 

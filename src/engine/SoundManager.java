@@ -81,7 +81,9 @@ public class SoundManager {
         try {
             if (!BGMs.containsKey(name)) {
                 logger.info(filePath +" is loading");
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(SoundManager.class.getClassLoader().getResource(filePath));
+                InputStream stream = SoundManager.class.getClassLoader().getResourceAsStream(filePath);
+                BufferedInputStream bis = new BufferedInputStream(stream); // It must need for supporting mark()
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(bis);
                 AudioFormat baseFormat = audioStream.getFormat();
                 AudioFormat targetFormat = new AudioFormat(
                         AudioFormat.Encoding.PCM_SIGNED,
@@ -139,7 +141,9 @@ public class SoundManager {
             if (EffectSounds.containsKey(name)) {
                 String[] tmp = EffectSounds.get(name);
                 logger.finest(tmp[0] + " is loading");
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(SoundManager.class.getClassLoader().getResource(tmp[0]));
+                InputStream stream = SoundManager.class.getClassLoader().getResourceAsStream(tmp[0]);
+                BufferedInputStream bis = new BufferedInputStream(stream); // It must need for supporting mark()
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(bis);
                 AudioFormat baseFormat = audioStream.getFormat();
                 AudioFormat targetFormat = new AudioFormat(
                         AudioFormat.Encoding.PCM_SIGNED,

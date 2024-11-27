@@ -24,7 +24,7 @@ public class Cooldown {
 	 * @param milliseconds
 	 *            Time until cooldown period is finished.
 	 */
-	protected Cooldown(final int milliseconds) {
+	public Cooldown(final int milliseconds) {
 		this.milliseconds = milliseconds;
 		this.variance = 0;
 		this.duration = milliseconds;
@@ -45,6 +45,16 @@ public class Cooldown {
 		this.variance = variance;
 		this.time = 0;
 	}
+
+	public int getRemainingTime() {
+		long currentTime = System.currentTimeMillis();
+		long elapsedTime = currentTime - this.time;
+
+		if (elapsedTime >= this.duration) { return 0; }
+		return (int) (this.duration - elapsedTime);
+	}
+
+	public int getTotalDuration() { return this.duration; }
 
 	/**
 	 * Checks if the cooldown is finished.

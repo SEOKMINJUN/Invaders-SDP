@@ -656,6 +656,9 @@ public final class FileManager {
 			if(properties.getProperty("highestLevel") == null){
 				logger.warning("Failed to load highestLevel." + properties.toString());
 			}
+			if(properties.getProperty("accuracy") == null){
+				logger.warning("Failed to load accuracy." + properties.toString());
+			}
 			//logger.info("Loading Player Statistic.");
 
 			int highestLevel = Integer.parseInt(properties.getProperty("highestLevel"));

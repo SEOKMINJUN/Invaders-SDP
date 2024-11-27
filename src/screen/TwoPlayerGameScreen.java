@@ -45,7 +45,7 @@ public class TwoPlayerGameScreen extends GameScreen {
     @Override
     public GameState getGameState() {
         return new GameState(this.getLevel(), this.score, getShip1().getHealth(), ship2.getHealth(),
-                this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected); // Team-Ctrl-S(Currency)
+                this.bulletsShot, this.shipsDestroyed, this.accuracy, this.playTime, this.coin, this.gem, this.hitCount, this.coinItemsCollected, this.totalDistance); // Team-Ctrl-S(Currency)
     }
 
     @Override
