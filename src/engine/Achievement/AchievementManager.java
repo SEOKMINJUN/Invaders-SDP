@@ -5,6 +5,7 @@ import engine.Globals;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class AchievementManager {
     /*
@@ -29,8 +30,9 @@ public class AchievementManager {
     }
 
     public void checkAchievement(AchievementType achievementType, int value, int... var) {
-        for (Achievement achievement : achievementMap.get(achievementType)) {
-            if(achievement.checkValue(value, var)){
+        List<Achievement> achievements = new ArrayList<>(achievementMap.get(achievementType)); // 복사본 생성
+        for (Achievement achievement : achievements) {
+            if (!achievement.isCompleted() && achievement.checkValue(value, var)) {
                 completeAchievement(achievement);
             }
         }

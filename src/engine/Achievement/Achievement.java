@@ -1,6 +1,11 @@
 package engine.Achievement;
 
+import engine.CollectionManager;
+import engine.Globals;
+import engine.Statistics;
 import lombok.*;
+
+import java.io.IOException;
 
 @Getter @Setter
 class AchievementBase {
@@ -53,16 +58,60 @@ public class Achievement extends AchievementBase{
     }
 
     public void logCompleteAchievement() {
-        this.setCompleted(true);
-        System.out.println("Achievement completed: " + getName());
+        System.out.println("Achievements completed: " + getName());
     }
 
     public boolean checkValue(int currentValue, int requiredValue, int[] var) {
-        //Can be extended by AchievementType
-        //TODO : Need check on gamescreen for FASTKILL
-        if(getAchievementType() == AchievementType.LIVES) return currentValue == requiredValue;
-        if(getAchievementType() == AchievementType.ALL) return AchievementManager.getInstance().isAllAchievementCompleted();
-        return currentValue <= requiredValue;
+        boolean result = false;
+        switch (getAchievementType()) {
+            case KILLS:
+                result = Statistics.getInstance().getTotalShipsDestroyed() >= requiredValue;
+                break;
+            case ACCURACY:
+                result = Statistics.getInstance().getAccuracy() >= requiredValue;
+                break;
+            case DISTANCE:
+                result = Statistics.getInstance().getTotalPlaytime() / 1000 >= requiredValue;
+                break;
+            case STAGE:
+                result = Statistics.getInstance().getHighestLevel() >= requiredValue;
+                break;
+            case KILLSTREAKS:
+                result = Statistics.getInstance().getMaxShipsDestructionStreak() >= requiredValue;
+                break;
+            case TRIALS:
+                result = Statistics.getInstance().getPlayedGameNumber() >= requiredValue;
+                break;
+            case ALL:
+                result = AchievementManager.getInstance().isAllAchievementCompleted();
+                break;
+            default:
+                result = currentValue >= requiredValue;
+        }
+        if (result && !completed) {
+            Globals.getAchievementManager().completeAchievement(this);
+            Globals.getLogger().info("Achievement unlocked: " + getAchievementType() + ", Required: " + requiredValue + ", Current: " + currentValue);
+            AchievementHud.achieve(this.getName());
+            try {
+                int achievementIndex = CollectionManager.getInstance()
+                        .getAchievementIndex(getAchievementType(), requiredValue);
+
+                if (achievementIndex >= 0) {
+                    Statistics.getInstance().updateAchievementsArray(achievementIndex);
+                    CollectionManager.getInstance().AddCollectionAchievementTypes(achievementIndex);
+                } else {
+                    Globals.getLogger().warning("Achievement index not found for type: "
+                            + getAchievementType() + ", requiredValue: " + requiredValue);
+                }
+            } catch (IOException e) {
+                Globals.getLogger().warning("Failed to update achievement array: " + e.getMessage());
+            }
+        }
+        return result;
+
+        //if(getAchievementType() == AchievementType.LIVES) return currentValue == requiredValue;
+        //if(getAchievementType() == AchievementType.ALL) return AchievementManager.getInstance().isAllAchievementCompleted();
+        //return currentValue <= requiredValue;
     }
 
     public boolean checkValue(int currentValue, int[] var) { return checkValue(currentValue, requiredValue, var); }

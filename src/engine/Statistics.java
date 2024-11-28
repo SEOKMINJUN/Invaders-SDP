@@ -2,6 +2,7 @@ package engine;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -12,6 +13,8 @@ import engine.Achievement.AchievementManager;
 import engine.Achievement.AchievementType;
 import lombok.Getter;
 import lombok.Setter;
+
+import static engine.CollectionManager.achievementTypes;
 
 public class Statistics {
 
@@ -339,6 +342,7 @@ public class Statistics {
 
     public void saveUserData(List<Statistics> stats) throws IOException {
         synchronized (statisticFileLock){
+            System.out.println("Saving user data...");
             Globals.getFileManager().saveUserData(stats);
         }
     }
@@ -386,6 +390,16 @@ public class Statistics {
                 }, 0, 1, TimeUnit.SECONDS);
                 addingShipsDestroyedStarted = true;
             }
+        }
+    }
+
+    public void updateAchievementsArray(int index) {
+        if (index >= 0 && index < achievementTypes.length) {
+            achievementTypes[index] = 1; // 상태를 완료로 표시
+            this.setAchievementsArray(achievementTypes); // 배열 갱신
+            Globals.getLogger().info("Achievement array updated at index: " + index);
+        } else {
+            Globals.getLogger().warning("Invalid achievement index: " + index);
         }
     }
 

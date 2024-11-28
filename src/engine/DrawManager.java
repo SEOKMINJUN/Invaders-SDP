@@ -652,7 +652,8 @@ public class DrawManager {
 								"<-        Achievement Types and Cleared 3        ->",
 								"<-        Achievement Types and Cleared 4        ->",
 								"<-        Achievement Types and Cleared 5        ->",
-								"<-        Achievement Types and Cleared 6        ->",} ;
+								"<-        Achievement Types and Cleared 6        ->",
+								"<-        Achievement Types and Cleared 7        ->",} ;
 		String instructionsString = "Press Space to return";
 
 		backBufferGraphics.setColor(Color.GREEN);
@@ -843,7 +844,7 @@ public class DrawManager {
 				}
 			}
 		}
-		else if(CollectionsScreenCode >= 2 && CollectionsScreenCode <= 7){
+		else if(CollectionsScreenCode >= 2 && CollectionsScreenCode <= 8){
 			Object[][] AchievementSet = switch (CollectionsScreenCode) {
                 case 2 -> Globals.getCollectionManager().getAchievementSet_1();
                 case 3 -> Globals.getCollectionManager().getAchievementSet_2();
@@ -851,6 +852,7 @@ public class DrawManager {
                 case 5 -> Globals.getCollectionManager().getAchievementSet_4();
                 case 6 -> Globals.getCollectionManager().getAchievementSet_5();
                 case 7 -> Globals.getCollectionManager().getAchievementSet_6();
+				case 8 -> Globals.getCollectionManager().getAchievementSet_7();
                 default -> null;
             };
 			int startIndex = switch (CollectionsScreenCode) {
