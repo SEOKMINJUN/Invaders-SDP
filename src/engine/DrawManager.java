@@ -370,8 +370,18 @@ public class DrawManager {
 	 *
 	 * @param screen Screen to draw on.
 	 * @param option Option selected.
+	 *
+	 *  option case :
+	 *               0: exit
+	 *               1:
+	 *               2: player mode(1 or 2)
+	 *               3: highscore screen
+	 *               4: merchant
+	 *               5: recentscore screen
+	 *               6: collections
+	 *
 	 */
-	public void drawMenu(final Screen screen, final int option, final int option2, final int option3) {
+	public void drawMenu(final Screen screen, final int option, final int option2, final int option3, final int scoreOption) {
 		String onePlayerModeString = "1 player mode";
 		String twoPlayerModeString = "2 player mode";
 		String mode = onePlayerModeString;
@@ -386,6 +396,7 @@ public class DrawManager {
 		String attackSpeedString = String.format("attack speed up"); // Starter
 		String coinGainString = String.format("coin gain up"); // Starter
 		String merchantState = merchant;
+		String scoreString = "";
 
         AddSign addSign = new AddSign();
 
@@ -403,11 +414,17 @@ public class DrawManager {
 				/ 4 * 2); // adjusted Height
 
 		// High scores (Starter)
-		if (option == 3)
+		if (option == 3 && scoreOption == 0)
+			backBufferGraphics.setColor(Color.GREEN);
+		else if(option == 3 && scoreOption == 1)
 			backBufferGraphics.setColor(Color.GREEN);
 		else
 			backBufferGraphics.setColor(Color.WHITE);
-		drawCenteredRegularString(screen, highScoresString, screen.getHeight()
+		if (scoreOption == 0) {scoreString = highScoresString;}
+		else if (scoreOption == 1) {scoreString = RecentRecord;}
+
+		if (option == 3) {scoreString = "<- " + scoreString + " ->";}
+		drawCenteredRegularString(screen, scoreString, screen.getHeight()
 				/ 4 * 2 + fontRegularMetrics.getHeight() * 2); // adjusted Height
 
 		if (option3 == 0) {merchantState = merchant;}
@@ -444,19 +461,19 @@ public class DrawManager {
 				/ 4 * 2 + fontRegularMetrics.getHeight() * 6 - 12);*/
 
         // Record scores (Team Clove)
-        if (option == 5)
-            backBufferGraphics.setColor(Color.GREEN);
-        else
-            backBufferGraphics.setColor(Color.WHITE);
-        drawCenteredRegularString(screen, RecentRecord, screen.getHeight()
-                / 4 * 2 + fontRegularMetrics.getHeight() * 6); // adjusted Height
+//        if (option == 5)
+//            backBufferGraphics.setColor(Color.GREEN);
+//        else
+//            backBufferGraphics.setColor(Color.WHITE);
+//        drawCenteredRegularString(screen, RecentRecord, screen.getHeight()
+//                / 4 * 2 + fontRegularMetrics.getHeight() * 6); // adjusted Height
 		//Collections
-		if (option == 6)
+		if (option == 5)
 			backBufferGraphics.setColor(Color.GREEN);
 		else
 			backBufferGraphics.setColor(Color.WHITE);
 		drawCenteredRegularString(screen, Collections, screen.getHeight()
-				/ 4 * 2 + fontRegularMetrics.getHeight() * 8);
+				/ 4 * 2 + fontRegularMetrics.getHeight() * 6);
 
         // Exit (Starter)
 		if (option == 0)
