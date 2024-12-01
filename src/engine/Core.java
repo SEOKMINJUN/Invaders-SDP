@@ -95,6 +95,7 @@ public final class Core {
 		RoundState roundState;
 
 		int returnCode = 1;
+		int scoreOption = -1;
 		do {
 			// Add playtime parameter - Soomin Lee / TeamHUD
 			// Add hitCount parameter - Ctrl S
@@ -108,6 +109,7 @@ public final class Core {
 				LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
 						+ " title screen at " + Globals.FPS + " fps.");
 				returnCode = frame.setScreen(currentScreen);
+				scoreOption = ((TitleScreen)currentScreen).getScoreScreenOption();
 				LOGGER.info("Closing title screen.");
 				break;
 			case 2:
@@ -197,12 +199,20 @@ public final class Core {
 				}
 				break;
 			case 3:
-				// High scores.
-				currentScreen = new HighScoreScreen(width, height, Globals.FPS);
-				LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
-						+ " high score screen at " + Globals.FPS + " fps.");
-				returnCode = frame.setScreen(currentScreen);
-				LOGGER.info("Closing high score screen.");
+				// High scores or recent records.
+				if (scoreOption == 0) { // scoreOption이 0이면 HighScoreScreen으로 이동
+					currentScreen = new HighScoreScreen(width, height, Globals.FPS);
+					LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
+							+ " high score screen at " + Globals.FPS + " fps.");
+					returnCode = frame.setScreen(currentScreen);
+					LOGGER.info("Closing high score screen.");
+				} else if (scoreOption == 1) { // scoreOption이 1이면 RecordScreen으로 이동
+					currentScreen = new RecordScreen(width, height, Globals.FPS);
+					LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
+							+ " recent record screen at " + Globals.FPS + " fps.");
+					returnCode = frame.setScreen(currentScreen);
+					LOGGER.info("Closing recent record screen.");
+				}
 				break;
 			case 4:
 				LOGGER.info("Starting inGameBGM");
@@ -295,15 +305,15 @@ public final class Core {
 					returnCode = 1;
 				}
 				break;
-			case 5: // 7 -> 5 replaced by Starter
-				// Recent Records.
-				currentScreen = new RecordScreen(width, height, Globals.FPS);
-				LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
-						+ " recent record screen at " + Globals.FPS + " fps.");
-				returnCode = frame.setScreen(currentScreen);
-				LOGGER.info("Closing recent record screen.");
-				break;
-			case 6:
+//			case 5: // 7 -> 5 replaced by Starter
+//				// Recent Records.
+//				currentScreen = new RecordScreen(width, height, Globals.FPS);
+//				LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
+//						+ " recent record screen at " + Globals.FPS + " fps.");
+//				returnCode = frame.setScreen(currentScreen);
+//				LOGGER.info("Closing recent record screen.");
+//				break;
+			case 5:
 				currentScreen = new CollectionsScreen(width, height, Globals.FPS);
 				LOGGER.info("Starting " + Globals.WIDTH + "x" + Globals.HEIGHT
 						+ " collection screen at " + Globals.FPS + " fps.");

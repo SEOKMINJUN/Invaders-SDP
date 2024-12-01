@@ -9,6 +9,7 @@ import engine.Core;
 import engine.Globals;
 import engine.SoundManager;
 import entity.ShipUpgradeStatus;
+import lombok.Getter;
 
 /**
  * Implements the title screen.
@@ -32,6 +33,8 @@ public class TitleScreen extends Screen {
 	private int pnumSelectionCode; //produced by Starter
 	private int merchantState;
 	//inventory
+	@Getter
+    private int scoreScreenOption;
 	private ShipUpgradeStatus shipUpgradeStatus;
 
 
@@ -51,6 +54,7 @@ public class TitleScreen extends Screen {
 		// Defaults to play.
 		this.merchantState = 0;
 		this.pnumSelectionCode = 0;
+		this.scoreScreenOption = 0;
 		this.returnCode = 2;
 		this.selectionCooldown = Core.getCooldown(SELECTION_TIME);
 		this.selectionCooldown.reset();
@@ -125,6 +129,20 @@ public class TitleScreen extends Screen {
 					moveMenuRight();
 					this.selectionCooldown.reset();
 					// Sound Operator
+					SoundManager.playES("menuSelect_es");
+				}
+			}
+			if (returnCode == 3) {
+				if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
+					|| inputManager.isKeyDown(KeyEvent.VK_A)) {
+					nextScoreOption();
+					this.selectionCooldown.reset();
+					SoundManager.playES("menuSelect_es");
+				}
+				if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
+					|| inputManager.isKeyDown(KeyEvent.VK_D)) {
+					previousScoreOption();
+					this.selectionCooldown.reset();
 					SoundManager.playES("menuSelect_es");
 				}
 			}
@@ -299,7 +317,7 @@ public class TitleScreen extends Screen {
 		}
 	}
 	private void nextMenuItem() {
-		if (this.returnCode == 6) // Team Clover changed values because recordMenu added
+		if (this.returnCode == 5) // Team Clover changed values because recordMenu added
 			this.returnCode = 0; // from '2 player mode' to 'Exit' (Starter)
 		else if (this.returnCode == 0)
 			this.returnCode = 2; // from 'Exit' to 'Play' (Starter)
@@ -313,7 +331,7 @@ public class TitleScreen extends Screen {
 	private void previousMenuItem() {
 		this.merchantState =0;
 		if (this.returnCode == 0)
-			this.returnCode = 6; // from 'Exit' to '2 player mode' (Starter) // Team Clover changed values because recordMenu added
+			this.returnCode = 5; // from 'Exit' to '2 player mode' (Starter) // Team Clover changed values because recordMenu added
 		else if (this.returnCode == 2)
 			this.returnCode = 0; // from 'Play' to 'Exit' (Starter)
 		else
@@ -358,12 +376,30 @@ public class TitleScreen extends Screen {
 		}
 	}
 
-	/**
+	private void nextScoreOption() {
+		if(this.returnCode == 3) {
+			if (this.scoreScreenOption == 0)
+				this.scoreScreenOption++;
+			else
+				this.scoreScreenOption--;
+		}
+	}
+
+	private void previousScoreOption() {
+		if(this.returnCode == 3) {
+			if (this.scoreScreenOption == 0)
+				this.scoreScreenOption++;
+			else
+				this.scoreScreenOption--;
+		}
+	}
+
+    /**
 	 * Draws the elements associated with the screen.
 	 */
 	protected void draw() {
 		drawManager.drawTitle(this);
-		drawManager.drawMenu(this, this.returnCode, this.pnumSelectionCode, this.merchantState);
+		drawManager.drawMenu(this, this.returnCode, this.pnumSelectionCode, this.merchantState, this.scoreScreenOption);
 		// CtrlS
 		drawManager.drawCurrentCoin(this, coin);
 		drawManager.drawCurrentGem(this, gem);
