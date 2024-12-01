@@ -1,5 +1,6 @@
 package screen;
 
+import engine.CollectionManager;
 import engine.DrawManager;
 import engine.Globals;
 import engine.Statistics;
@@ -11,8 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CollectionsScreen extends Screen {
-    /** Current Screen Code*/
-    public static int CollectionsScreenCode;
     /** check isArrowDown*/
     private boolean checkArrow;
     /** Array List*/
@@ -37,7 +36,6 @@ public class CollectionsScreen extends Screen {
             logger.warning("Couldn't load records!");
         }
 
-        CollectionsScreenCode = 0;
         checkArrow = false;
         this.returnCode = 1;
     }
@@ -54,6 +52,7 @@ public class CollectionsScreen extends Screen {
      */
     protected final boolean update() {
         super.update();
+        int collectionsScreenCode = CollectionManager.getInstance().CollectionsScreenCode;
 
         draw();
         if (inputManager.isKeyDown(KeyEvent.VK_SPACE)
@@ -61,13 +60,13 @@ public class CollectionsScreen extends Screen {
             this.isRunning = false;
         if (inputManager.isKeyDown(KeyEvent.VK_LEFT)
                 && this.inputDelay.checkFinished() && !checkArrow) {
-            CollectionsScreenCode = (CollectionsScreenCode + 8) % 9;
+            Globals.getCollectionManager().setCollectionsScreenCode((collectionsScreenCode + 8) % 9);
             //System.out.println("Activate LEFT" + CollectionsScreenCode);
             checkArrow = true;
         }
         else if (inputManager.isKeyDown(KeyEvent.VK_RIGHT)
                 && this.inputDelay.checkFinished() && !checkArrow) {
-            CollectionsScreenCode = (CollectionsScreenCode + 1) % 9;
+            Globals.getCollectionManager().setCollectionsScreenCode((collectionsScreenCode + 1) % 9);
             //System.out.println("Activate RIGHT" + CollectionsScreenCode);
             checkArrow = true;
         }
