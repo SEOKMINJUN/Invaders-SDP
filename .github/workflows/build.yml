@@ -26,7 +26,18 @@ jobs:
     - name: Build with Gradle
       run: ./gradlew createExe
 
-    - uses: actions/upload-artifact@v4
+    - name: Upload test report artifact
+      if: failure()
+      uses: actions/upload-artifact@v4
+      id: upload_unsigned_v4
+      with:
+        name: Test-Report
+        path: build/reports/tests/test
+      continue-on-error: true
+
+    - name: Upload build artifact
+      if: success()
+      uses: actions/upload-artifact@v4
       id: upload_unsigned_v4
       with:
         name: Invaders-SDP
