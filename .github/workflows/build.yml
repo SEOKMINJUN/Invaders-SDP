@@ -29,7 +29,7 @@ jobs:
     - name: Upload test report artifact
       if: failure()
       uses: actions/upload-artifact@v4
-      id: upload_unsigned_v4
+      id: upload_report_v4
       with:
         name: Test-Report
         path: build/reports/tests/test
