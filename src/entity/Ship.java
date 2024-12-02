@@ -201,6 +201,8 @@ public class Ship extends Entity {
 	} //Edit by Enemy
 
 	public void setPosition(int x, int y) {
+		this.positionX = x;
+		this.positionY = y;
 		this.x = x;
 		this.y = y;
 	}
