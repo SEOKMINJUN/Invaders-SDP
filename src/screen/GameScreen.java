@@ -401,10 +401,10 @@ public class GameScreen extends Screen {
 		 *
 		 * Checks if the intended number of waves for this level was destroyed
 		 * **/
-		if ((getRemainingEnemies() == 0 || ship1.getHealth() == 0)
-				&& !this.levelFinished
-				&& waveCounter == this.gameSettings.getWavesNumber()
-				&& !goToTitle) {
+		boolean clearRound = getRemainingEnemies() == 0 && !this.levelFinished && waveCounter == this.gameSettings.getWavesNumber();
+		boolean shipDestroyed = ship1.isDestroyed() && !this.levelFinished;
+		boolean selectGoToTitle = goToTitle; // Must be false, when this is set to true, returnCode is already set.
+		if ((clearRound || shipDestroyed) && !selectGoToTitle) {
 			totalDistance += playerDistance;
 			playerDistance = 0;
 			this.levelFinished = true;
