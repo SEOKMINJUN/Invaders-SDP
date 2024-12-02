@@ -594,7 +594,7 @@ public final class FileManager {
 
             File staticsFile = new File(staticsPath);
 
-			logger.info(" Saving Player Statistic.");
+			//logger.info(" Saving Player Statistic.");
 
             if (!staticsFile.exists())
 				staticsFile.createNewFile();
