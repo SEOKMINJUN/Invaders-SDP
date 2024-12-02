@@ -1,3 +1,5 @@
+package manager;
+
 import engine.CollectionManager;
 import engine.DrawManager;
 import org.junit.jupiter.api.BeforeEach;
