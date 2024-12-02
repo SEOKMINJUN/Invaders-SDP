@@ -12,10 +12,10 @@ public class AchievementManager {
         Variables
      */
     private static AchievementManager instance;
-    private HashMap<AchievementType, ArrayList<Achievement>> achievementMap;
+    public HashMap<AchievementType, ArrayList<Achievement>> achievementMap;
     private ArrayList<AchievementChangedCallback> achievementChangedCallbacks;
 
-    private AchievementManager(){// HashMap<Achievement, Boolean>으로 초기화
+    public AchievementManager(){// HashMap<Achievement, Boolean>으로 초기화
         achievementMap = new HashMap<>();
         for(AchievementType type : AchievementType.values()){
             achievementMap.put(type, new ArrayList<>());
