@@ -250,6 +250,7 @@ public class ScoreScreen extends Screen {
 			statistics.addShipsDestroyed(0);
 			statistics.addPlayedGameNumber(0);
 			statistics.comClearAchievementNumber(0);
+			statistics.comDistance(0);
 		} catch (IOException e) {
 			logger.warning("Couldn't load Statistics!");
 		}

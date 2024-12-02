@@ -67,7 +67,7 @@ public class Achievement extends AchievementBase{
                 result = Statistics.getInstance().getAccuracy() >= requiredValue;
                 break;
             case DISTANCE:
-                result = Statistics.getInstance().getTotalPlaytime() / 1000 >= requiredValue;
+                result = Statistics.getInstance().getDistance() >= requiredValue;
                 break;
             case STAGE:
                 result = Statistics.getInstance().getHighestLevel() >= requiredValue;
@@ -104,10 +104,6 @@ public class Achievement extends AchievementBase{
             }
         }
         return result;
-
-        //if(getAchievementType() == AchievementType.LIVES) return currentValue == requiredValue;
-        //if(getAchievementType() == AchievementType.ALL) return AchievementManager.getInstance().isAllAchievementCompleted();
-        //return currentValue <= requiredValue;
     }
 
     public boolean checkValue(int currentValue, int[] var) { return checkValue(currentValue, requiredValue, var); }

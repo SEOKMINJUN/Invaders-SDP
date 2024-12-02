@@ -33,10 +33,11 @@ public class Score implements Comparable<Score> {
 	/** Time for Total level clear time(player has done) */
 	private long playTime;
 	private float accuracy;
+	private int distance;
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param name
 	 *            Player name, three letters.
 	 * @param score
@@ -62,6 +63,7 @@ public class Score implements Comparable<Score> {
 			this.clearAchievementNumber = stat.getClearAchievementNumber();
 			this.playTime = stat.getTotalPlaytime();
 			this.accuracy = stat.getAccuracy();
+			this.distance = stat.getDistance();
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		}
@@ -86,7 +88,7 @@ public class Score implements Comparable<Score> {
 	 * 				Current Accuracy of bullets hit
 	 */
 	public Score(final String name, final int score, final String date, int highestLevel,
-				 final int totalShipDestroyed, final int clearAchievementNumber, float accuracy) {
+				 final int totalShipDestroyed, final int clearAchievementNumber, float accuracy, int distance) {
 		this.name = name;
 		this.score = score;
 		this.Date = date;
@@ -94,6 +96,7 @@ public class Score implements Comparable<Score> {
 		this.totalShipDestroyed = totalShipDestroyed;
 		this.clearAchievementNumber = clearAchievementNumber;
 		this.accuracy = accuracy;
+		this.distance = distance;
 	}
 	/**
 	 * Constructor
@@ -107,7 +110,7 @@ public class Score implements Comparable<Score> {
 
 	/**
 	 * Getter for the player's name.
-	 * 
+	 *
 	 * @return Name of the player.
 	 */
 	public final String getName() {
@@ -116,7 +119,7 @@ public class Score implements Comparable<Score> {
 
 	/**
 	 * Getter for the player's score.
-	 * 
+	 *
 	 * @return High score.
 	 */
 	public final int getScore() { return this.score; }
@@ -144,6 +147,8 @@ public class Score implements Comparable<Score> {
 	public final int getClearAchievementNumber() { return this.clearAchievementNumber; }
 
 	public final float getAccuracy() { return this.accuracy; }
+
+	public final int getDistance() { return this.distance; }
 
 	/**
 	 * Orders the scores descending by score.
