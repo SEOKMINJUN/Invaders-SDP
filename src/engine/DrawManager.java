@@ -881,23 +881,8 @@ public class DrawManager {
 				case 7 -> 17;
 				default -> 0;
 			};
-            for (Object[] objects : AchievementSet) {
-				int xPosition = (int) objects[2];
-				int yPosition = (int) objects[3];
-				//TODO: Set the condition to be checked only if the achievement has been completed at least once.
-				boolean show = false;
-				if(show){
-					drawRightedRegularString(screen, (String)objects[1], xPosition, yPosition + 30);
-				}
-				else{
-					drawRightedRegularString(screen, "???", xPosition, yPosition + 30);
-				}
 
-				drawRightedBigString(screen, (String)objects[0], xPosition, yPosition);
-			}
-
-
-
+			int n = 0;
 			for (Statistics statistics : collectionsStatistics) {
 				int[] AchievementsArray = statistics.getAchievementsArray();
 				String[] Instance = new String[AchievementSet.length];
@@ -909,6 +894,21 @@ public class DrawManager {
 				for (int k = 0; k < Instance.length; k++) {
 					int yPosition = (int) AchievementSet[k][3];
 					drawRightedRegularString(screen, Instance[k], 500, yPosition);
+				}
+
+				for (Object[] objects : AchievementSet) {
+					int xPosition = (int) objects[2];
+					int yPosition = (int) objects[3];
+
+					boolean isCleared = Integer.parseInt(Instance[n]) > 0;
+					n++;
+					if(isCleared){
+						drawRightedRegularString(screen, (String)objects[1], xPosition, yPosition + 30);
+					}
+					else{
+						drawRightedRegularString(screen, "???", xPosition, yPosition + 30);
+					}
+					drawRightedBigString(screen, (String)objects[0], xPosition, yPosition);
 				}
 			}
 		}

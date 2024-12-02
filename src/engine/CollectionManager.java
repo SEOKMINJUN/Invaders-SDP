@@ -207,9 +207,8 @@ public class CollectionManager {
      * @param i Player cleared Achievement Number
      */
     public void AddCollectionAchievementTypes(int i) throws IOException {
-        if (achievementTypes[i] < 1) { achievementTypes[i]++; }
+        achievementTypes[i]++;
         collection.setAchievementsArray(achievementTypes);
-        Globals.getFileManager().saveCollections(collection);
 
         /*
         try {
