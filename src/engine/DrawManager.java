@@ -903,7 +903,7 @@ public class DrawManager {
 				String[] Instance = new String[AchievementSet.length];
 
 				for (int i = 0; i < Instance.length; i++) {
-					Instance[i] = String.format("%d", AchievementsArray[startIndex + i]);
+					Instance[i] = AchievementsArray[startIndex + i] == 1 ? "Completed" : "???";
 				}
 
 				for (int k = 0; k < Instance.length; k++) {

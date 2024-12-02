@@ -383,7 +383,6 @@ public class Statistics {
                 this.highestLevel = loadedStats.getHighestLevel();
                 this.distance = loadedStats.getDistance();
             }
-            //instance = loadUserData(null);
         }
     }
 
