@@ -90,9 +90,10 @@ public class TwoPlayerGameScreen extends GameScreen {
          *
          * Checks if the intended number of waves for this level was destroyed
          * **/
-        if ((this.getRemainingEnemies() == 0 || (this.ship1.getHealth() == 0 && this.ship2.getHealth() == 0))
-                && !this.levelFinished
-                && this.waveCounter == this.gameSettings.getWavesNumber()) {
+        boolean clearRound = getRemainingEnemies() == 0 && !this.levelFinished && waveCounter == this.gameSettings.getWavesNumber();
+        boolean shipDestroyed = ship1.isDestroyed() && ship2.isDestroyed() && !this.levelFinished;
+        boolean selectGoToTitle = goToTitle; // Must be false, when this is set to true, returnCode is already set.
+        if ((clearRound || shipDestroyed) && !selectGoToTitle) {
             this.levelFinished = true;
             this.screenFinishedCooldown.reset();
         }
