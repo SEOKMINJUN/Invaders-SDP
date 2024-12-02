@@ -16,6 +16,10 @@ class AchievementBase {
 
     public void Achievement() {}
 
+    public String getDescription() {
+        return this.Description;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
