@@ -38,11 +38,11 @@ class ShipTest {
     @Test
     @DisplayName("Calculate distance moved by Ship using playerDistance")
     public void distanceCalculationTest() {
+        // Basic initial setup
         GameSettings gameSettings = new GameSettings(500, 400, 5, 30, 3);
         GameState dummyGameState = new GameState(1, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         GameScreen gameScreen = new GameScreen(dummyGameState, gameSettings, false, 630, 720, 60);
         gameScreen.initialize();
-
         Ship ship = gameScreen.getShip1();
         ship.setPosition(125, 150);
         gameScreen.updatePlayerDistance();
@@ -50,14 +50,25 @@ class ShipTest {
         System.out.println("Initial Position X: " + ship.getPositionX() + ", Y: " + ship.getPositionY());
         System.out.println("Initial Distance: " + gameScreen.getPlayerDistance());
 
+        //Test 1
         ship.setPosition(155, 190);
         gameScreen.updatePlayerDistance();
-        int currentLocation = gameScreen.getPlayerDistance();
+        int currentLocation1 = gameScreen.getPlayerDistance();
         System.out.println("Moved Position X: " + ship.getPositionX() + ", Y: " + ship.getPositionY());
         System.out.println("Calculated Distance: " + gameScreen.getPlayerDistance());
-
         int expectedDistance = (int) Math.sqrt(30 * 30 + 40 * 40);
-        int calculatedDistance = currentLocation - lastLocation;
-        assertEquals(expectedDistance, calculatedDistance);
+        int calculatedDistance1 = currentLocation1 - lastLocation;
+        assertEquals(expectedDistance, calculatedDistance1);
+
+        //Test 2
+        lastLocation = currentLocation1; //Update ship location
+        ship.setPosition(150, 178);
+        gameScreen.updatePlayerDistance();
+        int currentLocation2 = gameScreen.getPlayerDistance();
+        System.out.println("Moved Position X: " + ship.getPositionX() + ", Y: " + ship.getPositionY());
+        System.out.println("Calculated Distance: " + gameScreen.getPlayerDistance());
+        int expectedDistance2 = (int) Math.sqrt(5 * 5 + 12 * 12);
+        int calculateDistance2 = currentLocation2 - lastLocation;
+        assertEquals(expectedDistance2, calculateDistance2);
     }
 }
