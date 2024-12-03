@@ -907,6 +907,7 @@ public class DrawManager {
 				}
 
 				for (Object[] objects : AchievementSet) {
+					backBufferGraphics.setColor(Color.WHITE);
 					int xPosition = (int) objects[2];
 					int yPosition = (int) objects[3];
 					String achievementName = (String) objects[0];
@@ -921,6 +922,7 @@ public class DrawManager {
 
 					if (matchedAchievement != null && Objects.equals(isClearedCheckSet[n], "Complete")) {
 						drawRightedRegularString(screen, matchedAchievement.getDescription(), xPosition, yPosition + 30);
+						backBufferGraphics.setColor(Color.GREEN);
 						drawRightedBigString(screen, (String)objects[0], xPosition, yPosition);
 					} else {
 						drawRightedRegularString(screen, "???", xPosition, yPosition + 30);
