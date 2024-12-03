@@ -57,10 +57,6 @@ public class Achievement extends AchievementBase{
         this.setGem(gem);
     }
 
-    public void logCompleteAchievement() {
-        System.out.println("Achievements completed: " + getName());
-    }
-
     public boolean checkValue(int currentValue, int requiredValue, int[] var) {
         boolean result = false;
         switch (getAchievementType()) {

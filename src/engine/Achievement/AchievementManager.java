@@ -30,7 +30,7 @@ public class AchievementManager {
     }
 
     public void checkAchievement(AchievementType achievementType, int value, int... var) {
-        List<Achievement> achievements = new ArrayList<>(achievementMap.get(achievementType)); // 복사본 생성
+        List<Achievement> achievements = new ArrayList<>(achievementMap.get(achievementType));
         for (Achievement achievement : achievements) {
             if (!achievement.isCompleted() && achievement.checkValue(value, var)) {
                 completeAchievement(achievement);
