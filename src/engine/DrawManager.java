@@ -8,14 +8,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import engine.Achievement.Achievement;
+import engine.Achievement.AchievementList;
 
 import entity.*;
 import screen.GameScreen;
 import screen.Screen;
 
 import javax.imageio.ImageIO;
-
-import static screen.CollectionsScreen.CollectionsScreenCode;
 
 /**
 * Manages screen drawing.
@@ -681,7 +681,7 @@ public class DrawManager {
 				screen.getHeight() / 6);
 
 		backBufferGraphics.setColor(Color.GRAY);
-		drawCenteredRegularString(screen, guideString[CollectionsScreenCode],
+		drawCenteredRegularString(screen, guideString[CollectionManager.getInstance().CollectionsScreenCode],
 				screen.getHeight() / 5);
 	}
 
@@ -817,7 +817,9 @@ public class DrawManager {
 	public void drawCollectionsData(final Screen screen,
 									final List<Statistics> collectionsStatistics){
 		backBufferGraphics.setColor(Color.WHITE);
-		if(CollectionsScreenCode == 0) {
+		int collectionsScreenCode = CollectionManager.getInstance().CollectionsScreenCode;
+
+		if(collectionsScreenCode == 0) {
 			Object[][] enemySprite = Globals.getCollectionManager().getEnemySprite();
             for (Object[] objects : enemySprite) {
                 SpriteType enemy = (SpriteType) objects[0];
@@ -839,7 +841,7 @@ public class DrawManager {
 				}
 			}
 		}
-		else if(CollectionsScreenCode == 1){
+		else if(collectionsScreenCode == 1){
 			Object[][] itemSprite = Globals.getCollectionManager().getItemSprite();
 			for (Object[] objects : itemSprite) {
 				SpriteType item = (SpriteType) objects[0];
@@ -861,8 +863,8 @@ public class DrawManager {
 				}
 			}
 		}
-		else if(CollectionsScreenCode >= 2 && CollectionsScreenCode <= 8){
-			Object[][] AchievementSet = switch (CollectionsScreenCode) {
+		else if(collectionsScreenCode >= 2 && collectionsScreenCode <= 8){
+			Object[][] AchievementSet = switch (collectionsScreenCode) {
                 case 2 -> Globals.getCollectionManager().getAchievementSet_1();
                 case 3 -> Globals.getCollectionManager().getAchievementSet_2();
                 case 4 -> Globals.getCollectionManager().getAchievementSet_3();
@@ -872,7 +874,7 @@ public class DrawManager {
 				case 8 -> Globals.getCollectionManager().getAchievementSet_7();
                 default -> null;
             };
-			int startIndex = switch (CollectionsScreenCode) {
+			int startIndex = switch (collectionsScreenCode) {
 				case 2 -> 0;
 				case 3 -> 5;
 				case 4 -> 8;
@@ -882,18 +884,52 @@ public class DrawManager {
 				default -> 0;
 			};
 
+			Achievement[] achievements = AchievementList.getALL_ACHIEVEMENTS();
+
+            for (Object[] objects : AchievementSet) {
+				int xPosition = (int) objects[2];
+				int yPosition = (int) objects[3];
+				String achievementName = (String) objects[0];
+
+				Achievement matchedAchievement = null;
+				for (Achievement achievement : achievements) {
+					if (achievement.getName().equals(achievementName)) {
+						matchedAchievement = achievement;
+						break;
+					}
+				}
+				if (matchedAchievement != null) {
+					drawRightedRegularString(screen, matchedAchievement.getDescription(), xPosition, yPosition + 30);
+				} else {
+					drawRightedRegularString(screen, "???", xPosition, yPosition + 30);
+				}
+
+				//TODO: Set the condition to be checked only if the achievement has been completed at least once.
+				boolean show = false;
+				if(show){
+					drawRightedRegularString(screen, (String)objects[1], xPosition, yPosition + 30);
+				}
+				else{
+					drawRightedRegularString(screen, "", xPosition, yPosition + 30);
+				}
+
+				drawRightedBigString(screen, (String)objects[0], xPosition, yPosition);
+			}
+
 			int n = 0;
 			for (Statistics statistics : collectionsStatistics) {
 				int[] AchievementsArray = statistics.getAchievementsArray();
 				String[] Instance = new String[AchievementSet.length];
 
 				for (int i = 0; i < Instance.length; i++) {
-					Instance[i] = String.format("%d", AchievementsArray[startIndex + i]);
+					Instance[i] = String.format("%s", AchievementsArray[startIndex + i] == 1 ? "Completed" : "---");
 				}
 
 				for (int k = 0; k < Instance.length; k++) {
-					int yPosition = (int) AchievementSet[k][3];
-					drawRightedRegularString(screen, Instance[k], 500, yPosition);
+					if (startIndex + k < AchievementsArray.length) {
+						int yPosition = (int) AchievementSet[k][3];
+						drawRightedRegularString(screen, Instance[k], 500, yPosition);
+					}
 				}
 
 				for (Object[] objects : AchievementSet) {

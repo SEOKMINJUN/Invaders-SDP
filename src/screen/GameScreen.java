@@ -194,6 +194,7 @@ public class GameScreen extends Screen {
 	public void initialize() {
 		super.initialize();
 		this.statistics = new Statistics();
+
 		/** initialize background **/
 		drawManager.loadBackground(this.level);
 
@@ -279,6 +280,12 @@ public class GameScreen extends Screen {
 					goToTitle = true;
 					this.returnCode = 1;
 					this.isRunning = false;
+					/*
+					try {
+						Statistics.getInstance().addPlayedGameNumber(1);
+					} catch (IOException e) {
+						Globals.getLogger().warning("Failed to update played game count: " + e.getMessage());
+					}*/
 				}
 				else if(option == 1 && inputManager.isKeyJustPressed(KeyEvent.VK_SPACE) && isDrawWarning){
 					isDrawWarning = false;
@@ -367,12 +374,14 @@ public class GameScreen extends Screen {
 			}
 			AchievementManager.getInstance().checkAchievement(AchievementType.SCORE, score);
 			try { //Team Clove
+				statistics.comDistance(this.totalDistance);
 				statistics.comHighestLevel(level);
 				statistics.addBulletShot(bulletsShot);
 				statistics.addShipsDestroyed(shipsDestroyed);
 				statistics.comAccuracy(accuracy);
 				statistics.checkAndUpdateStreak();
 				statistics.comShipsDestructionStreak(maxShipsDestructionStreak);
+				statistics.comDistance(playerDistance);
 				AchievementManager.getInstance().checkAchievement(AchievementType.KILLSTREAKS, maxShipsDestructionStreak);
 				AchievementManager.getInstance().checkAchievement(AchievementType.ACCURACY, (int) accuracy);
 

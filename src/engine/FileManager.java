@@ -307,10 +307,11 @@ public final class FileManager {
 			String clearAchievementNumber = reader.readLine();
 			String accuracy = reader.readLine();
 			String name = null;
+			String distance = reader.readLine();
 
 			while ((date != null) && (score != null)) {
 				recentScore = new Score(name, Integer.parseInt(score), date, Integer.parseInt(highestLevel),
-						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber), Float.parseFloat(accuracy));
+						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber), Float.parseFloat(accuracy), Integer.parseInt(distance));
 				recentScores.add(recentScore);
 				date = reader.readLine();
 				score = reader.readLine();
@@ -318,6 +319,7 @@ public final class FileManager {
 				totalShipDestroyed = reader.readLine();
 				clearAchievementNumber = reader.readLine();
 				accuracy = reader.readLine();
+				distance = reader.readLine();
 			}
 
 		} finally {
@@ -369,11 +371,12 @@ public final class FileManager {
 			String totalShipDestroyed = bufferedReader.readLine();
 			String clearAchievementNumber = bufferedReader.readLine();
 			String accuracy = bufferedReader.readLine();
+			String distance = bufferedReader.readLine();
 			String name = null;
 
 			while ((date != null) && (score != null)) {
 				recentScore = new Score(name, Integer.parseInt(score), date, Integer.parseInt(highestLevel),
-						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber), Float.parseFloat(accuracy));
+						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber), Float.parseFloat(accuracy), Integer.parseInt(distance));
 				recentScores.add(recentScore);
 				date = bufferedReader.readLine();
 				score = bufferedReader.readLine();
@@ -381,6 +384,7 @@ public final class FileManager {
 				totalShipDestroyed = bufferedReader.readLine();
 				clearAchievementNumber = bufferedReader.readLine();
 				accuracy = bufferedReader.readLine();
+				distance = bufferedReader.readLine();
 			}
 
 		} catch (FileNotFoundException e) {
@@ -451,6 +455,8 @@ public final class FileManager {
 				bufferedWriter.write(Integer.toString(score.getClearAchievementNumber()));
 				bufferedWriter.newLine();
 				bufferedWriter.write(Float.toString(score.getAccuracy()));
+				bufferedWriter.newLine();
+				bufferedWriter.write(Integer.toString(score.getDistance()));
 				bufferedWriter.newLine();
 				savedCount++;
 			}
@@ -594,7 +600,7 @@ public final class FileManager {
 
             File staticsFile = new File(staticsPath);
 
-			logger.info(" Saving Player Statistic.");
+			//logger.info(" Saving Player Statistic.");
 
             if (!staticsFile.exists())
 				staticsFile.createNewFile();
@@ -609,6 +615,7 @@ public final class FileManager {
 				properties.setProperty("clearAchievementNumber", String.valueOf(stat.getClearAchievementNumber()));
 				properties.setProperty("totalPlaytime", String.valueOf(stat.getTotalPlaytime()));
 				properties.setProperty("accuracy", String.valueOf(stat.getAccuracy()));
+				properties.setProperty("distance", String.valueOf(stat.getDistance()));
 			}
 			outputStream = new FileOutputStream(staticsFile);
 			properties.store(new OutputStreamWriter(outputStream, Charset.forName("UTF-8")),
@@ -659,6 +666,9 @@ public final class FileManager {
 			if(properties.getProperty("accuracy") == null){
 				logger.warning("Failed to load accuracy." + properties.toString());
 			}
+			if(properties.getProperty("distance") == null){
+				logger.warning("Failed to load distance." + properties.toString());
+			}
 			//logger.info("Loading Player Statistic.");
 
 			int highestLevel = Integer.parseInt(properties.getProperty("highestLevel"));
@@ -669,9 +679,10 @@ public final class FileManager {
 			int clearAchievementNumber = Integer.parseInt(properties.getProperty("clearAchievementNumber"));
 			long totalPlaytime = Integer.parseInt(properties.getProperty("totalPlaytime"));
 			float accuracy = Float.parseFloat(properties.getProperty("accuracy"));
+			int distance = Integer.parseInt(properties.getProperty("distance"));
 
 			stat = new Statistics(highestLevel, totalBulletsShot, totalShipsDestroyed, shipsDestructionStreak,
-					playedGameNumber, clearAchievementNumber, totalPlaytime, accuracy);
+					playedGameNumber, clearAchievementNumber, totalPlaytime, accuracy, distance);
 
 		} catch (FileNotFoundException e){
 			logger.info("Loading default user statistics.");
@@ -716,9 +727,10 @@ public final class FileManager {
 			int clearAchievementNumber = Integer.parseInt(properties.getProperty("clearAchievementNumber"));
 			long totalPlaytime = Integer.parseInt(properties.getProperty("totalPlaytime"));
 			float accuracy = Float.parseFloat(properties.getProperty("accuracy"));
+			int distance = Integer.parseInt(properties.getProperty("distance"));
 
 			stat = new Statistics(highestLevel, totalBulletsShot, totalShipsDestroyed, shipsDestructionStreak,
-					playedGameNumber, clearAchievementNumber, totalPlaytime, accuracy);
+					playedGameNumber, clearAchievementNumber, totalPlaytime, accuracy, distance);
 
 		} finally {
 			if(inputStream != null){
