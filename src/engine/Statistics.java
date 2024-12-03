@@ -14,8 +14,6 @@ import engine.Achievement.AchievementType;
 import lombok.Getter;
 import lombok.Setter;
 
-import static engine.CollectionManager.achievementTypes;
-
 public class Statistics {
 
     private static ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -70,7 +68,7 @@ public class Statistics {
     @Getter @Setter
     private int[] enemiesArray = new int[9];
     @Getter @Setter
-    private int[] achievementsArray = new int[20];
+    private int[] achievementsArray = new int[22];
 
     /**
      *
@@ -460,6 +458,7 @@ public class Statistics {
     }
 
     public void updateAchievementsArray(int index) {
+        int[] achievementTypes = Globals.getCollectionManager().getAchievementTypes();
         if (index >= 0 && index < achievementTypes.length) {
             achievementTypes[index] = 1;
             this.setAchievementsArray(achievementTypes);

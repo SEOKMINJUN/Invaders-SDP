@@ -902,7 +902,7 @@ public class DrawManager {
 				for (int k = 0; k < ClearNumber.length; k++) {
 					if (startIndex + k < AchievementsArray.length) {
 						int yPosition = (int) AchievementSet[k][3];
-						drawRightedRegularString(screen, ClearNumber[k], 500, yPosition);
+						drawRightedRegularString(screen, isClearedCheckSet[k], 480, yPosition);
 					}
 				}
 
