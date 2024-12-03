@@ -4,6 +4,7 @@ import engine.Achievement.AchievementList;
 import engine.Achievement.AchievementType;
 import engine.DrawManager.SpriteType;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -12,6 +13,10 @@ import java.util.logging.Logger;
 
 public class CollectionManager {
     public static CollectionManager instance;
+
+    /** Current Screen Code*/
+    @Getter @Setter
+    public int CollectionsScreenCode;
 
     /**
      * enemySpriteSet
@@ -130,7 +135,7 @@ public class CollectionManager {
     public CollectionManager() {
         logger = Globals.getLogger();
         collectionList = new ArrayList<>();
-
+        CollectionsScreenCode = 0;
         try{
             Statistics loadedCollection = Globals.getFileManager().loadCollections();
             if (loadedCollection != null) {
