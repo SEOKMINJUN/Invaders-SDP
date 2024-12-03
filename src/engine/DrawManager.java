@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.logging.Logger;
 import engine.Achievement.Achievement;
 import engine.Achievement.AchievementList;
@@ -662,8 +663,8 @@ public class DrawManager {
 	 */
 	public void drawCollectionsMenu(final Screen screen){
 		String collectionsString = "Collections";
-		String[] guideString = {"<-            Enemy Types and Kills             ->",
-								"<-             Item Types and Gains              ->",
+		String[] guideString = {"<-            Enemy Types and Kills            ->",
+								"<-              Item Types and Gains            ->",
 								"<-        Achievement Types and Cleared 1        ->",
 								"<-        Achievement Types and Cleared 2        ->",
 								"<-        Achievement Types and Cleared 3        ->",
@@ -881,72 +882,51 @@ public class DrawManager {
 				case 5 -> 11;
 				case 6 -> 14;
 				case 7 -> 17;
+				case 8 -> 20;
 				default -> 0;
 			};
 
 			Achievement[] achievements = AchievementList.getALL_ACHIEVEMENTS();
 
-            for (Object[] objects : AchievementSet) {
-				int xPosition = (int) objects[2];
-				int yPosition = (int) objects[3];
-				String achievementName = (String) objects[0];
-
-				Achievement matchedAchievement = null;
-				for (Achievement achievement : achievements) {
-					if (achievement.getName().equals(achievementName)) {
-						matchedAchievement = achievement;
-						break;
-					}
-				}
-				if (matchedAchievement != null) {
-					drawRightedRegularString(screen, matchedAchievement.getDescription(), xPosition, yPosition + 30);
-				} else {
-					drawRightedRegularString(screen, "???", xPosition, yPosition + 30);
-				}
-
-				/*
-				boolean show = false;
-				if(show){
-					drawRightedRegularString(screen, (String)objects[1], xPosition, yPosition + 30);
-				}
-				else{
-					drawRightedRegularString(screen, "", xPosition, yPosition + 30);
-				}
-
-				drawRightedBigString(screen, (String)objects[0], xPosition, yPosition);
-
-				 */
-			}
-
 			int n = 0;
 			for (Statistics statistics : collectionsStatistics) {
 				int[] AchievementsArray = statistics.getAchievementsArray();
-				String[] Instance = new String[AchievementSet.length];
+				String[] ClearNumber = new String[AchievementSet.length];
+				String[] isClearedCheckSet = new String[AchievementSet.length];
 
-				for (int i = 0; i < Instance.length; i++) {
-					Instance[i] = String.format("%s", AchievementsArray[startIndex + i] == 1 ? "Completed" : "---");
+				for (int i = 0; i < ClearNumber.length; i++) {
+					ClearNumber[i] = String.format("%s", AchievementsArray[startIndex + i]);
+					isClearedCheckSet[i] = Integer.parseInt(ClearNumber[i]) >= 1 ? "Complete" : "Incomplete";
 				}
 
-				for (int k = 0; k < Instance.length; k++) {
+				for (int k = 0; k < ClearNumber.length; k++) {
 					if (startIndex + k < AchievementsArray.length) {
 						int yPosition = (int) AchievementSet[k][3];
-						drawRightedRegularString(screen, Instance[k], 500, yPosition);
+						drawRightedRegularString(screen, ClearNumber[k], 500, yPosition);
 					}
 				}
 
 				for (Object[] objects : AchievementSet) {
 					int xPosition = (int) objects[2];
 					int yPosition = (int) objects[3];
+					String achievementName = (String) objects[0];
 
-					boolean isCleared = Integer.parseInt(Instance[n]) > 0;
-					n++;
-					if(isCleared){
-						drawRightedRegularString(screen, (String)objects[1], xPosition, yPosition + 30);
+					Achievement matchedAchievement = null;
+					for (Achievement achievement : achievements) {
+						if (achievement.getName().equals(achievementName)) {
+							matchedAchievement = achievement;
+							break;
+						}
 					}
-					else{
+
+					if (matchedAchievement != null && Objects.equals(isClearedCheckSet[n], "Complete")) {
+						drawRightedRegularString(screen, matchedAchievement.getDescription(), xPosition, yPosition + 30);
+						drawRightedBigString(screen, (String)objects[0], xPosition, yPosition);
+					} else {
 						drawRightedRegularString(screen, "???", xPosition, yPosition + 30);
+						drawRightedBigString(screen, (String)objects[0], xPosition, yPosition);
 					}
-					drawRightedBigString(screen, (String)objects[0], xPosition, yPosition);
+					n++;
 				}
 			}
 		}
