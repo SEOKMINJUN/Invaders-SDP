@@ -15,7 +15,7 @@ public class AchievementManager {
     public HashMap<AchievementType, ArrayList<Achievement>> achievementMap;
     private ArrayList<AchievementChangedCallback> achievementChangedCallbacks;
 
-    public AchievementManager(){// HashMap<Achievement, Boolean>으로 초기화
+    public AchievementManager(){
         achievementMap = new HashMap<>();
         for(AchievementType type : AchievementType.values()){
             achievementMap.put(type, new ArrayList<>());

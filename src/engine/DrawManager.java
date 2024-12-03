@@ -8,6 +8,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
+import engine.Achievement.Achievement;
+import engine.Achievement.AchievementList;
 
 import entity.*;
 import screen.GameScreen;
@@ -881,16 +883,34 @@ public class DrawManager {
 				case 7 -> 17;
 				default -> 0;
 			};
+
+			Achievement[] achievements = AchievementList.getALL_ACHIEVEMENTS();
+
             for (Object[] objects : AchievementSet) {
 				int xPosition = (int) objects[2];
 				int yPosition = (int) objects[3];
+				String achievementName = (String) objects[0];
+
+				Achievement matchedAchievement = null;
+				for (Achievement achievement : achievements) {
+					if (achievement.getName().equals(achievementName)) {
+						matchedAchievement = achievement;
+						break;
+					}
+				}
+				if (matchedAchievement != null) {
+					drawRightedRegularString(screen, matchedAchievement.getDescription(), xPosition, yPosition + 30);
+				} else {
+					drawRightedRegularString(screen, "???", xPosition, yPosition + 30);
+				}
+
 				//TODO: Set the condition to be checked only if the achievement has been completed at least once.
 				boolean show = false;
 				if(show){
 					drawRightedRegularString(screen, (String)objects[1], xPosition, yPosition + 30);
 				}
 				else{
-					drawRightedRegularString(screen, "???", xPosition, yPosition + 30);
+					drawRightedRegularString(screen, "", xPosition, yPosition + 30);
 				}
 
 				drawRightedBigString(screen, (String)objects[0], xPosition, yPosition);
@@ -903,9 +923,7 @@ public class DrawManager {
 				String[] Instance = new String[AchievementSet.length];
 
 				for (int i = 0; i < Instance.length; i++) {
-					if (startIndex + i < AchievementsArray.length) {
-						Instance[i] = String.format("%d", AchievementsArray[startIndex + i]);
-					}
+					Instance[i] = String.format("%s", AchievementsArray[startIndex + i] == 1 ? "Completed" : "---");
 				}
 
 				for (int k = 0; k < Instance.length; k++) {

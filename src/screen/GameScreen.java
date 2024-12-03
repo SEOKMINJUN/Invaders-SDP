@@ -374,12 +374,14 @@ public class GameScreen extends Screen {
 			}
 			AchievementManager.getInstance().checkAchievement(AchievementType.SCORE, score);
 			try { //Team Clove
+				statistics.comDistance(this.totalDistance);
 				statistics.comHighestLevel(level);
 				statistics.addBulletShot(bulletsShot);
 				statistics.addShipsDestroyed(shipsDestroyed);
 				statistics.comAccuracy(accuracy);
 				statistics.checkAndUpdateStreak();
 				statistics.comShipsDestructionStreak(maxShipsDestructionStreak);
+				statistics.comDistance(playerDistance);
 				AchievementManager.getInstance().checkAchievement(AchievementType.KILLSTREAKS, maxShipsDestructionStreak);
 				AchievementManager.getInstance().checkAchievement(AchievementType.ACCURACY, (int) accuracy);
 
