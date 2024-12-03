@@ -904,7 +904,7 @@ public class DrawManager {
 					drawRightedRegularString(screen, "???", xPosition, yPosition + 30);
 				}
 
-				//TODO: Set the condition to be checked only if the achievement has been completed at least once.
+				/*
 				boolean show = false;
 				if(show){
 					drawRightedRegularString(screen, (String)objects[1], xPosition, yPosition + 30);
@@ -914,6 +914,8 @@ public class DrawManager {
 				}
 
 				drawRightedBigString(screen, (String)objects[0], xPosition, yPosition);
+
+				 */
 			}
 
 			int n = 0;
