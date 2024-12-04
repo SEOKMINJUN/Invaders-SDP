@@ -101,26 +101,26 @@ public class DrawManagerImpl extends DrawManager {
         int fontWidth;
 
         backBufferGraphics.setColor(Color.white);
-        backBufferGraphics.drawRect(screen.getWidth() - width - 3, screen.getHeight() - height - 18, width, height);
+        backBufferGraphics.drawRect(screen.getWidth() - width - 3, screen.getHeight() - height - 68, width, height);
 
         //Modify the location of the window and the text - Jo Minseo/HUD team
         backBufferGraphics.setColor(Color.white);
         backBufferGraphics.setFont(fontRegular);
         if(achievementText.length() < 14){
             fontWidth = fontRegularMetrics.stringWidth(achievementText);
-            backBufferGraphics.drawString(achievementText, screen.getWidth() - width / 2 - fontWidth / 2, screen.getHeight() - 35);
+            backBufferGraphics.drawString(achievementText, screen.getWidth() - width / 2 - fontWidth / 2, screen.getHeight() - 85);
         }
         else if(achievementText.length() < 27){
             fontWidth = fontRegularMetrics.stringWidth(achievementText.substring(0,13));
-            backBufferGraphics.drawString(achievementText.substring(0,13), screen.getWidth() - width / 2 - fontWidth / 2, screen.getHeight() - 43);
+            backBufferGraphics.drawString(achievementText.substring(0,13), screen.getWidth() - width / 2 - fontWidth / 2, screen.getHeight() - 93);
             fontWidth = fontRegularMetrics.stringWidth(achievementText.substring(13));
-            backBufferGraphics.drawString(achievementText.substring(13), screen.getWidth() - width/2 - fontWidth / 2, screen.getHeight() - 25);
+            backBufferGraphics.drawString(achievementText.substring(13), screen.getWidth() - width/2 - fontWidth / 2, screen.getHeight() - 75);
         }
         else{
             fontWidth = fontRegularMetrics.stringWidth(achievementText.substring(0,13));
-            backBufferGraphics.drawString(achievementText.substring(0,13), screen.getWidth() - width / 2 - fontWidth / 2, screen.getHeight() - 43);
+            backBufferGraphics.drawString(achievementText.substring(0,13), screen.getWidth() - width / 2 - fontWidth / 2, screen.getHeight() - 93);
             fontWidth = fontRegularMetrics.stringWidth(achievementText.substring(13,25)+"...");
-            backBufferGraphics.drawString(achievementText.substring(13,25)+"...", screen.getWidth() - width / 2 - fontWidth / 2, screen.getHeight() - 25);
+            backBufferGraphics.drawString(achievementText.substring(13,25)+"...", screen.getWidth() - width / 2 - fontWidth / 2, screen.getHeight() - 75);
         }
     }
 

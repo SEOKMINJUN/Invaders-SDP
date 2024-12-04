@@ -73,8 +73,8 @@ public class CollectionManager {
             {AchievementList.getACHIEVEMENT_LIVE().getName(), AchievementList.getACHIEVEMENT_LIVE().getDescription(), XPosition, 180},
             {AchievementList.getACHIEVEMENT_KILL_25().getName(), AchievementList.getACHIEVEMENT_KILL_25().getDescription(), XPosition, 280},
             {AchievementList.getACHIEVEMENT_KILL_100().getName(), AchievementList.getACHIEVEMENT_KILL_100().getDescription(), XPosition, 380},
-            {AchievementList.getACHIEVEMENT_KILL_500().getName(), AchievementList.getACHIEVEMENT_KILL_500().getDescription(), XPosition, 580},
-            {AchievementList.getACHIEVEMENT_KILL_1000().getName(), AchievementList.getACHIEVEMENT_KILL_1000().getDescription(), XPosition, 480},
+            {AchievementList.getACHIEVEMENT_KILL_500().getName(), AchievementList.getACHIEVEMENT_KILL_500().getDescription(), XPosition, 480},
+            {AchievementList.getACHIEVEMENT_KILL_1000().getName(), AchievementList.getACHIEVEMENT_KILL_1000().getDescription(), XPosition, 580},
     };
     @Getter
     private Object[][] AchievementSet_2 = {
@@ -123,7 +123,7 @@ public class CollectionManager {
     private int[] enemyTypes = new int[8];
     /** Achievement Array*/
     @Getter
-    public static int[] achievementTypes = new int[20];
+    public int[] achievementTypes = new int[22];
 
     /** Statistics type variables that contain collections*/
     @Getter
@@ -212,9 +212,8 @@ public class CollectionManager {
      * @param i Player cleared Achievement Number
      */
     public void AddCollectionAchievementTypes(int i) throws IOException {
-        if (achievementTypes[i] < 1) { achievementTypes[i]++; }
+        achievementTypes[i]++;
         collection.setAchievementsArray(achievementTypes);
-        Globals.getFileManager().saveCollections(collection);
 
         /*
         try {
