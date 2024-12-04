@@ -107,7 +107,7 @@ public class SoundManager {
                 BGMs.put(name, clip); // 미리 로드하여 맵에 저장
                 logger.fine(name+" load complete");
             }
-        } catch (UnsupportedAudioFileException | IOException | NullPointerException | LineUnavailableException e) {
+        } catch (UnsupportedAudioFileException | IOException | NullPointerException | LineUnavailableException | IllegalArgumentException e) {
             logger.info(String.valueOf(e));
         }
     }
@@ -175,7 +175,7 @@ public class SoundManager {
             }
             logger.warning("Failed to find Sound : " + name);
             return 0;
-        } catch (UnsupportedAudioFileException | IOException | NullPointerException | LineUnavailableException e) {
+        } catch (UnsupportedAudioFileException | IOException | NullPointerException | LineUnavailableException | IllegalArgumentException e) {
             logger.info(String.valueOf(e));
             return 0;
         }

@@ -361,6 +361,16 @@ public class GameScreen extends Screen {
 		if (getRemainingEnemies() == 0 && waveCounter < this.gameSettings.getWavesNumber()) {
 
 			waveCounter++;
+			Entity entity = null;
+			while((entity = (Entity)findEntityByClassname(entity, "Bullet")) != null){
+				entity.remove();
+			}
+			while((entity = (Entity)findEntityByClassname(entity, "Obstacle")) != null){
+				entity.remove();
+			}
+			while((entity = (Entity)findEntityByClassname(entity, "Item")) != null){
+				entity.remove();
+			}
 			this.initialize();
 
 		}
@@ -400,10 +410,10 @@ public class GameScreen extends Screen {
 		 *
 		 * Checks if the intended number of waves for this level was destroyed
 		 * **/
-		if ((getRemainingEnemies() == 0 || ship1.getHealth() == 0)
-				&& !this.levelFinished
-				&& waveCounter == this.gameSettings.getWavesNumber()
-				&& !goToTitle) {
+		boolean clearRound = getRemainingEnemies() == 0 && !this.levelFinished && waveCounter == this.gameSettings.getWavesNumber();
+		boolean shipDestroyed = ship1.isDestroyed() && !this.levelFinished;
+		boolean selectGoToTitle = goToTitle; // Must be false, when this is set to true, returnCode is already set.
+		if ((clearRound || shipDestroyed) && !selectGoToTitle) {
 			totalDistance += playerDistance;
 			playerDistance = 0;
 			this.levelFinished = true;
@@ -468,29 +478,7 @@ public class GameScreen extends Screen {
 		DrawManagerImpl.drawPlayerDistance(this, getPlayerDistance());
 
 
-		// Countdown to game start.
-		if (!this.inputDelay.checkFinished() && !isPaused) {
-			int countdown = (int) ((Globals.GAME_SCREEN_INPUT_DELAY
-			- (System.currentTimeMillis()
-			- this.gameStartTime)) / 1000);
 
-			/**
-			* Wave counter condition added by the Level Design team
-			*
-			* Display the wave number instead of the level number
-			* **/
-			if (waveCounter != 1) {
-				drawManager.drawWave(this, waveCounter, countdown);
-			} else {
-				drawManager.drawCountDown(this, this.level, countdown,
-				this.bonusLife);
-			}
-
-			drawManager.drawHorizontalLine(this, this.height / 2 - this.height
-					/ 12);
-			drawManager.drawHorizontalLine(this, this.height / 2 + this.height
-					/ 12);
-		}
 
 		// Soomin Lee / TeamHUD
 		if (this.inputDelay.checkFinished()) {
@@ -513,6 +501,30 @@ public class GameScreen extends Screen {
 		}
 		else{
 			super.drawPost();
+		}
+
+		// Countdown to game start.
+		if (!this.inputDelay.checkFinished() && !isPaused) {
+			int countdown = (int) ((Globals.GAME_SCREEN_INPUT_DELAY
+					- (System.currentTimeMillis()
+					- this.gameStartTime)) / 1000);
+
+			/**
+			 * Wave counter condition added by the Level Design team
+			 *
+			 * Display the wave number instead of the level number
+			 * **/
+			if (waveCounter != 1) {
+				drawManager.drawWave(this, waveCounter, countdown);
+			} else {
+				drawManager.drawCountDown(this, this.level, countdown,
+						this.bonusLife);
+			}
+
+			drawManager.drawHorizontalLine(this, this.height / 2 - this.height
+					/ 12);
+			drawManager.drawHorizontalLine(this, this.height / 2 + this.height
+					/ 12);
 		}
 	}
 

@@ -776,15 +776,14 @@ public final class FileManager {
 		}
 
 		// Modify the first line (coin)
-		/*
 		if (!lines.isEmpty()) {
-			lines.set(0, EncryptionSupport.encrypt(Integer.toString(coin)));
+			lines.set(0, Integer.toString(coin));
 		} else {
 			// If the file was empty, add the new coin as the first line and the new gem as the second line
-			lines.add(EncryptionSupport.encrypt(Integer.toString(coin)));
-			lines.add(EncryptionSupport.encrypt("0"));
+			lines.add(Integer.toString(coin));
+			lines.add("0");
 		}
-		*/
+
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(currencyFile), Charset.forName("UTF-8")))) {
 			// Write back the modified content
@@ -882,15 +881,15 @@ public final class FileManager {
 		}
 
 		// Modify the second line (gem)
-		/*
+
 		if (!lines.isEmpty()) {
-			lines.set(1, EncryptionSupport.encrypt(Integer.toString(gem)));
+			lines.set(1, Integer.toString(gem));
 		} else {
 			// If the file was empty, add the new coin as the first line and the new gem as the second line
-			lines.add(EncryptionSupport.encrypt("0"));
-			lines.add(EncryptionSupport.encrypt(Integer.toString(gem)));
+			lines.add("0");
+			lines.add(Integer.toString(gem));
 		}
-		*/
+
 
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(currencyFile), Charset.forName("UTF-8")))) {
@@ -927,17 +926,15 @@ public final class FileManager {
 			currencyFile.createNewFile();
 
 		// If the file was empty, add the new coin as the first line and the new gem as the second line
-		/*
 		if (currencyFile.length() == 0) {
 			try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(currencyFile), Charset.forName("UTF-8")))) {
-				bufferedWriter.write(EncryptionSupport.encrypt("0"));
+				bufferedWriter.write("0");
 				bufferedWriter.newLine();
-				bufferedWriter.write(EncryptionSupport.encrypt("0"));
+				bufferedWriter.write("0");
 				bufferedWriter.newLine();
 			}
 		}
-		 */
 
 		try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
 				new FileInputStream(currencyFile), Charset.forName("UTF-8")))) {
