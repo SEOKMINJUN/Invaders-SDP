@@ -68,6 +68,37 @@ public class Score implements Comparable<Score> {
 			ex.printStackTrace();
 		}
 	}
+	/**
+	 * Constructor
+	 *
+	 * @param name
+	 * 			player name
+	 * @param score
+	 * 			player score
+	 * @param isTest
+	 * 			boolean data for test
+
+	 */
+	public Score(String name, int score, boolean isTest) {
+		this.name = name;
+		this.score = score;
+
+		this.currentDate = LocalDate.now();
+		this.Year = currentDate.getYear();
+		this.Month = currentDate.getMonthValue();
+		this.Day = currentDate.getDayOfMonth();
+		this.Date = String.format("%d-%02d-%02d", Year, Month, Day);
+
+		// default data for JUnit test
+		if (isTest) {
+			this.highestLevel = 0;
+			this.totalShipDestroyed = 0;
+			this.clearAchievementNumber = 0;
+			this.accuracy = 0.0f;
+			this.distance = 0;
+			this.playTime = 0;
+		}
+	}
 
 	/**
 	 * Constructor for read/write Recent Record files
