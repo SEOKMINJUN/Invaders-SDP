@@ -53,7 +53,7 @@ class FileManagerTest {
     void testLoadAndSaveRecentScores() {
         try {
             List<Score> recentScores = new ArrayList<>();
-            recentScores.add(new Score("RecentPlayer", 200, "2023-12-01", 5, 50, 3, 90.5f));
+            recentScores.add(new Score("RecentPlayer", 200, "2023-12-01", 5, 50, 3, 90.5f,50));
             fileManager.saveRecentScores(recentScores);
 
             List<Score> loadedRecentScores = fileManager.loadRecentScores();
