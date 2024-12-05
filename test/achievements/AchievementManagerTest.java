@@ -3,11 +3,13 @@ package achievements;
 import engine.Achievement.Achievement;
 import engine.Achievement.AchievementManager;
 import engine.Achievement.AchievementType;
+import engine.Statistics;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,6 +38,7 @@ class AchievementManagerTest {
 
     @Test
     void testCheckAchievementUnlock() {
+        Statistics.getInstance().updateStatistics(new Statistics(0,0,15,0,0,0,0,0,0));
         achievementManager.checkAchievement(AchievementType.KILLS, 15);
         Achievement testAchievement = achievementManager.achievementMap.get(AchievementType.KILLS).get(0);
         System.out.println("Achievement state: " + testAchievement);
@@ -45,6 +48,7 @@ class AchievementManagerTest {
 
     @Test
     void testCheckAchievementNotUnlock() {
+        Statistics.getInstance().updateStatistics(new Statistics(0,0,10,0,0,0,0,0,0));
         achievementManager.checkAchievement(AchievementType.KILLS, 10);
         Achievement testAchievement = achievementManager.achievementMap.get(AchievementType.KILLS).get(0);
         assertFalse(testAchievement.isCompleted());
