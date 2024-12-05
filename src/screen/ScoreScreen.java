@@ -2,20 +2,16 @@ package screen;
 
 import java.awt.event.KeyEvent;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.Logger;
 
-import clove.Statistics; //Team Clove
-import HUDTeam.DrawAchievementHud;
-import HUDTeam.DrawManagerImpl;
-import engine.Cooldown;
-import engine.Core;
-import engine.GameState;
-import engine.Score;
-import Enemy.PlayerGrowth;
-import inventory_develop.NumberOfBullet;
+import engine.Statistics; //Team Clove
+import engine.*;
+import entity.NumberOfBullet;
 
-import static engine.Globals.currencyManager;
+import static screen.GameScreen.goToTitle;
 
 /**
  * Implements the score screen.
@@ -39,7 +35,7 @@ public class ScoreScreen extends Screen {
 	/** Current score. */
 	private int score;
 	/** Player lives left. */
-	private int livesRemaining;
+	private int health;
 	/** Total bullets shot by the player. */
 	private int bulletsShot;
 	/** Total ships destroyed by the player. */
@@ -66,15 +62,16 @@ public class ScoreScreen extends Screen {
 
 	private Statistics statistics; //Team Clove
 
+	private Statistics collections;
+	private List<Statistics> collectionsList = new ArrayList<>();
+
 	private long playTime; //Team Clove
 
 	private GameState gameState; // Team-Ctrl-S(Currency)
 
 	private boolean isGameClear; // CtrlS
 
-	private PlayerGrowth growth = new PlayerGrowth();
-	private NumberOfBullet numberOfBullet = new NumberOfBullet();
-
+	private int totalDistance;
 
 	/**
 	 * Constructor, establishes the properties of the screen.
@@ -93,7 +90,7 @@ public class ScoreScreen extends Screen {
 		super(width, height, fps);
 
 		this.score = gameState.getScore();
-		this.livesRemaining = gameState.getLivesRemaining();
+		this.health = gameState.getLivesRemaining();
 		this.bulletsShot = gameState.getBulletsShot();
 		this.shipsDestroyed = gameState.getShipsDestroyed();
 		this.isNewRecord = false;
@@ -105,10 +102,11 @@ public class ScoreScreen extends Screen {
 		this.gameState = gameState; // Team-Ctrl-S(Currency)
 		this.level = gameState.getLevel(); //Team Clove
 		this.statistics = new Statistics(); //Team Clove
-		this.isGameClear = this.livesRemaining > 0 && this.level > 7; // CtrlS
+		this.isGameClear = this.health > 0 && this.level > 7; // CtrlS
+		this.totalDistance = gameState.getTotalDistance();
 
 		try {
-			this.highScores = Core.getFileManager().loadHighScores();
+			this.highScores = Globals.getFileManager().loadHighScores();
 			if (highScores.size() < MAX_HIGH_SCORE_NUM
 					|| highScores.get(highScores.size() - 1).getScore()
 					< this.score)
@@ -118,10 +116,18 @@ public class ScoreScreen extends Screen {
 			logger.warning("Couldn't load high scores!");
 		}
 		try {																			// Team Clove added Exception
-			this.recentScore = Core.getFileManager().loadRecentScores();
+			this.recentScore = Globals.getFileManager().loadRecentScores();
 		} catch (IOException e) {
 			logger.warning("Couldn't load recent scores!");
 		}
+
+		try {
+			this.collections = Globals.getFileManager().loadCollections();
+			collectionsList.add(this.collections);
+		}catch (IOException ex) {
+			Logger.getLogger("Couldn't load Collection!");
+		}
+
 	}
 
 	/**
@@ -138,10 +144,9 @@ public class ScoreScreen extends Screen {
 	/**
 	 * Updates the elements on screen and checks for events.
 	 */
-	protected final void update() {
+	protected final boolean update() {
 		super.update();
 
-		draw();
 		if (this.inputDelay.checkFinished()) {
 			if (inputManager.isKeyDown(KeyEvent.VK_ESCAPE)) {
 				// Return to main menu.
@@ -156,14 +161,10 @@ public class ScoreScreen extends Screen {
 				saveCoin(); // Team-Ctrl-S(Currency)
 				saveStatistics(); //Team Clove
 				saveRecentScore(); // Team Clove
+				saveCollections();
 			} else if (inputManager.isKeyDown(KeyEvent.VK_SPACE)) {
 				// Play again.
-				System.out.println(this.isTwoPlayerMode());
-				if (this.isTwoPlayerMode()){
-					this.returnCode = 4;
-				} else {
-					this.returnCode = 2;
-				}
+				this.returnCode = 2;
 				this.isRunning = false;
 				if (this.isNewRecord) {
 					saveScore();
@@ -174,6 +175,7 @@ public class ScoreScreen extends Screen {
 				saveCoin(); // Team-Ctrl-S(Currency)
 				saveStatistics(); //Team Clove
 				saveRecentScore(); // Team Clove
+				saveCollections();
 			}
 
 			if (this.isNewRecord && this.selectionCooldown.checkFinished()) {
@@ -202,9 +204,9 @@ public class ScoreScreen extends Screen {
 					this.selectionCooldown.reset();
 				}
 			}
-			numberOfBullet.ResetPierceLevel();
-			growth.ResetBulletSpeed();
+			NumberOfBullet.ResetPierceLevel();
 		}
+		return true;
 	}
 
 	/**
@@ -217,7 +219,7 @@ public class ScoreScreen extends Screen {
 			highScores.remove(highScores.size() - 1);
 
 		try {
-			Core.getFileManager().saveHighScores(highScores);
+			Globals.getFileManager().saveHighScores(highScores);
 		} catch (IOException e) {
 			logger.warning("Couldn't load high scores!");
 		}
@@ -231,7 +233,7 @@ public class ScoreScreen extends Screen {
 		if (recentScore.size() > MAX_RECENT_SCORE_NUM)
 			recentScore.remove(0);
 		try {
-			Core.getFileManager().saveRecentScores(recentScore);
+			Globals.getFileManager().saveRecentScores(recentScore);
 		} catch (IOException e) {
 			logger.warning("Couldn't load recent scores!");
 		}
@@ -243,11 +245,22 @@ public class ScoreScreen extends Screen {
 
 	private void saveStatistics(){
 		try{
+			statistics.checkAndUpdateStreak();
 			statistics.comShipsDestructionStreak(0);
-			statistics.addPlayedGameNumber(1);
+			statistics.addShipsDestroyed(0);
+			statistics.addPlayedGameNumber(0);
 			statistics.comClearAchievementNumber(0);
+			statistics.comDistance(0);
 		} catch (IOException e) {
 			logger.warning("Couldn't load Statistics!");
+		}
+	}
+
+	private void saveCollections(){
+		try{
+			Globals.getFileManager().saveCollections(Globals.getCollectionManager().getCollectionList());
+		} catch (IOException e) {
+			logger.warning("Couldn't load Collections!");
 		}
 	}
 
@@ -257,7 +270,7 @@ public class ScoreScreen extends Screen {
 	// Team-Ctrl-S(Currency)
 	private void saveCoin() {
 		try {
-			currencyManager.addCoin(coin);
+			Globals.getCurrencyManager().addCoin(coin);
 			logger.info("You earned $" + coin);
 		} catch (IOException e) {
 			logger.warning("Couldn't load coin!");
@@ -270,7 +283,7 @@ public class ScoreScreen extends Screen {
 	// CtrlS
 	private void saveGem() {
 		try {
-			currencyManager.addGem(1);
+			Globals.getCurrencyManager().addGem(1);
 			logger.info("You earned 1 Gem for Game Clear");
 		} catch (IOException e) {
 			logger.warning("Couldn't load gem!");
@@ -280,18 +293,16 @@ public class ScoreScreen extends Screen {
 	/**
 	 * Draws the elements associated with the screen.
 	 */
-	private void draw() {
-		drawManager.initDrawing(this);
+	protected void draw() {
 
 		drawManager.drawGameEnd(this, this.inputDelay.checkFinished(), this.isGameClear); // CtrlS
-		drawManager.drawResults(this, this.score, this.livesRemaining,
+		drawManager.drawResults(this, this.score, this.health,
 				this.shipsDestroyed, (float) this.gameState.getHitCount()
-						/ this.bulletsShot, this.gameState);
+						/ this.bulletsShot, this.gameState, this.totalDistance);
 
 		if (this.isNewRecord)
 			drawManager.drawNameInput(this, this.name, this.nameCharSelected);
 
 		super.drawPost();
-		drawManager.completeDrawing(this);
 	}
 }

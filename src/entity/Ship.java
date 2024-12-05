@@ -1,33 +1,102 @@
 package entity;
 
-import java.awt.Color;
-import java.io.File;
+import engine.*;
+import engine.DrawManager.SpriteType;
+import lombok.Getter;
+import lombok.Setter;
+import screen.GameScreen;
+
+import java.awt.*;
+import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.Set;
 
-import Enemy.PiercingBullet;
-import engine.Cooldown;
-import engine.Core;
-import engine.DrawManager.SpriteType;
-import inventory_develop.Bomb;
-import Enemy.PiercingBulletPool;
-// Sound Operator
-import Sound_Operator.SoundManager;
-// Import PlayerGrowth class
-import Enemy.PlayerGrowth;
-// Import NumberOfBullet class
-import inventory_develop.NumberOfBullet;
-// Import ShipStatus class
-import inventory_develop.ItemBarrierAndHeart;
-import inventory_develop.ShipStatus;
+import static engine.Globals.*;
 
-import static engine.Globals.soundManager;
+class PlayerGrowth {
 
+	//Player's base stats
+	private int health;          //Health
+	private static double moveSpeed = 1.5;       //Movement speed
+	private static int bulletSpeed = -4;     // Bullet speed
+	private static int shootingDelay = 750;   // Shooting delay
+
+	//Constructor to set initial values
+	public PlayerGrowth() {//  Base shooting delay is 750ms
+		ResetBulletSpeed();
+		// CtrlS: set player growth based on upgrade_status.properties
+		try {
+			moveSpeed = Globals.getUpgradeManager().getMovementSpeed();
+			shootingDelay = Globals.getUpgradeManager().getAttackSpeed();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	// Increases health
+	public void increaseHealth(int increment) {
+		this.health += increment;
+	}
+
+	//Increases movement speed
+	public void increaseMoveSpeed(double increment) {
+		this.moveSpeed += increment;
+	}
+
+	// Increases bullet speed (makes bullets faster)
+	public void increaseBulletSpeed(int increment) {
+		this.bulletSpeed -= increment; // Increase by subtracting (since negative speed)
+	}
+
+	// Decreases shooting delay (makes shooting faster)
+	public void decreaseShootingDelay(int decrement) {
+		this.shootingDelay -= decrement; //  Decrease delay for faster shooting
+		if (this.shootingDelay < 100) {
+			this.shootingDelay = 100; // Minimum shooting delay is 100ms
+		}
+	}
+
+	// reset bullet speed
+	//Edit by inventory
+	public static void ResetBulletSpeed(){
+		bulletSpeed = -4;
+	}
+
+	// Returns current health
+	public int getHealth() {
+		return this.health;
+	}
+
+	//  Returns current movement speed
+	public double getMoveSpeed() {
+		return this.moveSpeed;
+	}
+
+	// Returns current bullet speed
+	public int getBulletSpeed() {
+		return this.bulletSpeed;
+	}
+
+	//  Returns current shooting delay
+	public int getShootingDelay() {
+		return this.shootingDelay;
+	}
+
+	// Prints player stats (for debugging)
+	public void printStats() {
+		System.out.println("Health: " + this.health);
+		System.out.println("MoveSpeed: " + this.moveSpeed);
+		System.out.println("BulletSpeed: " + this.bulletSpeed);
+		System.out.println("ShootingDelay: " + this.shootingDelay + "ms");
+	}
+}
 /**
  * Implements a ship, to be controlled by the player.
  *
  * @author <a href="mailto:RobertoIA1987@gmail.com">Roberto Izquierdo Amo</a>
  *
  */
+@Getter
 public class Ship extends Entity {
 	/** Minimum time between shots. */
 	private Cooldown shootingCooldown;
@@ -36,11 +105,55 @@ public class Ship extends Entity {
 	/** PlayerGrowth 인스턴스 / PlayerGrowth instance */
 	private PlayerGrowth growth;
 	/** ShipStaus instance*/
-	private ShipStatus shipStatus;
-	/** Item */
-	private ItemBarrierAndHeart item;
+	private ShipUpgradeStatus shipUpgradeStatus;
 	/** NumberOfBullet instance*/
 	private NumberOfBullet numberOfBullet;
+	/** */
+	@Getter @Setter
+	private boolean canMove;
+	/** Key to move ship left */
+	@Setter
+	private int KEY_LEFT = KeyEvent.VK_LEFT;
+	/** Key to move ship right */
+	@Setter
+	private int KEY_RIGHT = KeyEvent.VK_RIGHT;
+	/** Key to move ship up */
+	@Setter
+	private int KEY_UP = KeyEvent.VK_UP;
+	/** Key to move ship down */
+	@Setter
+	private int KEY_DOWN = KeyEvent.VK_DOWN;
+	/** Key to shoot bullet */
+	@Setter
+	private int KEY_SHOOT = KeyEvent.VK_ENTER;
+	/** Ship health */
+	@Getter @Setter
+	private int health;
+	@Getter
+	private int x;
+	@Getter
+	private int y;
+	/**	Has bomb bullet item */
+	@Getter @Setter
+	private boolean bombBullet;
+	/**	Is barrier activated */
+	@Getter @Setter
+	private boolean barrierActive = false;
+	/**	Store barrier acivated time */
+	@Getter @Setter
+	private long barrierActivationTime;
+	@Getter
+	private Cooldown doubleTapCooldown = Core.getCooldown(3500);
+	private long leftPressedTime = 0;
+	private long leftPressedTimeOld = 0;
+	private boolean isLeftPressed = false;
+	private long rightPressedTime = 0;
+	private long rightPressedTimeOld = 0;
+	private boolean isRightPressed = false;
+
+	private boolean activeDoubleTab = false;
+
+	//TODO : Move health to ship from GameScreen, and Add immunity time
 
 	/**
 	 * Constructor, establishes the ship's properties.
@@ -53,14 +166,14 @@ public class Ship extends Entity {
 	//Edit by Enemy
 	public Ship(final int positionX, final int positionY, final Color color) {
 		super(positionX, positionY - 50, 13 * 2, 8 * 2, color); // add by team HUD
-
+		setClassName("Ship");
 		this.spriteType = SpriteType.Ship;
 
 		// Create PlayerGrowth object and set initial stats
 		this.growth = new PlayerGrowth();  // PlayerGrowth 객체를 먼저 초기화
 
-		this.shipStatus = new ShipStatus();
-		shipStatus.loadStatus();
+		this.shipUpgradeStatus = new ShipUpgradeStatus();
+		shipUpgradeStatus.loadStatus();
 
 		//  Now use the initialized growth object
 		this.shootingCooldown = Core.getCooldown(growth.getShootingDelay());
@@ -87,38 +200,51 @@ public class Ship extends Entity {
 		this.positionX -= growth.getMoveSpeed(); // Use PlayerGrowth for movement speed
 	} //Edit by Enemy
 
+	public void setPosition(int x, int y) {
+		this.positionX = x;
+		this.positionY = y;
+		this.x = x;
+		this.y = y;
+	}
+
+
+	public final void moveUP() {
+		this.positionY -= growth.getMoveSpeed();
+	}
+
+	public final void moveDown() {
+		this.positionY += growth.getMoveSpeed();
+	}
+
 	/**
 	 * Shoots a bullet upwards.
 	 *
-	 * @param bullets
-	 *            List of bullets on screen, to add the new bullet.
 	 * @return Checks if the bullet was shot correctly.
 	 *
 	 * You can set Number of enemies the bullet can pierce at here.
 	 */
 	//Edit by Enemy and Inventory
-	public final boolean shoot(final Set<PiercingBullet> bullets) {
+	public final boolean shoot() {
 
 		if (this.shootingCooldown.checkFinished()) {
 
 			this.shootingCooldown.reset(); // Reset cooldown after shooting
 
-			soundManager.playES("My_Gun_Shot");
+			SoundManager.playES("My_Gun_Shot");
 
-			// Use NumberOfBullet to generate bullets
-			Set<PiercingBullet> newBullets = numberOfBullet.addBullet(
-					positionX + this.width / 2,
-					positionY,
-					growth.getBulletSpeed(), // Use PlayerGrowth for bullet speed
-					Bomb.getCanShoot()
-			);
-
-			// now can't shoot bomb
-			Bomb.setCanShoot(false);
-
-			// Add new bullets to the set
-			bullets.addAll(newBullets);
-
+			if(isBombBullet()) {
+				BombBullet bombBullet = new BombBullet(positionX, positionY, growth.getBulletSpeed());
+				getCurrentScreen().addEntity(bombBullet);
+				this.setBombBullet(false);
+			}
+			else{
+				// Use NumberOfBullet to generate bullets
+				Set<PiercingBullet> newBullets = numberOfBullet.addBullet(
+						positionX + this.width / 2,
+						positionY,
+						growth.getBulletSpeed() // Use PlayerGrowth for bullet speed
+				);
+			}
 			return true;
 		}
 		return false;
@@ -131,19 +257,69 @@ public class Ship extends Entity {
 	/**
 	 * Updates status of the ship.
 	 */
+	@Override
 	public final void update() {
-		if (!this.destructionCooldown.checkFinished())
-			this.spriteType = SpriteType.ShipDestroyed;
-		else
-			this.spriteType = SpriteType.Ship;
+		this.spriteType = this.destructionCooldown.checkFinished() ? SpriteType.Ship : SpriteType.ShipDestroyed;
+
+		if(!isPlayDestroyAnimation() && isDestroyed()){
+			// Do not draw when ship destroyed
+			this.setEnabled(false);
+		}
+
+		GameScreen screen = (GameScreen) getCurrentScreen();
+		if (!isDestroyed() && this.canMove) {
+			InputManager inputManager = getInputManager();
+
+			boolean moveRight = inputManager.isKeyDown(KEY_RIGHT);
+			boolean moveLeft = inputManager.isKeyDown(KEY_LEFT);
+			boolean moveUp = inputManager.isKeyDown((KEY_UP));
+			boolean moveDown = inputManager.isKeyDown((KEY_DOWN));
+
+			boolean isRightBorder = getPositionX()
+					+ this.getWidth() + this.getSpeed() > screen.getWidth() - 1;
+			boolean isLeftBorder = getPositionX()
+					- this.getSpeed() < 1;
+			boolean isTopBorder = (getPositionY() - this.getSpeed())
+					< screen.getHeight() * 0.6;
+			boolean isBottomBorder = getPositionY() + this.getHeight() + this.getSpeed()
+					> screen.getHeight() - 63;
+
+			 if (moveRight && !isRightBorder) {
+				this.moveRight();
+				screen.backgroundMoveRight = false;
+			}
+			if (moveLeft && !isLeftBorder) {
+				this.moveLeft();
+				screen.backgroundMoveLeft = false;
+			}
+			if (moveUp && !isTopBorder) {
+				this.moveUP();
+			}
+			if (moveDown && !isBottomBorder) {
+				this.moveDown();
+			}
+
+			this.detectedDoubleTap(moveLeft, moveRight);
+
+			if (inputManager.isKeyDown(KEY_SHOOT))
+				if (this.shoot()) {
+					screen.bulletsShot++;
+					screen.fire_id++;
+					getLogger().fine("Bullet's fire_id is " + screen.fire_id);
+				}
+		}
+		if(this.activeDoubleTab && doubleTapCooldown.checkFinished()){
+			this.activeDoubleTab = false;
+		}
+		updateBarrier();
 	}
 
 	/**
 	 * Switches the ship to its destroyed state.
 	 */
-	public final void destroy() {
+	public final void playDestroyAnimation() {
 		this.destructionCooldown.reset();
-		soundManager.playES("ally_airship_damage");
+		SoundManager.playES("ally_airship_damage");
 	}
 
 	/**
@@ -151,8 +327,21 @@ public class Ship extends Entity {
 	 *
 	 * @return True if the ship is currently destroyed.
 	 */
-	public final boolean isDestroyed() {
+
+	public final boolean isPlayDestroyAnimation() {
 		return !this.destructionCooldown.checkFinished();
+	}
+
+	public final boolean isDestroyed() {
+		return !(this.health > 0);
+	}
+
+	public final void setDestroyed(boolean destroyed) {
+		if(destroyed) {
+			this.destructionCooldown = Core.getCooldown(-1);
+			this.setEnabled(false);
+		}
+		else this.destructionCooldown = Core.getCooldown(1000);
 	}
 	/**
 	 * 스탯을 증가시키는 메서드들 (PlayerGrowth 클래스 사용)
@@ -168,19 +357,19 @@ public class Ship extends Entity {
 	//  Increases movement speed
 	//Edit by Enemy
 	public void increaseMoveSpeed() {
-		growth.increaseMoveSpeed(shipStatus.getSpeedIn());
+		growth.increaseMoveSpeed(shipUpgradeStatus.getSpeedIn());
 	}
 
 	// Increases bullet speed
 	//Edit by Enemy
 	public void increaseBulletSpeed() {
-		growth.increaseBulletSpeed(shipStatus.getBulletSpeedIn());
+		growth.increaseBulletSpeed(shipUpgradeStatus.getBulletSpeedIn());
 	}
 
 	//  Decreases shooting delay
 	//Edit by Enemy
 	public void decreaseShootingDelay() {
-		growth.decreaseShootingDelay(shipStatus.getSuootingInIn());
+		growth.decreaseShootingDelay(shipUpgradeStatus.getSuootingInIn());
 		System.out.println(growth.getShootingDelay());
 		this.shootingCooldown = Core.getCooldown(growth.getShootingDelay()); // Apply new shooting delay
 	}
@@ -193,7 +382,7 @@ public class Ship extends Entity {
 	public final double getSpeed() {
 		return growth.getMoveSpeed();
 	}
-	
+
 	/**
 	 * Calculates and returns the bullet speed in Pixels per frame.
 	 *
@@ -206,7 +395,86 @@ public class Ship extends Entity {
 
 	public PlayerGrowth getPlayerGrowth() {
 		return growth;
-	}	// Team Inventory(Item)
+	}	// Team Inventory(Item)]
 
+	public void subtractHealth(){
+		this.playDestroyAnimation();
+		this.health -= 1;
+		getLogger().info("Hit on player ship, " + this.health
+				+ " lives remaining.");
 
+		// Sound Operator
+		if (this.health == 0){
+			SoundManager.playShipDieSounds();
+		}
+	}
+
+	//barrier item stuffs
+	public void updateBarrier() {
+		if (this.barrierActive) {
+			this.setSpriteType(SpriteType.ShipBarrierStatus);
+
+			long currentTime = System.currentTimeMillis();
+
+			if (currentTime - this.barrierActivationTime >= barrier_DURATION) {
+				this.setSpriteType(SpriteType.Ship);
+				deactivatebarrier();    // deactive barrier
+			}
+		}
+	}
+
+	public void moveToEdgeLeft() {
+		this.positionX = 0;
+	}
+	public void moveToEdgeRight() {
+		this.positionX = getCurrentScreen().getWidth()-this.width;
+	}
+
+	public void detectedDoubleTap(boolean isPressLeft, boolean isPressRight){
+		long currentTime = System.currentTimeMillis();
+		if(isLeftPressed && !isPressLeft){
+			isLeftPressed = false;
+			if(currentTime - leftPressedTimeOld < 500){
+				if(doubleTapCooldown.getRemainingTime() == 0){
+					moveToEdgeLeft();
+					activeDoubleTab = true;
+					Globals.getLogger().info("Detected Double Tab Left");
+					doubleTapCooldown.reset();
+				}
+			}
+		}
+		else if(!isLeftPressed && isPressLeft){
+			isLeftPressed = true;
+			leftPressedTimeOld = leftPressedTime;
+			leftPressedTime = currentTime;
+		}
+
+		if(isRightPressed && !isPressRight){
+			isRightPressed = false;
+			if(currentTime - rightPressedTimeOld < 500){
+				if(doubleTapCooldown.getRemainingTime() == 0){
+					moveToEdgeRight();
+					activeDoubleTab = true;
+					Globals.getLogger().info("Detected Double Tab Right");
+					doubleTapCooldown.reset();
+				}
+			}
+		}
+		else if(!isRightPressed && isPressRight){
+			isRightPressed = true;
+			rightPressedTimeOld = rightPressedTime;
+			rightPressedTime = currentTime;
+		}
+	}
+	public void activatebarrier() {
+		this.barrierActive = true;
+		this.barrierActivationTime = System.currentTimeMillis();
+	}
+
+	public boolean getActiveDoubleTab() { return activeDoubleTab; }
+	public void setActiveDoubleTab(boolean activeDoubleTab) { this.activeDoubleTab = activeDoubleTab; }
+	public void deactivatebarrier() {
+		this.barrierActive = false;
+		getLogger().info("barrier effect ends");
+	}
 }

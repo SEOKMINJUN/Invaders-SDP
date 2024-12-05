@@ -1,14 +1,19 @@
 package entity;
 
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
-import Enemy.HpEnemyShip;
-import engine.Cooldown;
-import engine.Core;
+import engine.*;
 import engine.DrawManager.SpriteType;
-// Sound Operator
-import Sound_Operator.SoundManager;
-import static engine.Globals.soundManager;
+import lombok.Getter;
+import lombok.Setter;
+import screen.GameScreen;
+
+import javax.swing.*;
 
 /**
  * Implements a enemy ship, to be destroyed by the player.
@@ -26,12 +31,34 @@ public class EnemyShip extends Entity {
 	/** Point value of a bonus enemy. */
 	private static final int BONUS_TYPE_POINTS = 100;
 
-	/** EnemyShip's health point */
-	private int hp; // Add by team Enemy
-	/** EnemyShip's Initial x-coordinate **/
-	private int x; // Add by team Enemy
-	/** EnemyShip's Initial y=coordinate **/
-	private int y; // Add by team Enemy
+    // Added by team Enemy
+    /** EnemyShip's health point
+     * -- SETTER --
+     *  Setter for the Hp of the Enemy ship.
+     *
+     * @param hp
+     * 			New hp of the Enemy ship.
+     */
+	@Getter @Setter
+    private int hp; // Add by team Enemy
+    // Add by team Enemy
+    /** EnemyShip's Initial x-coordinate
+     * -- GETTER --
+     *  Getter for the Initial x-coordinate of this EnemyShip.
+     *
+     * @return Initial x-coordinate of the ship.
+     **/
+	@Getter
+    private int x; // Add by team Enemy
+    // Add by team Enemy
+    /** EnemyShip's Initial y=coordinate
+     * -- GETTER --
+     *  Getter for the Initial y-coordinate of this EnemyShip.
+     *
+     * @return Initial x-coordinate of the ship.
+     **/
+	@Getter
+    private int y; // Add by team Enemy
 
 	/** Cooldown between sprite changes. */
 	private Cooldown animationCooldown;
@@ -42,9 +69,17 @@ public class EnemyShip extends Entity {
 	/** Values of the ship, in points, when destroyed. */
 	private int pointValue;
 
-	/** Speed reduction or increase multiplier (1.0 means normal speed). */
-	private double speedMultiplier;
+	/** Speed reduction or increase multiplier (1.0 means normal speed).
+     * -- SETTER --
+     *  Getter for the current speed multiplier.
+     *
+     */
+	@Getter
+    @Setter
+    private double speedMultiplier = 1.0;
 	private double defaultSpeedMultiplier;
+	private Cooldown explosionCooldown;
+	private int shipType;
 
 	/**
 	 * Constructor, establishes the ship's properties.
@@ -59,8 +94,8 @@ public class EnemyShip extends Entity {
 
 
 	public EnemyShip(final int positionX, final int positionY,
-			final SpriteType spriteType,int hp,int x, int y) {// Edited by Enemy
-		super(positionX, positionY, 12 * 2, 8 * 2, HpEnemyShip.determineColor(hp));
+			final SpriteType spriteType, int hp,int x, int y) {// Edited by Enemy
+		super(positionX, positionY, 12 * 2, 8 * 2, getColorByHP(hp));
 
 		this.hp = hp;// Add by team Enemy
 		this.spriteType = spriteType;
@@ -93,6 +128,12 @@ public class EnemyShip extends Entity {
 				this.pointValue = 0;
 				break;
 		}
+		this.shipType = 0;
+		this.explosionCooldown = Core.getCooldown(500);
+
+		setClassName("EnemyShip");
+		Globals.getCurrentScreen().addEntity(this);
+		setEnabled(true);
 	}
 
 	/**
@@ -101,6 +142,7 @@ public class EnemyShip extends Entity {
 	 */
 	public EnemyShip() {
 		super(-32, 60, 16 * 2, 7 * 2, Color.RED);
+		setClassName("EnemyShip");
 
 		this.hp = 1; // Add by team Enemy
 		this.spriteType = SpriteType.EnemyShipSpecial;
@@ -108,6 +150,12 @@ public class EnemyShip extends Entity {
 		this.pointValue = BONUS_TYPE_POINTS;
 		this.x = -2;  // Add by team Enemy
 		this.y = -2; // Add by team Enemy
+
+		this.shipType = 1;
+		this.explosionCooldown = Core.getCooldown(Globals.GAME_SCREEN_BONUS_SHIP_EXPLOSION);
+		setClassName("EnemyShip");
+		Globals.getCurrentScreen().addEntity(this);
+		setEnabled(true);
 	}
 
 
@@ -137,7 +185,10 @@ public class EnemyShip extends Entity {
 	 * Updates attributes, mainly used for animation purposes.
 	 */
 	public final void update() {
-		if (this.animationCooldown.checkFinished()) {
+		if(isDestroyed() && explosionCooldown.checkFinished()){
+			remove();
+		}
+		if (this.shipType == 0 && this.animationCooldown.checkFinished()) {
 			this.animationCooldown.reset();
 
 			switch (this.spriteType) {
@@ -175,14 +226,94 @@ public class EnemyShip extends Entity {
 	 * Destroys the ship, causing an explosion.
 	 */
 	public final void destroy() {
-		this.isDestroyed = true;
-		if(this.spriteType == SpriteType.EnemyShipSpecial){
-			soundManager.playES("special_enemy_die");
-		}else{
-			soundManager.playES("basic_enemy_die");
-		}
-		this.spriteType = SpriteType.Explosion;
+		GameScreen screen = (GameScreen) Globals.getCurrentScreen();
 
+		// Check it is explosive type ship
+		switch (this.spriteType){
+			case ExplosiveEnemyShip1:
+			case ExplosiveEnemyShip2:
+				explosion();
+				SoundManager.playES("enemy_explosion");
+				break;
+			default:
+				if(hp > 0){
+					Globals.getLogger().info("Enemy ship lost 1 HP in ("
+							+ this.x + "," + y + ")");
+				}else{
+					Globals.getLogger().info("Destroyed ship in ("
+							+ this.x + "," + y + ")");
+				}
+				break;
+		}
+
+		//Set status
+		this.isDestroyed = true;
+
+		// Check it is EnemyShip in formation
+		if(this.shipType == 0){
+			EnemyShipFormation enemyShipFormation = screen.getEnemyShipFormation();
+			enemyShipFormation.setNextShooterByDestroyedShip(this);
+			enemyShipFormation.shipCount--;
+		}
+		if(this.shipType == 0){
+			EnemyShipFormation enemyShipFormation = screen.getEnemyShipFormation();
+			List<List<EnemyShip>> enemyShips = enemyShipFormation.getEnemyShips();
+			if(enemyShips.size() > this.x) {
+				List<EnemyShip> column = enemyShips.get(this.x);
+				if (!column.remove(this)) {
+					Globals.getLogger().warning("EnemyShip from " + this.x + " " + this.y + " is already removed");
+				}
+			}
+		}
+		//Check point to add
+		int point = this.getPointValue();
+		if(screen.getFeverTimeItem().isActive())
+			point *= 2;
+		screen.addEnemyShipDestroyScore(point);
+		screen.shipsDestroyed++;
+
+		// Drop Item
+		if(this.spriteType == SpriteType.EnemyShipSpecial){
+			SoundManager.playES("special_enemy_die");
+			GameScreen.dropItem(this,1,2);
+		}else{
+			SoundManager.playES("basic_enemy_die");
+			if (getColor().equals(Color.MAGENTA)) GameScreen.dropItem(this, 1, 1);
+		}
+		Globals.getCollectionManager().AddCollectionEnemyTypes(this.spriteType);
+
+		//Update Sprite to Explosion(DEAD)
+		this.spriteType = SpriteType.Explosion;
+		this.explosionCooldown.reset();
+	}
+
+	private void explosion() {
+		GameScreen screen = (GameScreen) Globals.getCurrentScreen();
+		EnemyShip enemyShip = null;
+
+		Queue<EnemyShip> destroyedShips = new LinkedList<>();
+		Timer timer = new Timer(500, null);
+
+		while((enemyShip = (EnemyShip)screen.findEntityByClassname(enemyShip, "EnemyShip")) != null){
+			if (!enemyShip.isDestroyed() && checkCollisionWithRadius(enemyShip, 100)) {
+				destroyedShips.add(enemyShip);
+				break;
+			}
+		}
+
+		ActionListener listener = new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				while(!destroyedShips.isEmpty()){
+					EnemyShip targetShip = destroyedShips.poll();
+					targetShip.subtractHP();
+				}
+				((Timer) e.getSource()).stop();
+			}
+		};
+
+		timer.addActionListener(listener);
+		timer.start();
 	}
 
 	/**
@@ -194,84 +325,61 @@ public class EnemyShip extends Entity {
 		return this.isDestroyed;
 	}
 
-
-	/** Constructor for original EnemyShip that did not have hp.
-	 * That enemyShip is moved to a constructor with the hp default of 1*/
-	public EnemyShip(final int positionX, final int positionY,
-					 final SpriteType spriteType){
-		this(positionX,positionY,spriteType,1,-2,-2);
-	}// Edited by Enemy
-
-	/**
-	 * Getter for the Hp of this Enemy ship.
-	 *
-	 * @return Hp of the ship.
-	 */
-	public final int getHp() {
-		return this.hp;
-	}// Added by team Enemy
-
-	/**
-	 * Setter for the Hp of the Enemy ship.
-	 *
-	 * @param hp
-	 * 			New hp of the Enemy ship.
-	 */
-	public void setHp(int hp) {
-		this.hp = hp;
-	}// Added by team Enemy
-
-	/**
-	 * Getter for the Initial x-coordinate of this EnemyShip.
-	 *
-	 * @return Initial x-coordinate of the ship.
-	 */
-	public int getX(){ return this.x;} // Add by team Enemy
-
-	/**
-	 * Getter for the Initial y-coordinate of this EnemyShip.
-	 *
-	 * @return Initial x-coordinate of the ship.
-	 */
-	public int getY(){ return this.y;} // Add by team Enemy
-
-	/**
-	 * Destroys ship, causing a chain explode.
-	 */
-	public final void chainExplode() { // Added by team Enemy
-		destroy();
-		setChainExploded(true);
-		setHp(0);
-	}
-
-	/**
-	 * Checks if the ship has been chain exploded.
-	 *
-	 * @return True if the ship has been chain exploded.
-	 */
-	public final boolean isChainExploded() {
-		return this.isChainExploded;
-	} // Added by team Enemy
-
-	/**
-	 * Setter for enemy ship's isChainExploded to false.
-	 */
-	public final void setChainExploded(boolean isChainExploded) {
-		this.isChainExploded = isChainExploded;
-	} // Added by team Enemy
-
-	/**
-	 * Getter for the current speed multiplier.
-	 *
-	 * @return The current speed multiplier.
-	 */
-	public void setSpeedMultiplier(double speedMultiplier) {
-		this.speedMultiplier = speedMultiplier;
-	}
-	public void resetSpeedMultiplier() {
+    public void resetSpeedMultiplier() {
 		this.speedMultiplier = this.defaultSpeedMultiplier;
 	}
-	public double getSpeedMultiplier() {
-		return this.speedMultiplier;
+
+    @Override
+	public void draw() {
+		DrawManager.drawEntity(this, getPositionX(), getPositionY());
+	}
+
+	/**
+	 * When the EnemyShip is hit and its hp reaches 0, destroy the ship
+	 */
+	public void subtractHP() {
+		this.hp -= 1;
+		if(!this.getColor().equals(Color.magenta))
+			this.setColor(getColorByHP(hp));
+		if(hp <= 0)
+			this.destroy();
+
+		//DEBUG LOG
+		switch (this.spriteType){
+			case ExplosiveEnemyShip1:
+			case ExplosiveEnemyShip2:
+				Globals.getLogger().finer("Destroyed ExplosiveEnemyship in ("
+						+ this.x + "," + this.y + ")");
+				break;
+			default:
+				if(hp > 0){
+					Globals.getLogger().finer("Enemy ship lost 1 HP in ("
+							+ this.x + "," + y + ")");
+				}else{
+					Globals.getLogger().finer("Destroyed ship in ("
+							+ this.x + "," + y + ")");
+				}
+				break;
+		}
+	}
+
+	/**
+	 * Determine the color of the ship according to hp
+	 * @param hp
+	 * 			The ship's hp
+	 * @return if hp is 2, return yellow
+	 * 		   if hp is 3, return orange
+	 * 		   if hp is 1, return white
+	 */
+	public static Color getColorByHP(int hp) {
+		Color color = Color.WHITE; // Declare a variable to store the color
+		// set basic color WHITE
+		if (hp == 2)
+			return new Color(0xFFEB3B);
+		else if (hp == 3)
+			return new Color(0xFFA500);
+		else if (hp == 1)
+			return Math.random() < 0.1 ? Color.MAGENTA : Color.WHITE;
+		return Color.WHITE;
 	}
 }

@@ -43,7 +43,7 @@ public class Frame extends JFrame {
 		this.height = height - insets.top + insets.bottom;
 		setTitle("Invaders");
 
-		addKeyListener(Core.getInputManager());
+		addKeyListener(Globals.getInputManager());
 	}
 
 	/**

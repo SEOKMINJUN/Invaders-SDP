@@ -17,10 +17,9 @@ import java.net.URLDecoder;
 import java.nio.charset.Charset;
 import java.util.*;
 import java.util.logging.Logger;
-import CtrlS.EncryptionSupport;
-import engine.DrawManager.SpriteType;
+import java.util.stream.Collectors;
 
-import clove.Statistics; //Team Clove
+import engine.DrawManager.SpriteType;
 
 /**
  * Manages files used in the application.
@@ -306,17 +305,21 @@ public final class FileManager {
 			String highestLevel = reader.readLine();
 			String totalShipDestroyed = reader.readLine();
 			String clearAchievementNumber = reader.readLine();
+			String accuracy = reader.readLine();
 			String name = null;
+			String distance = reader.readLine();
 
 			while ((date != null) && (score != null)) {
 				recentScore = new Score(name, Integer.parseInt(score), date, Integer.parseInt(highestLevel),
-						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber));
+						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber), Float.parseFloat(accuracy), Integer.parseInt(distance));
 				recentScores.add(recentScore);
 				date = reader.readLine();
 				score = reader.readLine();
 				highestLevel = reader.readLine();
 				totalShipDestroyed = reader.readLine();
 				clearAchievementNumber = reader.readLine();
+				accuracy = reader.readLine();
+				distance = reader.readLine();
 			}
 
 		} finally {
@@ -367,18 +370,21 @@ public final class FileManager {
 			String highestLevel = bufferedReader.readLine();
 			String totalShipDestroyed = bufferedReader.readLine();
 			String clearAchievementNumber = bufferedReader.readLine();
+			String accuracy = bufferedReader.readLine();
+			String distance = bufferedReader.readLine();
 			String name = null;
 
 			while ((date != null) && (score != null)) {
 				recentScore = new Score(name, Integer.parseInt(score), date, Integer.parseInt(highestLevel),
-						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber));
+						Integer.parseInt(totalShipDestroyed), Integer.parseInt(clearAchievementNumber), Float.parseFloat(accuracy), Integer.parseInt(distance));
 				recentScores.add(recentScore);
 				date = bufferedReader.readLine();
 				score = bufferedReader.readLine();
 				highestLevel = bufferedReader.readLine();
 				totalShipDestroyed = bufferedReader.readLine();
 				clearAchievementNumber = bufferedReader.readLine();
-
+				accuracy = bufferedReader.readLine();
+				distance = bufferedReader.readLine();
 			}
 
 		} catch (FileNotFoundException e) {
@@ -448,6 +454,10 @@ public final class FileManager {
 				bufferedWriter.newLine();
 				bufferedWriter.write(Integer.toString(score.getClearAchievementNumber()));
 				bufferedWriter.newLine();
+				bufferedWriter.write(Float.toString(score.getAccuracy()));
+				bufferedWriter.newLine();
+				bufferedWriter.write(Integer.toString(score.getDistance()));
+				bufferedWriter.newLine();
 				savedCount++;
 			}
 			stat.resetStatistics();
@@ -456,6 +466,113 @@ public final class FileManager {
 			if (bufferedWriter != null)
 				bufferedWriter.close();
 		}
+	}
+
+	public void saveCollections(final List<Statistics> collectionsStatistics)
+			throws IOException {
+		Properties properties = new Properties();
+		OutputStream outputStream = null;
+
+		try {
+			String jarPath = FileManager.class.getProtectionDomain()
+					.getCodeSource().getLocation().getPath();
+			jarPath = URLDecoder.decode(jarPath, "UTF-8");
+
+			String collectionsPath = new File(jarPath).getParent();
+			collectionsPath += File.separator;
+			collectionsPath += "Collections.properties";
+
+			File staticsFile = new File(collectionsPath);
+
+			logger.info("Saving Collections");
+
+			if (!staticsFile.exists())
+				staticsFile.createNewFile();
+
+			if(!collectionsStatistics.isEmpty()){
+				Statistics stat = collectionsStatistics.get(0);
+				properties.setProperty("itemsArray", arrayToString(stat.getItemsArray()));
+				properties.setProperty("achievementArray", arrayToString(stat.getAchievementsArray()));
+				properties.setProperty("enemiesArray", arrayToString(stat.getEnemiesArray()));
+			}
+			outputStream = new FileOutputStream(staticsFile);
+			properties.store(new OutputStreamWriter(outputStream, Charset.forName("UTF-8")),
+					"Collections");
+
+
+		} finally {
+			if (outputStream != null)
+				outputStream.close();
+		}
+	}
+
+	public Statistics loadCollections() throws IOException {
+		Properties properties = new Properties();
+		InputStream inputStream = null;
+
+		Statistics stat;
+
+		try {
+			String jarPath = FileManager.class.getProtectionDomain()
+					.getCodeSource().getLocation().getPath();
+			jarPath = URLDecoder.decode(jarPath, "UTF-8");
+
+			String collectionsPath = new File(jarPath).getParent();
+			collectionsPath += File.separator;
+			collectionsPath += "Collections.properties";
+
+			File staticsFile = new File(collectionsPath);
+
+			inputStream = new FileInputStream(staticsFile);
+			properties.load(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
+
+			logger.info("Loading Collections");
+
+			int[] itemsArray = stringToArray(properties.getProperty("itemsArray"));
+			int[] achievementArray = stringToArray(properties.getProperty("achievementArray"));
+			int[] enemiesArray = stringToArray(properties.getProperty("enemiesArray"));
+
+			Globals.getLogger().info("Loaded Achievements: " + Arrays.toString(achievementArray));
+
+			stat = new Statistics(itemsArray, achievementArray, enemiesArray);
+
+		} catch (FileNotFoundException e) {
+			logger.info("Loading default Collections.");
+			stat = loadDefaultCollections();
+		} finally {
+			if (inputStream != null) {
+				inputStream.close();
+			}
+		}
+		return stat;
+	}
+
+	public Statistics loadDefaultCollections() throws IOException {
+		Properties properties = new Properties();
+		InputStream inputStream = null;
+
+		Statistics stat;
+
+		try{
+			inputStream = FileManager.class.getClassLoader()
+					.getResourceAsStream("Collections.properties");
+
+			properties.load(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
+
+			int[] itemsArray = stringToArray(properties.getProperty("itemsArray"));
+			int[] achievementArray = stringToArray(properties.getProperty("achievementArray"));
+			int[] enemiesArray = stringToArray(properties.getProperty("enemiesArray"));
+
+			Globals.getLogger().info("Default Achievements: " + Arrays.toString(achievementArray));
+
+			stat = new Statistics(itemsArray, achievementArray, enemiesArray);
+
+		} finally {
+			if(inputStream != null){
+				inputStream.close();
+			}
+		}
+		return stat;
 	}
 
 	/**
@@ -483,7 +600,7 @@ public final class FileManager {
 
             File staticsFile = new File(staticsPath);
 
-			logger.info("Saving Player Statistic.");
+			//logger.info(" Saving Player Statistic.");
 
             if (!staticsFile.exists())
 				staticsFile.createNewFile();
@@ -497,6 +614,8 @@ public final class FileManager {
 				properties.setProperty("playedGameNumber", String.valueOf(stat.getPlayedGameNumber()));
 				properties.setProperty("clearAchievementNumber", String.valueOf(stat.getClearAchievementNumber()));
 				properties.setProperty("totalPlaytime", String.valueOf(stat.getTotalPlaytime()));
+				properties.setProperty("accuracy", String.valueOf(stat.getAccuracy()));
+				properties.setProperty("distance", String.valueOf(stat.getDistance()));
 			}
 			outputStream = new FileOutputStream(staticsFile);
 			properties.store(new OutputStreamWriter(outputStream, Charset.forName("UTF-8")),
@@ -536,9 +655,21 @@ public final class FileManager {
 			File staticsFile = new File(staticsPath);
 
 			inputStream = new FileInputStream(staticsFile);
+			if(inputStream == null){
+				logger.warning("Failed to load Statistic.properties inputStream.");
+			}
 			properties.load(new InputStreamReader(inputStream, Charset.forName("UTF-8")));
 
-			logger.info("Loading Player Statistic.");
+			if(properties.getProperty("highestLevel") == null){
+				logger.warning("Failed to load highestLevel." + properties.toString());
+			}
+			if(properties.getProperty("accuracy") == null){
+				logger.warning("Failed to load accuracy." + properties.toString());
+			}
+			if(properties.getProperty("distance") == null){
+				logger.warning("Failed to load distance." + properties.toString());
+			}
+			//logger.info("Loading Player Statistic.");
 
 			int highestLevel = Integer.parseInt(properties.getProperty("highestLevel"));
 			int totalBulletsShot = Integer.parseInt(properties.getProperty("totalBulletsShot"));
@@ -547,9 +678,11 @@ public final class FileManager {
 			int playedGameNumber = Integer.parseInt(properties.getProperty("playedGameNumber"));
 			int clearAchievementNumber = Integer.parseInt(properties.getProperty("clearAchievementNumber"));
 			long totalPlaytime = Integer.parseInt(properties.getProperty("totalPlaytime"));
+			float accuracy = Float.parseFloat(properties.getProperty("accuracy"));
+			int distance = Integer.parseInt(properties.getProperty("distance"));
 
 			stat = new Statistics(highestLevel, totalBulletsShot, totalShipsDestroyed, shipsDestructionStreak,
-					playedGameNumber, clearAchievementNumber, totalPlaytime);
+					playedGameNumber, clearAchievementNumber, totalPlaytime, accuracy, distance);
 
 		} catch (FileNotFoundException e){
 			logger.info("Loading default user statistics.");
@@ -593,9 +726,11 @@ public final class FileManager {
 			int playedGameNumber = Integer.parseInt(properties.getProperty("playedGameNumber"));
 			int clearAchievementNumber = Integer.parseInt(properties.getProperty("clearAchievementNumber"));
 			long totalPlaytime = Integer.parseInt(properties.getProperty("totalPlaytime"));
+			float accuracy = Float.parseFloat(properties.getProperty("accuracy"));
+			int distance = Integer.parseInt(properties.getProperty("distance"));
 
 			stat = new Statistics(highestLevel, totalBulletsShot, totalShipsDestroyed, shipsDestructionStreak,
-					playedGameNumber, clearAchievementNumber, totalPlaytime);
+					playedGameNumber, clearAchievementNumber, totalPlaytime, accuracy, distance);
 
 		} finally {
 			if(inputStream != null){
@@ -642,11 +777,11 @@ public final class FileManager {
 
 		// Modify the first line (coin)
 		if (!lines.isEmpty()) {
-			lines.set(0, EncryptionSupport.encrypt(Integer.toString(coin)));
+			lines.set(0, Integer.toString(coin));
 		} else {
 			// If the file was empty, add the new coin as the first line and the new gem as the second line
-			lines.add(EncryptionSupport.encrypt(Integer.toString(coin)));
-			lines.add(EncryptionSupport.encrypt("0"));
+			lines.add(Integer.toString(coin));
+			lines.add("0");
 		}
 
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
@@ -683,6 +818,7 @@ public final class FileManager {
 			currencyFile.createNewFile();
 
 		// If the file was empty, add the new coin as the first line and the new gem as the second line
+		/*
 		if (currencyFile.length() == 0) {
 			try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(currencyFile), Charset.forName("UTF-8")))) {
@@ -692,12 +828,18 @@ public final class FileManager {
 				bufferedWriter.newLine();
 			}
 		}
+		 */
 
 		try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
 				new FileInputStream(currencyFile), Charset.forName("UTF-8")))) {
 			logger.info("Loading user's coin.");
 			String amount = bufferedReader.readLine();
-			coin = Integer.parseInt(EncryptionSupport.decrypt(amount));
+			//coin = Integer.parseInt(EncryptionSupport.decrypt(amount));
+
+			if(amount == null)
+				coin = 0;
+			else
+				coin = Integer.parseInt(amount);
 		}
 
 		return coin;
@@ -739,13 +881,15 @@ public final class FileManager {
 		}
 
 		// Modify the second line (gem)
+
 		if (!lines.isEmpty()) {
-			lines.set(1, EncryptionSupport.encrypt(Integer.toString(gem)));
+			lines.set(1, Integer.toString(gem));
 		} else {
 			// If the file was empty, add the new coin as the first line and the new gem as the second line
-			lines.add(EncryptionSupport.encrypt("0"));
-			lines.add(EncryptionSupport.encrypt(Integer.toString(gem)));
+			lines.add("0");
+			lines.add(Integer.toString(gem));
 		}
+
 
 		try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
 				new FileOutputStream(currencyFile), Charset.forName("UTF-8")))) {
@@ -785,9 +929,9 @@ public final class FileManager {
 		if (currencyFile.length() == 0) {
 			try (BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(
 					new FileOutputStream(currencyFile), Charset.forName("UTF-8")))) {
-				bufferedWriter.write(EncryptionSupport.encrypt("0"));
+				bufferedWriter.write("0");
 				bufferedWriter.newLine();
-				bufferedWriter.write(EncryptionSupport.encrypt("0"));
+				bufferedWriter.write("0");
 				bufferedWriter.newLine();
 			}
 		}
@@ -798,7 +942,11 @@ public final class FileManager {
 
 			bufferedReader.readLine(); // Ignore first(coin) line
 			String amount = bufferedReader.readLine();
-			gem = Integer.parseInt(EncryptionSupport.decrypt(amount));
+			//gem = Integer.parseInt(EncryptionSupport.decrypt(amount));
+			if(amount == null)
+				gem = 0;
+			else
+				gem = Integer.parseInt(amount);
 		}
 
 		return gem;
@@ -874,6 +1022,31 @@ public final class FileManager {
 		}
 	}
 
+	public void saveCollections(Statistics collection) throws IOException {
+		Properties properties = new Properties();
+
+		String achievements = Arrays.stream(collection.getAchievementsArray())
+				.mapToObj(String::valueOf)
+				.collect(Collectors.joining(","));
+
+		String enemies = Arrays.stream(collection.getEnemiesArray())
+				.mapToObj(String::valueOf)
+				.collect(Collectors.joining(","));
+		String items = Arrays.stream(collection.getItemsArray())
+				.mapToObj(String::valueOf)
+				.collect(Collectors.joining(","));
+
+		properties.setProperty("achievementArray", achievements);
+		properties.setProperty("enemiesArray", enemies);
+		properties.setProperty("itemsArray", items);
+
+		Globals.getLogger().info("Before saving Collections - Achievements: " + achievements);
+
+		try (FileOutputStream out = new FileOutputStream("Collections.properties")) {
+			properties.store(out, "Collections");
+		}
+	}
+
 	/**
 	 * Loads default upgrade statuses from upgrade_default.properties file.
 	 *
@@ -909,5 +1082,27 @@ public final class FileManager {
 		}
 
 		return defaultProperties;
+	}
+
+	private String arrayToString(int[] array) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < array.length; i++) {
+			sb.append(array[i]);
+			if (i < array.length - 1) {
+				sb.append(",");
+			}
+		}
+		logger.info("arraytostring result = " + sb.toString());
+		return sb.toString();
+	}
+
+	private int[] stringToArray(String str) {
+		String[] strArray = str.split(",");
+		int[] array = new int[strArray.length];
+		for (int i = 0; i < strArray.length; i++) {
+			array[i] = Integer.parseInt(strArray[i]);
+		}
+		logger.info("stringtoarray result = " + Arrays.toString(array));
+		return array;
 	}
 }

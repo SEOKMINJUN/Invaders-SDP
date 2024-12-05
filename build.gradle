@@ -1,10 +1,11 @@
 plugins {
-    id "java"
+    id "application"
     id "edu.sc.seis.launch4j" version "3.0.6"
 }
 
 group 'org.invaders-sdp'
 version '0.0'
+mainClassName = 'engine.Core'
 
 repositories {
     mavenCentral()
@@ -23,12 +24,32 @@ sourceSets {
             srcDirs = ['res']
         }
     }
+    test {
+        java {
+            srcDirs = ['test']
+        }
+    }
 }
 dependencies {
+    //Test
+    testImplementation 'com.tagtraum:ffsampledsp-complete:0.9.53'
     testImplementation platform('org.junit:junit-bom:5.10.0')
     testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testCompileOnly 'org.projectlombok:lombok:1.18.34'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
+
+    //Main
+    implementation 'com.tagtraum:ffsampledsp-complete:0.9.53'
+    compileOnly 'org.projectlombok:lombok:1.18.34'
+    annotationProcessor 'org.projectlombok:lombok:1.18.34'
 }
 
 test {
     useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
 }

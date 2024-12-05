@@ -1,12 +1,7 @@
 package engine;
 
-import clove.Statistics;
-
 import java.io.IOException;
-import java.util.logging.Level;
 import java.time.LocalDate;
-
-import screen.GameScreen;
 
 /**
  * Implements a high score record.
@@ -37,10 +32,12 @@ public class Score implements Comparable<Score> {
 	private int clearAchievementNumber;
 	/** Time for Total level clear time(player has done) */
 	private long playTime;
+	private float accuracy;
+	private int distance;
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param name
 	 *            Player name, three letters.
 	 * @param score
@@ -65,8 +62,41 @@ public class Score implements Comparable<Score> {
 			this.totalShipDestroyed = stat.getTotalShipsDestroyed();
 			this.clearAchievementNumber = stat.getClearAchievementNumber();
 			this.playTime = stat.getTotalPlaytime();
+			this.accuracy = stat.getAccuracy();
+			this.distance = stat.getDistance();
 		} catch (IOException ex) {
 			ex.printStackTrace();
+		}
+	}
+	/**
+	 * Constructor
+	 *
+	 * @param name
+	 * 			player name
+	 * @param score
+	 * 			player score
+	 * @param isTest
+	 * 			boolean data for test
+
+	 */
+	public Score(String name, int score, boolean isTest) {
+		this.name = name;
+		this.score = score;
+
+		this.currentDate = LocalDate.now();
+		this.Year = currentDate.getYear();
+		this.Month = currentDate.getMonthValue();
+		this.Day = currentDate.getDayOfMonth();
+		this.Date = String.format("%d-%02d-%02d", Year, Month, Day);
+
+		// default data for JUnit test
+		if (isTest) {
+			this.highestLevel = 0;
+			this.totalShipDestroyed = 0;
+			this.clearAchievementNumber = 0;
+			this.accuracy = 0.0f;
+			this.distance = 0;
+			this.playTime = 0;
 		}
 	}
 
@@ -85,15 +115,19 @@ public class Score implements Comparable<Score> {
 	 * 				Number of Destroyed Ship.
 	 * @param clearAchievementNumber
 	 * 				Number of Cleared Achievement.
+	 * @param accuracy
+	 * 				Current Accuracy of bullets hit
 	 */
 	public Score(final String name, final int score, final String date, int highestLevel,
-				 final int totalShipDestroyed, final int clearAchievementNumber) {
+				 final int totalShipDestroyed, final int clearAchievementNumber, float accuracy, int distance) {
 		this.name = name;
 		this.score = score;
 		this.Date = date;
 		this.highestLevel = highestLevel;
 		this.totalShipDestroyed = totalShipDestroyed;
 		this.clearAchievementNumber = clearAchievementNumber;
+		this.accuracy = accuracy;
+		this.distance = distance;
 	}
 	/**
 	 * Constructor
@@ -107,7 +141,7 @@ public class Score implements Comparable<Score> {
 
 	/**
 	 * Getter for the player's name.
-	 * 
+	 *
 	 * @return Name of the player.
 	 */
 	public final String getName() {
@@ -116,7 +150,7 @@ public class Score implements Comparable<Score> {
 
 	/**
 	 * Getter for the player's score.
-	 * 
+	 *
 	 * @return High score.
 	 */
 	public final int getScore() { return this.score; }
@@ -142,6 +176,10 @@ public class Score implements Comparable<Score> {
 	public final int getShipDestroyed() { return this.totalShipDestroyed; }
 
 	public final int getClearAchievementNumber() { return this.clearAchievementNumber; }
+
+	public final float getAccuracy() { return this.accuracy; }
+
+	public final int getDistance() { return this.distance; }
 
 	/**
 	 * Orders the scores descending by score.

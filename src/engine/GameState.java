@@ -1,7 +1,5 @@
 package engine;
 
-import clove.ScoreManager;
-
 /**
  * Implements an object that stores the state of the game between levels.
  * 
@@ -22,6 +20,8 @@ public class GameState {
 	private int bulletsShot;
 	/** Ships destroyed until now. */
 	public int shipsDestroyed; // TEAM CLOVER : Changed shipsDestroyed from private to public for usage in achievement
+	/** Accuracy until now. */
+	public float accuracy;
 	// Soomin Lee / TeamHUD
 	/** Total time to play. */
 	private int playTime;
@@ -33,10 +33,10 @@ public class GameState {
 	private int gem;
 	/** Current hitCount **/
 	private int hitCount;
-	// Clove
-	public ScoreManager scoreManager;
 	/** Current coinItemsCollected */
 	private int coinItemsCollected;
+	/** Player traveled total distance */
+	private int totalDistance;
 
 	/**
 	 * Constructor.
@@ -53,7 +53,8 @@ public class GameState {
 	 *            Bullets shot until now.
 	 * @param shipsDestroyed
 	 *            Ships destroyed until now.
-	 *
+	 * @param accuracy
+	 * 			  Accuracy until now.
 	 * Soomin Lee / TeamHUD
 	 * @param playTime
 	 * 	          Total time to play.
@@ -66,46 +67,20 @@ public class GameState {
 	 */
 	public GameState(final int level, final int score,
 					 final int livesRemaining, final int livestwoRemaining, final int bulletsShot,
-					 final int shipsDestroyed, final int playTime, final int coin, final int gem, final int hitCount, final int coinItemsCollected) {
+					 final int shipsDestroyed, final float accuracy, final int playTime, final int coin, final int gem, final int hitCount, final int coinItemsCollected, final int playerDistance) {
 		this.level = level;
 		this.score = score;
 		this.livesRemaining = livesRemaining;
 		this.livestwoRemaining = livestwoRemaining;
 		this.bulletsShot = bulletsShot;
 		this.shipsDestroyed = shipsDestroyed;
+		this.accuracy = accuracy;
 		this.playTime = playTime;
 		this.coin = coin; // Team-Ctrl-S(Currency)
 		this.gem = gem; // Team-Ctrl-S(Currency)
 		this.hitCount = hitCount; // Ctrl-S
-		this.scoreManager = new ScoreManager(level, score);
 		this.coinItemsCollected = coinItemsCollected; // Ctrl-S
-	}
-
-	// TEAM CLOVER : Added two static below
-	public int shipsDestroyed() {
-		return shipsDestroyed;
-	}
-
-	/**
-	 * Team Clove Create Constructor for using in "engine.Score"
-	 *
-	 * Constructor for Save file
-	 *
-	 * @param bulletsShot
-	 *            Bullets shot until now.
-	 * @param shipsDestroyed
-	 *            Ships destroyed until now.
-	 * @param level
-	 *            Current game level.
-	 */
-	public GameState(int bulletsShot, int shipsDestroyed, int level) { //Team Clove
-		this.bulletsShot = bulletsShot;
-		this.shipsDestroyed = shipsDestroyed;
-		this.level = level;
-	}
-
-	public GameState(int livesRemaining) { // TEAM CLOVER
-		this.livesRemaining = livesRemaining;
+		this.totalDistance += playerDistance;
 	}
 
 	/**
@@ -150,6 +125,13 @@ public class GameState {
 	}
 
 	/**
+	 * @return the accuracy
+	 */
+	public final float getAccuracy() {
+		return accuracy;
+	}
+
+	/**
 	 * Soomin Lee / TeamHUD
 	 * @return the playTime
 	 */
@@ -182,4 +164,6 @@ public class GameState {
 	 */
 	// Team-Ctrl-S(Currency)
 	public int getCoinItemsCollected() { return coinItemsCollected; }
+
+	public final int getTotalDistance() { return totalDistance; }
 }

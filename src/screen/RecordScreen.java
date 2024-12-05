@@ -4,8 +4,8 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.List;
 
+import engine.Globals;
 import engine.Score;
-import engine.Core;
 
 /**
  *  Implements past user recorded score
@@ -31,7 +31,7 @@ public class RecordScreen extends Screen {
         this.returnCode = 1;
 
         try {
-            this.recentScores = Core.getFileManager().loadRecentScores();
+            this.recentScores = Globals.getFileManager().loadRecentScores();
         } catch (NumberFormatException | IOException e) {
             logger.warning("Couldn't load records!");
         }
@@ -51,25 +51,23 @@ public class RecordScreen extends Screen {
     /**
      * Updates the elements on screen and checks for events.
      */
-    protected final void update() {
+    protected final boolean update() {
         super.update();
 
-        draw();
         if (inputManager.isKeyDown(KeyEvent.VK_SPACE)
                 && this.inputDelay.checkFinished())
             this.isRunning = false;
+        return true;
     }
 
     /**
      * Draws the elements associated with the screen.
      */
-    private void draw() {
-        drawManager.initDrawing(this);
+    protected void draw() {
 
         drawManager.drawRecordMenu(this);
         drawManager.drawRecentScores(this, this.recentScores);
 
         super.drawPost();
-        drawManager.completeDrawing(this);
     }
 }
